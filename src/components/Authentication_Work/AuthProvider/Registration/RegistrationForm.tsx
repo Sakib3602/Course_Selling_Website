@@ -8,7 +8,7 @@ import { Eye, EyeOff, Chrome } from "lucide-react";
 import Nav from "@/components/Basic_Com/Navbar/Nav";
 import { Bounce, ToastContainer, toast } from "react-toastify";
 import { AuthContext } from "../AuthProvider";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import Footer from "@/components/Basic_Com/Footer/Footer";
 
 // type Inputs = {
@@ -18,26 +18,45 @@ import Footer from "@/components/Basic_Com/Footer/Footer";
 //   confirmPassword: string;
 // };
 
-
-
 export function RegistrationForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const auth = useContext(AuthContext)
+  const auth = useContext(AuthContext);
   if (!auth) {
-  throw new Error("AuthContext is not available. Wrap your app with <AuthProvider>.");
+    throw new Error(
+      "AuthContext is not available. Wrap your app with <AuthProvider>."
+    );
   }
-  const {creatPerson , out, GoogleS} = auth 
+  const { creatPerson, out, GoogleS } = auth;
   const navigate = useNavigate();
-  
-  
-  const Regi = async(e ) => {
+
+  const Regi = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData.entries());
     const email = data.email as string;
+    const name = data.name as string;
     const password = data.password as string;
     const cpassword = data.cpassword as string;
+     if (!email || !password || !cpassword || !name) {
+          toast.error("Please fill in all fields!", {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            theme: "light",
+            transition: Bounce,
+          })
+          return
+        }
+
+
+
+
+
+
     if (!password || password.length < 6) {
       toast.error("Atleast 6 Charecter Needed!", {
         position: "top-right",
@@ -69,10 +88,7 @@ export function RegistrationForm() {
       return;
     }
 
-
-     try {
-      
-
+    try {
       await creatPerson(email, password);
       await out();
 
@@ -80,7 +96,7 @@ export function RegistrationForm() {
 
       // Wait 1 second before navigating (optional)
       setTimeout(() => {
-        navigate("/");
+        navigate("/login");
       }, 1000);
     } catch (error) {
       toast.error("Something went wrong!");
@@ -276,12 +292,16 @@ export function RegistrationForm() {
             {/* Sign In Link */}
             <p className="text-center text-sm text-muted-foreground mt-6">
               Already have an account?{" "}
-              <a
-                href="#"
+              
+              <Link to='/login'> 
+              <p
+                
                 className="text-blue-600 hover:text-blue-700 font-medium"
               >
                 Sign in
-              </a>
+              </p>
+
+              </Link>
             </p>
           </div>
         </div>

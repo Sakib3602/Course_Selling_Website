@@ -6,6 +6,7 @@ import Details from "./components/Basic_Com/Details/Details.tsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AuthProvider from "./components/Authentication_Work/AuthProvider/AuthProvider.tsx";
 import RegistrationForm from "./components/Authentication_Work/AuthProvider/Registration/RegistrationForm.tsx";
+import { Login } from "./components/Authentication_Work/AuthProvider/Login/Login.tsx";
 
 const queryClient = new QueryClient();
 createRoot(document.getElementById("root")!).render(
@@ -16,6 +17,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/" element={<App />} />
           <Route path="/d/:id" element={<Details />} />
           <Route path="/register" element={<RegistrationForm />} />
+          <Route path="/login" element={<Login></Login> } />
         </Routes>
       </AuthProvider>
     </BrowserRouter>
