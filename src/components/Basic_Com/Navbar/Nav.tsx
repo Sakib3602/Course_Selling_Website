@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import Up_Nav from "../Up_Nav";
+import { Link } from "react-router";
 
 export default function Nav() {
   const [isOpen, setIsOpen] = useState(false);
@@ -45,9 +46,11 @@ export default function Nav() {
 
             {/* Get Started Button - Right (Desktop) */}
             <div className="hidden md:flex items-center">
-              <Button className="bg-[#4D2E7D] text-white hover:bg-black/80 transition-colors duration-200">
+              <Link to={"/register"}>
+              <Button className="bg-[#4D2E7D] text-white hover:!bg-[#43266d] transition-colors duration-200">
                 Get Started
               </Button>
+              </Link>
             </div>
 
             {/* Mobile Menu Button */}
@@ -80,9 +83,11 @@ export default function Nav() {
                 {item.name}
               </a>
             ))}
-            <Button className="w-full bg-[#4D2E7D] text-white hover:bg-black/80 transition-colors duration-200 mt-4">
-              Get Started
-            </Button>
+            <Link to={"/register"}>
+              <Button  className="w-full !bg-[#4D2E7D] !text-white hover:!bg-[#43266d] transition-colors duration-200 mt-4">
+                Get Started
+              </Button>
+            </Link>
           </div>
         </div>
       </nav>
