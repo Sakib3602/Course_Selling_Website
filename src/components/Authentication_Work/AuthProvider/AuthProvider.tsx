@@ -23,7 +23,7 @@ interface AuthContextType {
   GoogleS: () => Promise<UserCredential>;
 }
 
-export const AuthContext = createContext<AuthContextType | null>(null);
+export const AuthContext = createContext<AuthContextType | null >(null);
 
 interface AuthProviderProps {
   children: ReactNode;

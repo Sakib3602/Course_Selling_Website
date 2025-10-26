@@ -8,12 +8,15 @@ import { Eye, EyeOff, Chrome } from "lucide-react";
 import Nav from "@/components/Basic_Com/Navbar/Nav";
 import { Bounce, ToastContainer, toast } from "react-toastify";
 import { AuthContext } from "../AuthProvider";
-type Inputs = {
-  email: string;
-  name: string;
-  password: string;
-  confirmPassword: string;
-};
+import { useNavigate } from "react-router";
+import Footer from "@/components/Basic_Com/Footer/Footer";
+
+// type Inputs = {
+//   email: string;
+//   name: string;
+//   password: string;
+//   confirmPassword: string;
+// };
 
 
 
@@ -21,12 +24,18 @@ export function RegistrationForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const auth = useContext(AuthContext)
-  const {person , creatPerson , out, GoogleS} = auth 
-
+  if (!auth) {
+  throw new Error("AuthContext is not available. Wrap your app with <AuthProvider>.");
+  }
+  const {creatPerson , out, GoogleS} = auth 
+  const navigate = useNavigate();
+  
+  
   const Regi = async(e ) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData.entries());
+    const email = data.email as string;
     const password = data.password as string;
     const cpassword = data.cpassword as string;
     if (!password || password.length < 6) {
@@ -61,14 +70,22 @@ export function RegistrationForm() {
     }
 
 
-    await creatPerson(data.email , data.password)
-    await out()
+     try {
+      
 
-    toast.success("Account created Successfuly!");
+      await creatPerson(email, password);
+      await out();
 
+      toast.success("Account created Successfuly!");
 
-
-    console.log(data);
+      // Wait 1 second before navigating (optional)
+      setTimeout(() => {
+        navigate("/");
+      }, 1000);
+    } catch (error) {
+      toast.error("Something went wrong!");
+      console.error(error);
+    }
   };
 
   return (
@@ -229,7 +246,7 @@ export function RegistrationForm() {
               {/* Sign Up Button */}
               <Button
                 type="submit"
-                className="w-full h-11 bg-[#41246D]  text-white font-medium"
+                className="w-full h-11 bg-[#41246D] hover:bg-[#281347]  text-white font-medium"
               >
                 Create Account
               </Button>
@@ -269,6 +286,7 @@ export function RegistrationForm() {
           </div>
         </div>
       </div>
+      <Footer></Footer>
     </div>
   );
 }
