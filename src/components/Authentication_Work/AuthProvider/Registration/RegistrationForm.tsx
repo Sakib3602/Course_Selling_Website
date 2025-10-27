@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, Chrome } from "lucide-react";
 import Nav from "@/components/Basic_Com/Navbar/Nav";
-import { Bounce, ToastContainer, toast } from "react-toastify";
+import { slide, ToastContainer, toast } from "react-toastify";
 import { AuthContext } from "../AuthProvider";
 import { Link, useNavigate } from "react-router";
 import Footer from "@/components/Basic_Com/Footer/Footer";
@@ -30,9 +30,9 @@ export function RegistrationForm() {
   const { creatPerson, out, GoogleS } = auth;
   const navigate = useNavigate();
 
-  const Regi = async (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
+  const Regi = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const formData = new FormData(e.currentTarget)
     const data = Object.fromEntries(formData.entries());
     const email = data.email as string;
     const name = data.name as string;
@@ -47,7 +47,7 @@ export function RegistrationForm() {
             pauseOnHover: true,
             draggable: true,
             theme: "light",
-            transition: Bounce,
+            transition: slide,
           })
           return
         }
@@ -67,7 +67,7 @@ export function RegistrationForm() {
         draggable: true,
         progress: undefined,
         theme: "light",
-        transition: Bounce,
+        transition: slide,
       });
       return;
     }
@@ -83,7 +83,7 @@ export function RegistrationForm() {
         draggable: true,
         progress: undefined,
         theme: "light",
-        transition: Bounce,
+        transition: slide,
       });
       return;
     }
@@ -103,6 +103,16 @@ export function RegistrationForm() {
       console.error(error);
     }
   };
+  const GO = async () => {
+    try{
+      await GoogleS()
+      toast.success("Sign in Successful with google!")
+    }
+    catch(e){
+      toast.error("Sign in Failed with google!")
+      console.log(e)
+    }
+  }
 
   return (
     <div>
@@ -283,6 +293,7 @@ export function RegistrationForm() {
                 type="button"
                 variant="outline"
                 className="w-full h-11 border-input hover:bg-accent bg-transparent"
+                onClick={GO}
               >
                 <Chrome className="w-5 h-5 mr-2" />
                 Sign up with Google

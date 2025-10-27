@@ -18,8 +18,9 @@ interface Course {
   curriculum: string[];
   whatYouLearn: string[];
 }
+
 const AllProduct = () => {
-   const {data , isLoading , refetch} = useQuery({
+   const {data } = useQuery({
     queryKey : ["all-courses"],
     queryFn : async()=>{
       const res = await axios.get('http://localhost:3000/courses')
@@ -31,20 +32,20 @@ const AllProduct = () => {
   data?.map((x : Course)=>{
     console.log(x);
   })
-  const sampleCourse = {
-    id: "1",
-    title: "Sample Course",
-    instructor: "John Doe",
-    thumbnail:
-      "https://media.istockphoto.com/id/1290864946/photo/e-learning-education-concept-learning-online.jpg?s=612x612&w=0&k=20&c=y1fQ-3wbsvdDaMn-cuHPibcgozOxKQS99mIgz6DFcVA=",
-    price: 49.99,
-    rating: 4.5,
-    reviewCount: 120,
-    description: "This is a sample course description.",
-    duration: "3h 30m",
-    level: "Beginner",
-    language: "English",
-  };
+  // const sampleCourse = {
+  //   id: "1",
+  //   title: "Sample Course",
+  //   instructor: "John Doe",
+  //   thumbnail:
+  //     "https://media.istockphoto.com/id/1290864946/photo/e-learning-education-concept-learning-online.jpg?s=612x612&w=0&k=20&c=y1fQ-3wbsvdDaMn-cuHPibcgozOxKQS99mIgz6DFcVA=",
+  //   price: 49.99,
+  //   rating: 4.5,
+  //   reviewCount: 120,
+  //   description: "This is a sample course description.",
+  //   duration: "3h 30m",
+  //   level: "Beginner",
+  //   language: "English",
+  // };
 
  
 
@@ -65,12 +66,6 @@ const AllProduct = () => {
         {
           data?.map((x : Course)  => <Link to={`/d/${x._id}`}><Card key={x._id} course={x}></Card></Link>)
         }
-        {/* <Link to={"/d/1"}>
-        <Card course={sampleCourse} />
-        </Link>
-        <Card course={sampleCourse} />
-        <Card course={sampleCourse} />
-        <Card course={sampleCourse} /> */}
       </div>
     </div>
   );

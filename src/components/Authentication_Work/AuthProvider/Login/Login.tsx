@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Eye, EyeOff, Chrome } from "lucide-react"
-import { Bounce, ToastContainer, toast } from "react-toastify"
+import { slide, ToastContainer, toast } from "react-toastify"
 import { Link, useNavigate } from "react-router"
 import Nav from "@/components/Basic_Com/Navbar/Nav"
 import Footer from "@/components/Basic_Com/Footer/Footer"
@@ -46,7 +46,7 @@ export function Login() {
         pauseOnHover: true,
         draggable: true,
         theme: "light",
-        transition: Bounce,
+        transition: slide,
       })
       return
     }
@@ -60,7 +60,7 @@ export function Login() {
         pauseOnHover: true,
         draggable: true,
         theme: "light",
-        transition: Bounce,
+        transition: slide,
       })
       return
     }
@@ -91,7 +91,7 @@ export function Login() {
         draggable
         pauseOnHover
         theme="light"
-        transition={Bounce}
+        transition={slide}
       />
       <Nav></Nav>
 

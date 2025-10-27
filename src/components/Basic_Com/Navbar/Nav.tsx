@@ -1,14 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import Up_Nav from "../Up_Nav";
 import { Link } from "react-router";
+import { AuthContext } from "@/components/Authentication_Work/AuthProvider/AuthProvider";
+import { Slide, toast, ToastContainer } from "react-toastify";
 
 export default function Nav() {
   const [isOpen, setIsOpen] = useState(false);
-
+  const auth = useContext(AuthContext);
+  if (!auth) {
+    throw new Error("AuthContext is undefined");
+  }
+  const { person, out } = auth;
+  const signO = async () => {
+    await out();
+    toast.error("Loged out!", {
+      position: "top-center",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      transition: Slide,
+    });
+  };
   const navItems = [
     { name: "Home", href: "/" },
     { name: "About", href: "/" },
@@ -20,7 +40,7 @@ export default function Nav() {
     <div>
       <nav className="poppins-semibold fixed top-0 left-0 right-0 z-50 bg-white border-b border-black/10">
         <Up_Nav></Up_Nav>
-        
+        <ToastContainer></ToastContainer>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Brand Name - Left */}
@@ -47,11 +67,20 @@ export default function Nav() {
 
             {/* Get Started Button - Right (Desktop) */}
             <div className="hidden md:flex items-center">
-              <Link to={"/register"}>
-              <Button className="bg-[#4D2E7D] text-white hover:!bg-[#43266d] transition-colors duration-200">
-                Get Started
-              </Button>
-              </Link>
+              {person ? (
+                <Button
+                  onClick={signO}
+                  className="bg-red-800 text-white hover:!bg-[#43266d] transition-colors duration-200"
+                >
+                  Log Out
+                </Button>
+              ) : (
+                <Link to={"/register"}>
+                  <Button className="bg-[#4D2E7D] text-white hover:!bg-[#43266d] transition-colors duration-200">
+                    Get Started
+                  </Button>
+                </Link>
+              )}
             </div>
 
             {/* Mobile Menu Button */}
@@ -85,7 +114,7 @@ export default function Nav() {
               </a>
             ))}
             <Link to={"/register"}>
-              <Button  className="w-full !bg-[#4D2E7D] !text-white hover:!bg-[#43266d] transition-colors duration-200 mt-4">
+              <Button className="w-full !bg-[#4D2E7D] !text-white hover:!bg-[#43266d] transition-colors duration-200 mt-4">
                 Get Started
               </Button>
             </Link>
