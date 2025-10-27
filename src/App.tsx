@@ -4,6 +4,9 @@ import Footer from "./components/Basic_Com/Footer/Footer";
 // import Details from "./components/Basic_Com/Details/Details";
 import Hero from "./components/Basic_Com/Hero/Hero";
 import Nav from "./components/Basic_Com/Navbar/Nav";
+import { Review } from "./components/Basic_Com/Review/Review";
+
+
 
 function App() {
   return (
@@ -62,6 +65,7 @@ function App() {
           <Hero></Hero>
           <AboutUs></AboutUs>
           <AllProduct></AllProduct>
+          <Review></Review>
 
           <Footer></Footer>
         </div>

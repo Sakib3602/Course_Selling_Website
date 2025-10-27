@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, Chrome } from "lucide-react";
 import Nav from "@/components/Basic_Com/Navbar/Nav";
-import { slide, ToastContainer, toast } from "react-toastify";
+import { Slide, ToastContainer, toast } from "react-toastify";
 import { AuthContext } from "../AuthProvider";
 import { Link, useNavigate } from "react-router";
 import Footer from "@/components/Basic_Com/Footer/Footer";
@@ -47,7 +47,7 @@ export function RegistrationForm() {
             pauseOnHover: true,
             draggable: true,
             theme: "light",
-            transition: slide,
+            transition: Slide,
           })
           return
         }
@@ -67,7 +67,7 @@ export function RegistrationForm() {
         draggable: true,
         progress: undefined,
         theme: "light",
-        transition: slide,
+        transition: Slide,
       });
       return;
     }
@@ -83,7 +83,7 @@ export function RegistrationForm() {
         draggable: true,
         progress: undefined,
         theme: "light",
-        transition: slide,
+        transition: Slide,
       });
       return;
     }
@@ -127,7 +127,7 @@ export function RegistrationForm() {
         draggable
         pauseOnHover
         theme="light"
-        transition={Bounce}
+        transition={Slide}
       />
 
       <Nav></Nav>
