@@ -10,17 +10,20 @@ import { Slide, ToastContainer, toast } from "react-toastify";
 import { AuthContext } from "../AuthProvider";
 import { Link, useNavigate } from "react-router";
 import Footer from "@/components/Basic_Com/Footer/Footer";
+import useAxiosPublic from "@/url/useAxiosPublic";
+import { useMutation } from "@tanstack/react-query";
 
-// type Inputs = {
-//   email: string;
-//   name: string;
-//   password: string;
-//   confirmPassword: string;
-// };
+type I = {
+  email: string;
+  name: string;
+  password: string;
+  role: string;
+};
 
 export function RegistrationForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const axiosPub = useAxiosPublic()
   const auth = useContext(AuthContext);
   if (!auth) {
     throw new Error(
@@ -91,6 +94,14 @@ export function RegistrationForm() {
     try {
       await creatPerson(email, password);
       await out();
+      const u : I = {
+        name : name,
+        email : email,
+        password : password,
+        role : "user"
+      }
+
+      await mutateAsync(u)
 
       toast.success("Account created Successfuly!");
 
@@ -113,6 +124,18 @@ export function RegistrationForm() {
       console.log(e)
     }
   }
+
+
+
+   const { mutateAsync } = useMutation({
+    mutationFn: async (newUser : I) => {
+      const response = await axiosPub.post("/users", newUser);
+      return response.data;
+    },
+    onSuccess: () => {
+      toast.success("User saved to database!");
+    },
+  });
 
   return (
     <div>

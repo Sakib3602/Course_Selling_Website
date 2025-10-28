@@ -5,16 +5,19 @@ import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import Up_Nav from "../Up_Nav";
 import { Link } from "react-router";
-import { AuthContext } from "@/components/Authentication_Work/AuthProvider/AuthProvider";
+
 import { Slide, toast, ToastContainer } from "react-toastify";
+import { AuthContext } from "@/components/Authentication_Work/AuthProvider/AuthProvider";
 
 export default function Nav() {
   const [isOpen, setIsOpen] = useState(false);
   const auth = useContext(AuthContext);
   if (!auth) {
-    throw new Error("AuthContext is undefined");
+    throw new Error(
+      "AuthContext is not available. Wrap your app with <AuthProvider>."
+    );
   }
-  const { person, out } = auth;
+  const {  out, person} = auth;
   const signO = async () => {
     await out();
     toast.error("Loged out!", {
@@ -39,7 +42,7 @@ export default function Nav() {
   return (
     <div>
       <nav className="poppins-semibold fixed top-0 left-0 right-0 z-50 bg-white border-b border-black/10">
-        <Up_Nav></Up_Nav>
+        {/* <Up_Nav></Up_Nav> */}
         <ToastContainer></ToastContainer>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">

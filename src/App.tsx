@@ -6,24 +6,22 @@ import Hero from "./components/Basic_Com/Hero/Hero";
 import Nav from "./components/Basic_Com/Navbar/Nav";
 import { Review } from "./components/Basic_Com/Review/Review";
 
-
-
 function App() {
   return (
     <>
-     
+    
       <div className="min-h-screen w-full relative">
-  {/* Dashed Grid */}
-  <div
-    className="absolute inset-0 z-0"
-    style={{
-      backgroundImage: `
+        {/* Dashed Grid */}
+        <div
+          className="absolute inset-0 z-0"
+          style={{
+            backgroundImage: `
         linear-gradient(to right, #e7e5e4 1px, transparent 1px),
         linear-gradient(to bottom, #e7e5e4 1px, transparent 1px)
       `,
-      backgroundSize: "20px 20px",
-      backgroundPosition: "0 0, 0 0",
-      maskImage: `
+            backgroundSize: "20px 20px",
+            backgroundPosition: "0 0, 0 0",
+            maskImage: `
         repeating-linear-gradient(
           to right,
           black 0px,
@@ -39,7 +37,7 @@ function App() {
           transparent 8px
         )
       `,
-      WebkitMaskImage: `
+            WebkitMaskImage: `
         repeating-linear-gradient(
           to right,
           black 0px,
@@ -55,12 +53,12 @@ function App() {
           transparent 8px
         )
       `,
-      maskComposite: "intersect",
-      WebkitMaskComposite: "source-in",
-    }}
-  />
-  {/* Your Content/Components */}
-   <div className="relative z-10">
+            maskComposite: "intersect",
+            WebkitMaskComposite: "source-in",
+          }}
+        />
+        {/* Your Content/Components */}
+        <div className="relative z-10">
           <Nav></Nav>
           <Hero></Hero>
           <AboutUs></AboutUs>
@@ -69,7 +67,7 @@ function App() {
 
           <Footer></Footer>
         </div>
-</div>
+      </div>
     </>
   );
 }

@@ -3,17 +3,20 @@
 import { Star, Clock, BarChart3, Globe } from "lucide-react"
 
 interface Course {
-  id: string
-  title: string
-  instructor: string
-  thumbnail: string
-  price: number | "Free"
-  rating: number
-  reviewCount: number
-  description: string
-  duration: string
-  level: string
-  language: string
+  _id: string;
+  id: number;
+  title: string;
+  description: string;
+  fullDescription: string;
+  price: number;
+  rating: number;
+  students: number;
+  image: string;
+  instructor: string;
+  duration: string;
+  level: string;
+  curriculum: string[];
+  whatYouLearn: string[];
 }
 
 interface CourseCardProps {
@@ -29,7 +32,7 @@ export default function Card({ course }: CourseCardProps) {
       {/* Thumbnail */}
       <div className="relative h-56 overflow-hidden bg-gray-100">
         <img
-          src={course.thumbnail || "/placeholder.svg"}
+          src={ "/placeholder.svg"}
           alt={course.title}
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
         />
@@ -67,7 +70,7 @@ export default function Card({ course }: CourseCardProps) {
             ))}
           </div>
           <span className="text-sm font-semibold text-gray-900">{course.rating}</span>
-          <span className="text-sm text-gray-500">({course.reviewCount})</span>
+          <span className="text-sm text-gray-500">00</span>
         </div>
 
         {/* Description */}
@@ -85,7 +88,7 @@ export default function Card({ course }: CourseCardProps) {
           </div>
           <div className="flex items-center gap-1.5">
             <Globe className="h-4 w-4 text-amber-500" />
-            <span>{course.language}</span>
+            <span>00</span>
           </div>
         </div>
       </div>

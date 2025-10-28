@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button"
+import CountUp from "@/components/ui/CountUp"
 import { Play, Star, Users, Award } from "lucide-react"
-
+// import { CountUp } from "@components/ui/Countup";
 export default function Hero() {
   return (
     <section className="relative  overflow-hidden">
@@ -93,15 +94,46 @@ export default function Hero() {
             {/* Stats */}
             <div className="grid grid-cols-3 gap-6 mt-12 pt-12 border-t border-gray-200">
               <div className="text-center lg:text-left">
-                <div className="text-3xl sm:text-4xl font-bold text-[#41246D] mb-1">500+</div>
+                <div className="text-3xl sm:text-4xl font-bold text-[#41246D] mb-1">
+                  <CountUp
+  from={0}
+  to={100}
+  separator=","
+  direction="up"
+  duration={1}
+  className="count-up-text"
+/> +</div>
                 <div className="text-sm text-gray-600">Expert Courses</div>
               </div>
               <div className="text-center lg:text-left">
-                <div className="text-3xl sm:text-4xl font-bold text-[#41246D] mb-1">50K+</div>
+                <div className="text-3xl sm:text-4xl font-bold text-[#41246D] mb-1">
+                  <CountUp
+  from={0}
+  to={22}
+  separator=","
+  direction="up"
+  duration={1}
+  className="count-up-text"
+/>k +</div>
                 <div className="text-sm text-gray-600">Active Students</div>
               </div>
               <div className="text-center lg:text-left">
-                <div className="text-3xl sm:text-4xl font-bold text-[#41246D] mb-1">4.9</div>
+                <div className="text-3xl sm:text-4xl font-bold text-[#41246D] mb-1">
+                  <CountUp
+  from={0}
+  to={4}
+  separator=","
+  direction="up"
+  duration={1}
+  className="count-up-text"
+/>.<CountUp
+  from={0}
+  to={9}
+  separator=","
+  direction="up"
+  duration={1}
+  className="count-up-text"
+/></div>
                 <div className="text-sm text-gray-600">Average Rating</div>
               </div>
             </div>

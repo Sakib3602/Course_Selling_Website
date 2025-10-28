@@ -65,7 +65,7 @@ export function Review() {
 
     const interval = setInterval(() => {
       setCurrent((prev) => (prev + 1) % reviews.length);
-    }, 5000);
+    }, 3000);
 
     return () => clearInterval(interval);
   }, [isAutoPlay]);
@@ -87,103 +87,116 @@ export function Review() {
 
   return (
     <>
-      <div className="flex justify-center items-center">
-        <div className="mb-10 md:ml-4 lg:ml-20 text-center">
-          <h2 className="text-sm font-bold uppercase mb-4 poppins">
-            Reviews From
-          </h2>
-          <h2 className="text-2xl font-bold uppercase mb-4 poppins">
-            Enrolled Student
-          </h2>
-          <hr className="w-[222px] h-[4px] bg-gray-500 " />
+      <div className="bg-[#D22F2F] py-10">
+        <div className="flex justify-center items-center text-white">
+          <div className="mb-10 md:ml-4 lg:ml-20 text-center">
+            <h2 className="text-sm font-bold uppercase mb-4 poppins">
+              Online Learning
+            </h2>
+            <h2 className="text-2xl font-bold uppercase mb-4 poppins">
+              Popular Courses
+            </h2>
+            <hr className="w-[222px] h-[4px] bg-gray-500 " />
+          </div>
         </div>
-      </div>
 
-      <div className="w-full max-w-2xl mx-auto px-4">
-        <div className="relative">
-          {/* Carousel Container - Fixed overflow */}
-          <div className="overflow-hidden rounded-xl">
-            <div
-              className="flex transition-transform duration-700 ease-out"
-              style={{
-                transform: `translateX(-${current * 100}%)`,
-              }}
+        <div className="w-full max-w-2xl mx-auto px-4">
+          <div className="relative">
+            {/* Carousel Container - Fixed overflow */}
+            <div className="overflow-hidden rounded-xl">
+              <div
+                className="flex transition-transform duration-700 ease-out"
+                style={{
+                  transform: `translateX(-${current * 100}%)`,
+                }}
+              >
+                {reviews.map((review) => (
+                  <div key={review.id} className="w-full flex-shrink-0 poppins">
+                    <Card className="border border-slate-200 dark:border-slate-700 shadow-lg bg-white dark:bg-slate-900 hover:shadow-xl transition-shadow duration-300">
+                      <CardContent className="p-6 md:p-8">
+                        <div className="flex flex-col items-center text-center gap-4">
+                          {/* Avatar - Compact premium styling */}
+                          <div className="relative">
+                            <div className="absolute inset-0 bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-800 rounded-full blur-md opacity-40"></div>
+                            <img
+                              src={review.image || "/placeholder.svg"}
+                              alt={review.name}
+                              className="relative w-16 h-16 rounded-full object-cover border border-slate-300 dark:border-slate-600 shadow-md"
+                            />
+                          </div>
+
+                          {/* Review Text - Compact and elegant */}
+                          <div className="space-y-3 max-w-xl">
+                            <p className="text-sm md:text-base text-slate-700 dark:text-slate-300 leading-relaxed font-light">
+                              "{review.text}"
+                            </p>
+                          </div>
+
+                          {/* Minimal divider */}
+                          <div className="w-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-600"></div>
+
+                          {/* Name - Premium minimal */}
+                          <div>
+                            <h3 className="text-sm md:text-base font-medium text-slate-900 dark:text-slate-50 tracking-wide">
+                              {review.name}
+                            </h3>
+                            <h3 className="text-sm md:text-base  text-slate-900 dark:text-slate-50 ">
+                              {review.address}
+                            </h3>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={prev}
+              className="absolute left-2 top-1/2 -translate-y-1/2 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200 h-8 w-8"
+              aria-label="Previous review"
             >
-              {reviews.map((review) => (
-                <div key={review.id} className="w-full flex-shrink-0 poppins">
-                  <Card className="border border-slate-200 dark:border-slate-700 shadow-lg bg-white dark:bg-slate-900 hover:shadow-xl transition-shadow duration-300">
-                    <CardContent className="p-6 md:p-8">
-                      <div className="flex flex-col items-center text-center gap-4">
-                        {/* Avatar - Compact premium styling */}
-                        <div className="relative">
-                          <div className="absolute inset-0 bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-800 rounded-full blur-md opacity-40"></div>
-                          <img
-                            src={review.image || "/placeholder.svg"}
-                            alt={review.name}
-                            className="relative w-16 h-16 rounded-full object-cover border border-slate-300 dark:border-slate-600 shadow-md"
-                          />
-                        </div>
+              <ChevronLeft size={18} />
+            </Button>
 
-                        {/* Review Text - Compact and elegant */}
-                        <div className="space-y-3 max-w-xl">
-                          <p className="text-sm md:text-base text-slate-700 dark:text-slate-300 leading-relaxed font-light">
-                            "{review.text}"
-                          </p>
-                        </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={next}
+              className="absolute right-2 top-1/2 -translate-y-1/2 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200 h-8 w-8"
+              aria-label="Next review"
+            >
+              <ChevronRight size={18} />
+            </Button>
 
-                        {/* Minimal divider */}
-                        <div className="w-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-600"></div>
-
-                        {/* Name - Premium minimal */}
-                        <div>
-                          <h3 className="text-sm md:text-base font-medium text-slate-900 dark:text-slate-50 tracking-wide">
-                            {review.name}
-                          </h3>
-                          <h3 className="text-sm md:text-base  text-slate-900 dark:text-slate-50 ">
-                            {review.address}
-                          </h3>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
+            <div className="flex justify-center gap-2 mt-6">
+              {reviews.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => goToSlide(index)}
+                  className={`rounded-full transition-all duration-500 ${
+                    index === current
+                      ? "bg-slate-900 dark:bg-slate-100 w-6 h-1.5"
+                      : "bg-slate-300 dark:bg-slate-600 w-1.5 h-1.5 hover:bg-slate-400 dark:hover:bg-slate-500"
+                  }`}
+                  aria-label={`Go to review ${index + 1}`}
+                />
               ))}
             </div>
-          </div>
 
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={prev}
-            className="absolute left-2 top-1/2 -translate-y-1/2 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200 h-8 w-8"
-            aria-label="Previous review"
-          >
-            <ChevronLeft size={18} />
-          </Button>
-
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={next}
-            className="absolute right-2 top-1/2 -translate-y-1/2 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200 h-8 w-8"
-            aria-label="Next review"
-          >
-            <ChevronRight size={18} />
-          </Button>
-
-          <div className="flex justify-center gap-2 mt-6 mb-10">
-            {reviews.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => goToSlide(index)}
-                className={`rounded-full transition-all duration-500 ${
-                  index === current
-                    ? "bg-slate-900 dark:bg-slate-100 w-6 h-1.5"
-                    : "bg-slate-300 dark:bg-slate-600 w-1.5 h-1.5 hover:bg-slate-400 dark:hover:bg-slate-500"
-                }`}
-                aria-label={`Go to review ${index + 1}`}
-              />
-            ))}
+            <div className="flex justify-center mt-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsAutoPlay(!isAutoPlay)}
+                className="text-xs text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 font-medium"
+              >
+                {isAutoPlay ? "⏸" : "▶"} {isAutoPlay ? "Pause" : "Play"}
+              </Button>
+            </div>
           </div>
         </div>
       </div>

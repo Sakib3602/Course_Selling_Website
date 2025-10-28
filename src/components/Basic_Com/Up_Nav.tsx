@@ -5,6 +5,11 @@ import { AuthContext } from "../Authentication_Work/AuthProvider/AuthProvider";
 
 const Up_Nav = () => {
     const auth = useContext(AuthContext)
+    if (!auth) {
+    throw new Error(
+      "AuthContext is not available. Wrap your app with <AuthProvider>."
+    );
+  }
     const {person} = auth
 
     return (
