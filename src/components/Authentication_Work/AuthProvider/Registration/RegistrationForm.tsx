@@ -23,7 +23,7 @@ type I = {
 export function RegistrationForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const axiosPub = useAxiosPublic()
+  const axiosPub = useAxiosPublic();
   const auth = useContext(AuthContext);
   if (!auth) {
     throw new Error(
@@ -34,38 +34,33 @@ export function RegistrationForm() {
   const navigate = useNavigate();
 
   const Regi = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    const formData = new FormData(e.currentTarget)
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
     const email = data.email as string;
     const name = data.name as string;
     const password = data.password as string;
     const cpassword = data.cpassword as string;
-     if (!email || !password || !cpassword || !name) {
-          toast.error("Please fill in all fields!", {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: true,
-            draggable: true,
-            theme: "light",
-            transition: Slide,
-          })
-          return
-        }
-
-
-
-
-
+    if (!email || !password || !cpassword || !name) {
+      toast.error("Please fill in all fields!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+        transition: Slide,
+      });
+      return;
+    }
 
     if (!password || password.length < 6) {
       toast.error("Atleast 6 Charecter Needed!", {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
-        closeOnClick: false,
+        closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
@@ -81,7 +76,7 @@ export function RegistrationForm() {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
-        closeOnClick: false,
+        closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
@@ -94,46 +89,83 @@ export function RegistrationForm() {
     try {
       await creatPerson(email, password);
       await out();
-      const u : I = {
-        name : name,
-        email : email,
-        password : password,
-        role : "user"
-      }
+      const u: I = {
+        name: name,
+        email: email,
+        password: password,
+        role: "user",
+      };
 
-      await mutateAsync(u)
+      await mutateAsync(u);
 
-      toast.success("Account created Successfuly!");
+     
 
       // Wait 1 second before navigating (optional)
       setTimeout(() => {
         navigate("/login");
       }, 1000);
     } catch (error) {
-      toast.error("Something went wrong!");
+      
+      toast.error("Something went wrong!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Slide,
+      });
       console.error(error);
     }
   };
   const GO = async () => {
-    try{
-      await GoogleS()
-      toast.success("Sign in Successful with google!")
+    try {
+      const result = await GoogleS(); // result.user contains all info
+      const user = result.user;
+
+      const name = user.displayName;
+      const email = user.email;
+      const password = "googlelogin";
+
+      const u : I = {
+        name: name || "Unknown" ,
+        email: email || "",
+        password: password,
+        role: "user",
+      };
+
+
+      await mutateAsync(u)
+
+
+
+     
+      
+    } catch (e) {
+      toast.error("Sign in Failed with google!");
+      console.log(e);
     }
-    catch(e){
-      toast.error("Sign in Failed with google!")
-      console.log(e)
-    }
-  }
+  };
 
-
-
-   const { mutateAsync } = useMutation({
-    mutationFn: async (newUser : I) => {
+  const { mutateAsync } = useMutation({
+    mutationFn: async (newUser: I) => {
       const response = await axiosPub.post("/users", newUser);
       return response.data;
     },
     onSuccess: () => {
-      toast.success("User saved to database!");
+       toast.success("Welcome To Our World!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Slide,
+      });
     },
   });
 
@@ -326,15 +358,10 @@ export function RegistrationForm() {
             {/* Sign In Link */}
             <p className="text-center text-sm text-muted-foreground mt-6">
               Already have an account?{" "}
-              
-              <Link to='/login'> 
-              <p
-                
-                className="text-blue-600 hover:text-blue-700 font-medium"
-              >
-                Sign in
-              </p>
-
+              <Link to="/login">
+                <p className="text-blue-600 hover:text-blue-700 font-medium">
+                  Sign in
+                </p>
               </Link>
             </p>
           </div>
