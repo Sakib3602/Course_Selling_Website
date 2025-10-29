@@ -98,14 +98,11 @@ export function RegistrationForm() {
 
       await mutateAsync(u);
 
-     
-
       // Wait 1 second before navigating (optional)
       setTimeout(() => {
         navigate("/login");
       }, 1000);
     } catch (error) {
-      
       toast.error("Something went wrong!", {
         position: "top-right",
         autoClose: 3000,
@@ -129,19 +126,14 @@ export function RegistrationForm() {
       const email = user.email;
       const password = "googlelogin";
 
-      const u : I = {
-        name: name || "Unknown" ,
+      const u: I = {
+        name: name || "Unknown",
         email: email || "",
         password: password,
         role: "user",
       };
 
-
-      await mutateAsync(u)
-
-
-
-     
+      await mutateAsync(u);
       
     } catch (e) {
       toast.error("Sign in Failed with google!");
@@ -155,7 +147,7 @@ export function RegistrationForm() {
       return response.data;
     },
     onSuccess: () => {
-       toast.success("Welcome To Our World!", {
+      toast.success("Welcome To Our World!", {
         position: "top-right",
         autoClose: 3000,
         hideProgressBar: false,
@@ -166,6 +158,7 @@ export function RegistrationForm() {
         theme: "light",
         transition: Slide,
       });
+      navigate("/")
     },
   });
 

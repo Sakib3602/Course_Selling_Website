@@ -28,11 +28,12 @@ export default function Card({ course }: CourseCardProps) {
   const hasHalfStar = course.rating % 1 >= 0.5
 
   return (
-    <div className="group bg-white rounded-lg shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-200 max-w-md hover:-translate-y-1 cursor-pointer">
+    <div className="group bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-200 
+                    w-full sm:w-[300px] md:w-[350px] lg:w-[380px] xl:w-[400px] hover:-translate-y-1 cursor-pointer">
       {/* Thumbnail */}
-      <div className="relative h-56 overflow-hidden bg-gray-100">
+      <div className="relative aspect-[16/9] overflow-hidden bg-gray-100">
         <img
-          src={ "/placeholder.svg"}
+          src={course?.image}
           alt={course.title}
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
         />
@@ -40,10 +41,10 @@ export default function Card({ course }: CourseCardProps) {
 
       {/* Content */}
       <div className="p-5 space-y-3">
-        {/* Title */}
-        <h3 className="font-bold text-xl text-gray-900 leading-tight">{course.title}</h3>
+        <h3 className="font-bold text-lg sm:text-xl text-gray-900 leading-tight line-clamp-2">
+          {course.title}
+        </h3>
 
-        {/* Instructor and Price */}
         <div className="flex items-center justify-between">
           <span className="text-sm text-gray-600">
             by <span className="font-medium text-gray-900">{course.instructor}</span>
@@ -53,7 +54,6 @@ export default function Card({ course }: CourseCardProps) {
           </span>
         </div>
 
-        {/* Rating */}
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-0.5">
             {[...Array(5)].map((_, i) => (
@@ -70,13 +70,13 @@ export default function Card({ course }: CourseCardProps) {
             ))}
           </div>
           <span className="text-sm font-semibold text-gray-900">{course.rating}</span>
-          <span className="text-sm text-gray-500">00</span>
+          <span className="text-sm text-gray-500">({course.students})</span>
         </div>
 
-        {/* Description */}
-        <p className="text-sm text-gray-600 leading-relaxed line-clamp-2">{course.description}</p>
+        <p className="text-sm text-gray-600 leading-relaxed line-clamp-2">
+          {course.description}
+        </p>
 
-        {/* Course Meta */}
         <div className="flex items-center gap-4 pt-2 text-sm text-gray-600">
           <div className="flex items-center gap-1.5">
             <Clock className="h-4 w-4 text-amber-500" />
@@ -88,7 +88,7 @@ export default function Card({ course }: CourseCardProps) {
           </div>
           <div className="flex items-center gap-1.5">
             <Globe className="h-4 w-4 text-amber-500" />
-            <span>00</span>
+            <span>{course.students}</span>
           </div>
         </div>
       </div>

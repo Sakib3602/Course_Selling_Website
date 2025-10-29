@@ -96,7 +96,7 @@ export function Review() {
             <h2 className="text-2xl font-bold uppercase mb-4 poppins">
               Popular Courses
             </h2>
-            <hr className="w-[222px] h-[4px] bg-gray-500 " />
+            <hr className="w-[222px] h-[4px] bg-white " />
           </div>
         </div>
 

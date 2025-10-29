@@ -5,6 +5,7 @@ import Footer from "./components/Basic_Com/Footer/Footer";
 import Hero from "./components/Basic_Com/Hero/Hero";
 import Nav from "./components/Basic_Com/Navbar/Nav";
 import { Review } from "./components/Basic_Com/Review/Review";
+// import ScrollValo from "./components/Basic_Com/ScrollValo/ScrollValo";
 
 function App() {
   return (
@@ -62,6 +63,7 @@ function App() {
           <Nav></Nav>
           <Hero></Hero>
           <AboutUs></AboutUs>
+          {/* <ScrollValo></ScrollValo> */}
           <AllProduct></AllProduct>
           <Review></Review>
 

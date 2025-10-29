@@ -5,10 +5,12 @@ import {
   Clock,
   Users,
   Award,
-  ArrowLeft,
+  
 } from "lucide-react";
 import { useParams } from "react-router";
 import Nav from "../Navbar/Nav";
+import { useQuery } from "@tanstack/react-query";
+import useAxiosPublic from "@/url/useAxiosPublic";
 
 interface Course {
   id: number;
@@ -227,26 +229,44 @@ const courses: Course[] = [
   },
 ];
 
+
+
 const Details = () => {
+  
   const { id } = useParams();
 
-  const course = courses.find((c) => c.id === Number(id));
+  console.log(id)
+
+  const axiosPub = useAxiosPublic()
+   const {data : course  } = useQuery({
+    queryKey : ["all-courses-single", id],
+    queryFn : async()=>{
+      const res = await axiosPub.get(`/single/${id}`)
+      return res.data;
+    }
+  })
+
+  console.log(course,"single")
+
+  
 
   if (!course) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Course not found</h1>
-          {/* <Button onClick={() => Navigate("/")}>Back to Courses</Button> */}
+         
         </div>
       </div>
     );
   }
 
+
+
   return (
     <div>
       <Nav></Nav>
-      <div className="min-h-screen bg-background sm:mt-40 md:mt-40 lg:mt-0  md:max-w-7xl sm:p-0 md:mx-auto md:px-4  lg:px-8 pt-32 pb-20 lg:pt-40 lg:pb-32">
+      <div className="poppins min-h-screen bg-background  md:mt-20 lg:mt-0  md:max-w-7xl sm:p-0 md:mx-auto md:px-4  lg:px-8 pt-16 pb-20 lg:pt-20 lg:pb-32">
         {/* Hero Section */}
         <div className="relative h-96 bg-card border-b">
           <div
@@ -257,14 +277,7 @@ const Details = () => {
           </div>
 
           <div className="relative container mx-auto px-4 h-full flex flex-col justify-center">
-            <Button
-              variant="ghost"
-              className="w-fit mb-4 hidden md:block lg:block"
-              // onClick={() => navigate("/courses")}
-            >
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Courses
-            </Button>
+            
 
             <h1 className="text-4xl md:text-5xl font-bold mb-4 max-w-3xl">
               {course.title}
@@ -281,9 +294,9 @@ const Details = () => {
               </div>
               <div className="flex items-center gap-2">
                 <Users className="h-5 w-5 text-primary" />
-                <span className="font-semibold text-lg">
+                {/* <span className="font-semibold text-lg">
                   {course.students.toLocaleString()}
-                </span>
+                </span> */}
                 <span className="text-muted-foreground">students</span>
               </div>
               <div className="flex items-center gap-2">

@@ -2,6 +2,7 @@ import { Link } from "react-router";
 import Card from "../Card/Card";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import useAxiosPublic from "@/url/useAxiosPublic";
 interface Course {
   _id: string;
   id: number;
@@ -20,10 +21,11 @@ interface Course {
 }
 
 const AllProduct = () => {
+  const axiosPub = useAxiosPublic()
    const {data } = useQuery({
     queryKey : ["all-courses"],
     queryFn : async()=>{
-      const res = await axios.get('http://localhost:3000/courses')
+      const res = await axiosPub.get('/courses')
       return res.data;
     }
   })

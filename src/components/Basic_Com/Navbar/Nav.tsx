@@ -17,14 +17,14 @@ export default function Nav() {
       "AuthContext is not available. Wrap your app with <AuthProvider>."
     );
   }
-  const {  out, person} = auth;
+  const { out, person } = auth;
   const signO = async () => {
     await out();
     toast.error("Loged out!", {
       position: "top-center",
       autoClose: 3000,
       hideProgressBar: false,
-      closeOnClick: false,
+      closeOnClick: true,
       pauseOnHover: true,
       draggable: true,
       progress: undefined,
@@ -41,7 +41,7 @@ export default function Nav() {
 
   return (
     <div>
-      <nav className="poppins-semibold fixed top-0 left-0 right-0 z-50 bg-white border-b border-black/10">
+      <nav className="poppins-semibold fixed top-0 left-0 right-0 z-50 bg-white/30 backdrop-blur-2xl border-b border-black/10 ">
         {/* <Up_Nav></Up_Nav> */}
         <ToastContainer></ToastContainer>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -105,7 +105,7 @@ export default function Nav() {
             isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
           }`}
         >
-          <div className="px-4 pt-2 pb-4 space-y-3 bg-white border-t border-black/10">
+          <div className="px-4 pt-2 pb-4 space-y-3 bg-white/30 backdrop-blur-2xl border-t border-black/10">
             {navItems.map((item) => (
               <a
                 key={item.name}
@@ -116,11 +116,19 @@ export default function Nav() {
                 {item.name}
               </a>
             ))}
-            <Link to={"/register"}>
-              <Button className="w-full !bg-[#4D2E7D] !text-white hover:!bg-[#43266d] transition-colors duration-200 mt-4">
-                Get Started
+
+            {person ? (
+              <Button onClick={signO} className="w-full !bg-red-800 !text-white hover:!bg-red-900 transition-colors duration-200 mt-4">
+                Log Out
               </Button>
-            </Link>
+            ) : (
+              <Link to={"/register"}>
+                {" "}
+                <Button className="w-full !bg-[#4D2E7D] !text-white hover:!bg-[#43266d] transition-colors duration-200 mt-4">
+                  Get Started
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
       </nav>

@@ -23,7 +23,7 @@ export function Login() {
     throw new Error("AuthContext is not available")
   }
 
-  const {SignNow} = auth
+  const {SignNow , GoogleS} = auth
 
   const navigate = useNavigate()
 
@@ -68,14 +68,56 @@ export function Login() {
     try {
       // Add your login logic here
       await SignNow(email, password)
-      toast.success("Login successful!")
+      toast.success("Log in successful!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Slide,
+      });
       setTimeout(()=>{
         navigate("/")
       },1000)
     } catch (error) {
-      toast.error("Login failed. Please try again.")
+     
+      toast.error("Login failed. Please try again.", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Slide,
+      });
       console.error(error)
     }
+  }
+
+
+  const GO = async()=>{
+    await GoogleS()
+    toast.success("Google log in successful!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Slide,
+      });
+
+      setTimeout(()=>{
+        navigate("/")
+      },1500)
+    
   }
 
   return (
@@ -166,6 +208,7 @@ export function Login() {
               </div>
 
               <Button
+              onClick={GO}
                 type="button"
                 variant="outline"
                 className="w-full h-11 border-input hover:bg-accent bg-transparent"

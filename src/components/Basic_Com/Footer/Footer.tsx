@@ -17,7 +17,7 @@ export default function Footer() {
   //   backgroundPosition: "center",
   // }}
     
-    className="bg-[#41246D] text-gray-100">
+    className="bg-[#222222] text-gray-100">
       {/* Main Footer Content */}
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         {/* Header Section with Logo and Social Icons */}
