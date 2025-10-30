@@ -368,7 +368,7 @@ const Details = () => {
                     </div>
 
                     <p className="text-4xl font-bold text-primary mb-6">
-                      {con == "BD" ? <span className="font-semibold text-5xl">৳ </span> : <span className="font-semibold text-5xl">$ </span>} 
+                      {con == "BD" ? <span className="font-semibold text-5xl">BDT </span> : <span className="font-semibold text-5xl">USD </span>} 
                        {con == "BD" ? course.priceBDT : course.priceUSD}
                     </p>
 

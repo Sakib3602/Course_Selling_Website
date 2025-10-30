@@ -4,7 +4,7 @@ import { useContext, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 // import Up_Nav from "../Up_Nav";
-import { Link} from "react-router";
+import { Link } from "react-router";
 
 import { Slide, toast, ToastContainer } from "react-toastify";
 import { AuthContext } from "@/components/Authentication_Work/AuthProvider/AuthProvider";
@@ -39,7 +39,6 @@ export default function Nav() {
     { name: "Contact", href: "#" },
     { name: "Carts", href: "/carts" },
     { name: "Dashboard", href: "/dashboard" },
-    
   ];
 
   return (
@@ -61,9 +60,7 @@ export default function Nav() {
               <div className="flex items-center gap-8">
                 {navItems.map((item) => (
                   <Link to={item.href}>
-                    <p
-                      className="text-black hover:text-black/70 transition-colors duration-200 font-medium text-[14px]"
-                    >
+                    <p className="text-black hover:text-black/70 transition-colors duration-200 font-medium text-[14px]">
                       {item.name}
                     </p>
                   </Link>
@@ -110,18 +107,22 @@ export default function Nav() {
         >
           <div className="px-4 pt-2 pb-4 space-y-3 bg-white/30 backdrop-blur-2xl border-t border-black/10">
             {navItems.map((item) => (
-              <a
-                key={item.name}
-                href={item.href}
-                className="block text-black hover:text-black/70 transition-colors duration-200 font-medium py-2"
-                onClick={() => setIsOpen(false)}
-              >
-                {item.name}
-              </a>
+              <Link to={item.href}>
+                <p
+                  key={item.name}
+                  className="block text-black hover:text-black/70 transition-colors duration-200 font-medium py-2"
+                  onClick={() => setIsOpen(false)}
+                >
+                  {item.name}
+                </p>
+              </Link>
             ))}
 
             {person ? (
-              <Button onClick={signO} className="w-full !bg-red-800 !text-white hover:!bg-red-900 transition-colors duration-200 mt-4">
+              <Button
+                onClick={signO}
+                className="w-full !bg-red-800 !text-white hover:!bg-red-900 transition-colors duration-200 mt-4"
+              >
                 Log Out
               </Button>
             ) : (

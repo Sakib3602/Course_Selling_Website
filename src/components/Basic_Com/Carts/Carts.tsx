@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { ShoppingCart, Trash2, Star, Check } from "lucide-react";
 import Nav from "../Navbar/Nav";
 import Footer from "../Footer/Footer";
+import { Slide, toast } from "react-toastify";
+import { Link } from "react-router";
 
 interface Course {
   _id: string;
@@ -80,10 +82,22 @@ export default function Carts() {
   }, []);
 
   // Remove item from cart
-  const removeItem = (id: number) => {
-    const updatedCart = data.filter((item) => item.id !== id);
+  const removeItem = (id: string) => {
+   
+    const updatedCart = data.filter((item) => item._id !== id);
     setData(updatedCart);
     localStorage.setItem("loca", JSON.stringify(updatedCart));
+    toast.success("Item Removed From Cart!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Slide,
+      });
   };
 
   // Helper function to get price based on country
@@ -138,6 +152,7 @@ export default function Carts() {
               <div className="lg:col-span-2">
                 <div className="space-y-3 sm:space-y-4">
                   {data.map((item : Course) => (
+                    <Link to={`/d/${item._id}`}>
                     <div
                       key={item.id}
                       className="flex flex-col sm:flex-row gap-3 sm:gap-4 p-3 sm:p-4 border border-gray-200 rounded-lg bg-white hover:shadow-md transition"
@@ -187,7 +202,7 @@ export default function Carts() {
 
                           {/* Remove Button */}
                           <button
-                            onClick={() => removeItem(item.id)}
+                            onClick={() => removeItem(item._id)}
                             className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition flex-shrink-0"
                             aria-label="Remove item"
                           >
@@ -196,6 +211,9 @@ export default function Carts() {
                         </div>
                       </div>
                     </div>
+                    
+                    
+                    </Link>
                   ))}
                 </div>
 
