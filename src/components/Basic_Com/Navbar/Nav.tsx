@@ -3,7 +3,7 @@
 import { useContext, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
-import Up_Nav from "../Up_Nav";
+// import Up_Nav from "../Up_Nav";
 import { Link } from "react-router";
 
 import { Slide, toast, ToastContainer } from "react-toastify";

@@ -1,8 +1,9 @@
 import { Link } from "react-router";
 import Card from "../Card/Card";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+
 import useAxiosPublic from "@/url/useAxiosPublic";
+
 interface Course {
   _id: string;
   id: number;
@@ -21,36 +22,39 @@ interface Course {
 }
 
 const AllProduct = () => {
-  const axiosPub = useAxiosPublic()
-   const {data } = useQuery({
-    queryKey : ["all-courses"],
-    queryFn : async()=>{
-      const res = await axiosPub.get('/courses')
-      return res.data;
-    }
-  })
+  //
+  //
+  //
+  //
+  //
+  //
+  //
 
   
-  data?.map((x : Course)=>{
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+
+  const axiosPub = useAxiosPublic();
+  const { data } = useQuery({
+    queryKey: ["all-courses"],
+    queryFn: async () => {
+      const res = await axiosPub.get("/courses");
+      return res.data;
+    },
+  });
+
+  data?.map((x: Course) => {
     console.log(x);
-  })
-  // const sampleCourse = {
-  //   id: "1",
-  //   title: "Sample Course",
-  //   instructor: "John Doe",
-  //   thumbnail:
-  //     "https://media.istockphoto.com/id/1290864946/photo/e-learning-education-concept-learning-online.jpg?s=612x612&w=0&k=20&c=y1fQ-3wbsvdDaMn-cuHPibcgozOxKQS99mIgz6DFcVA=",
-  //   price: 49.99,
-  //   rating: 4.5,
-  //   reviewCount: 120,
-  //   description: "This is a sample course description.",
-  //   duration: "3h 30m",
-  //   level: "Beginner",
-  //   language: "English",
-  // };
-
- 
-
+  });
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20 lg:pt-40 lg:pb-32 ">
@@ -65,9 +69,11 @@ const AllProduct = () => {
       </div>
 
       <div className="flex sm:flex-col md:flex-row lg:flex-row gap-6 flex-wrap justify-center">
-        {
-          data?.map((x : Course)  => <Link to={`/d/${x._id}`}><Card key={x._id} course={x}></Card></Link>)
-        }
+        {data?.map((x: Course) => (
+          <Link to={`/d/${x._id}`}>
+            <Card key={x._id} course={x}></Card>
+          </Link>
+        ))}
       </div>
     </div>
   );
