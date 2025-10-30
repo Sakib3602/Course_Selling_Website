@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { ChevronDown, Search } from "lucide-react";
-import g from "../../../../public/bg_features-1.jpg";
+
 const faqData = [
   {
     id: 1,

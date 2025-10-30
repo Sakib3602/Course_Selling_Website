@@ -6,7 +6,23 @@ import { useQuery } from "@tanstack/react-query";
 import useAxiosPublic from "@/url/useAxiosPublic";
 import { useEffect, useState } from "react";
 import Footer from "../Footer/Footer";
-
+import { Slide, toast } from "react-toastify";
+interface Course {
+  _id: string;
+  id: number;
+  title: string;
+  description: string;
+  fullDescription: string;
+  price: number;
+  rating: number;
+  students: number;
+  image: string;
+  instructor: string;
+  duration: string;
+  level: string;
+  curriculum: string[];
+  whatYouLearn: string[];
+}
 const Details = () => {
   //
   //
@@ -162,13 +178,38 @@ const Details = () => {
   });
 
   
-  const prod = (c: any) => {
-    console.log(c, "lo");
+  const prod = (c: Course) => {
+   
     const storedData = localStorage.getItem("loca");
     const loca = storedData ? JSON.parse(storedData) : [];
+    const x = loca.find((item: Course) => item._id == c._id)
+    if(x){
+      toast.success("Already Added To Cart!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Slide,
+      });
+      return;
+    }
     loca.push(c);
     localStorage.setItem("loca", JSON.stringify(loca));
-    alert("Added to cart!");
+    toast.success("Added To Cart!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Slide,
+      });
   };
 
 
@@ -327,8 +368,8 @@ const Details = () => {
                     </div>
 
                     <p className="text-4xl font-bold text-primary mb-6">
-                      {con == "BD" ? "TK" : "USD"}
-                      {con == "BD" ? course.priceBDT : course.priceUSD}
+                      {con == "BD" ? <span className="font-semibold text-5xl">৳ </span> : <span className="font-semibold text-5xl">$ </span>} 
+                       {con == "BD" ? course.priceBDT : course.priceUSD}
                     </p>
 
                     <div className="space-y-3">

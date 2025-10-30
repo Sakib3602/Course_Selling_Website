@@ -38,6 +38,7 @@ export default function Nav() {
     { name: "Services", href: "#" },
     { name: "Contact", href: "#" },
     { name: "Carts", href: "/carts" },
+    { name: "Dashboard", href: "/dashboard" },
     
   ];
 
