@@ -1,35 +1,34 @@
-import { Button } from "@/components/ui/button"
-import CountUp from "@/components/ui/CountUp"
-import { Play, Star, Users, Award } from "lucide-react"
+import { Button } from "@/components/ui/button";
+import CountUp from "@/components/ui/CountUp";
+import { Play, Star, Users, Award } from "lucide-react";
 // import { CountUp } from "@components/ui/Countup";
 export default function Hero() {
   return (
     <section className="relative  overflow-hidden">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-       <svg
-  className="absolute right-0 top-0 h-full w-auto hidden lg:block"
-  viewBox="0 0 600 1000"
-  fill="none"
-  xmlns="http://www.w3.org/2000/svg"
-  preserveAspectRatio="xMaxYMid slice"
->
-  <path
-    d="M600,0 C300,200 200,400 200,600 C200,800 300,900 200,1000 L600,1000 L600,0 Z"
-    fill="#41246D"
-    opacity="0.3"
-  />
-  <path
-    d="M600,0 C350,180 250,380 250,580 C250,780 350,880 250,980 L600,980 L600,0 Z"
-    fill="#41246D"
-    opacity="0.4"
-  />
-  <path
-    d="M600,0 C400,150 300,350 300,550 C300,750 400,850 300,950 L600,950 L600,0 Z"
-    fill="#41246D"
-    opacity="0.6"
-  />
-</svg>
-
+        <svg
+          className="absolute right-0 top-0 h-full w-auto hidden lg:block"
+          viewBox="0 0 600 1000"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          preserveAspectRatio="xMaxYMid slice"
+        >
+          <path
+            d="M600,0 C300,200 200,400 200,600 C200,800 300,900 200,1000 L600,1000 L600,0 Z"
+            fill="#41246D"
+            opacity="0.3"
+          />
+          <path
+            d="M600,0 C350,180 250,380 250,580 C250,780 350,880 250,980 L600,980 L600,0 Z"
+            fill="#41246D"
+            opacity="0.4"
+          />
+          <path
+            d="M600,0 C400,150 300,350 300,550 C300,750 400,850 300,950 L600,950 L600,0 Z"
+            fill="#41246D"
+            opacity="0.6"
+          />
+        </svg>
 
         <svg
           className="absolute bottom-0 left-0 w-full h-auto lg:hidden"
@@ -62,7 +61,9 @@ export default function Hero() {
           <div className="text-center lg:text-left relative z-10">
             <div className="inline-flex items-center gap-2 bg-[#41246D]/10 backdrop-blur-sm px-4 py-2 rounded-full mb-6 border border-[#41246D]/20">
               <Star className="w-4 h-4 text-[#41246D] fill-[#41246D]" />
-              <span className="text-[#41246D] text-sm font-medium">Trusted by 50,000+ students</span>
+              <span className="text-[#41246D] text-sm font-medium">
+                Trusted by 50,000+ students
+              </span>
             </div>
 
             <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-gray-900 mb-6 leading-tight text-balance">
@@ -70,8 +71,8 @@ export default function Hero() {
             </h1>
 
             <p className="text-lg sm:text-xl text-gray-700 mb-8 leading-relaxed text-pretty max-w-2xl mx-auto lg:mx-0">
-              Transform your career with premium online courses taught by industry professionals. Learn at your own
-              pace, anytime, anywhere.
+              Transform your career with premium online courses taught by
+              industry professionals. Learn at your own pace, anytime, anywhere.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
@@ -96,44 +97,51 @@ export default function Hero() {
               <div className="text-center lg:text-left">
                 <div className="text-3xl sm:text-4xl font-bold text-[#41246D] mb-1">
                   <CountUp
-  from={0}
-  to={100}
-  separator=","
-  direction="up"
-  duration={1}
-  className="count-up-text"
-/> +</div>
+                    from={0}
+                    to={100}
+                    separator=","
+                    direction="up"
+                    duration={1}
+                    className="count-up-text"
+                  />{" "}
+                  +
+                </div>
                 <div className="text-sm text-gray-600">Expert Courses</div>
               </div>
               <div className="text-center lg:text-left">
                 <div className="text-3xl sm:text-4xl font-bold text-[#41246D] mb-1">
                   <CountUp
-  from={0}
-  to={22}
-  separator=","
-  direction="up"
-  duration={1}
-  className="count-up-text"
-/>k +</div>
+                    from={0}
+                    to={22}
+                    separator=","
+                    direction="up"
+                    duration={1}
+                    className="count-up-text"
+                  />
+                  k +
+                </div>
                 <div className="text-sm text-gray-600">Active Students</div>
               </div>
               <div className="text-center lg:text-left">
                 <div className="text-3xl sm:text-4xl font-bold text-[#41246D] mb-1">
                   <CountUp
-  from={0}
-  to={4}
-  separator=","
-  direction="up"
-  duration={1}
-  className="count-up-text"
-/>.<CountUp
-  from={0}
-  to={9}
-  separator=","
-  direction="up"
-  duration={1}
-  className="count-up-text"
-/></div>
+                    from={0}
+                    to={4}
+                    separator=","
+                    direction="up"
+                    duration={1}
+                    className="count-up-text"
+                  />
+                  .
+                  <CountUp
+                    from={0}
+                    to={9}
+                    separator=","
+                    direction="up"
+                    duration={1}
+                    className="count-up-text"
+                  />
+                </div>
                 <div className="text-sm text-gray-600">Average Rating</div>
               </div>
             </div>
@@ -151,12 +159,17 @@ export default function Hero() {
                   <div className="flex items-center gap-2">
                     <div className="flex">
                       {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                        <Star
+                          key={i}
+                          className="w-4 h-4 text-yellow-400 fill-yellow-400"
+                        />
                       ))}
                     </div>
                     <span className="text-sm text-gray-600">(4.9)</span>
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900">Complete Web Development Bootcamp</h3>
+                  <h3 className="text-xl font-bold text-gray-900">
+                    Complete Web Development Bootcamp
+                  </h3>
                   <div className="flex items-center justify-between text-sm text-gray-600">
                     <div className="flex items-center gap-1">
                       <Users className="w-4 h-4" />
@@ -169,8 +182,12 @@ export default function Hero() {
                   </div>
                   <div className="pt-3 border-t">
                     <div className="flex items-center justify-between">
-                      <span className="text-2xl font-bold text-[#41246D]">$49.99</span>
-                      <span className="text-sm text-gray-500 line-through">$199.99</span>
+                      <span className="text-2xl font-bold text-[#41246D]">
+                        $49.99
+                      </span>
+                      <span className="text-sm text-gray-500 line-through">
+                        $199.99
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -188,5 +205,5 @@ export default function Hero() {
         </div>
       </div>
     </section>
-  )
+  );
 }

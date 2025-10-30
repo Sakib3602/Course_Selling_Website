@@ -5,6 +5,7 @@ import Nav from "../Navbar/Nav";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosPublic from "@/url/useAxiosPublic";
 import { useEffect, useState } from "react";
+import Footer from "../Footer/Footer";
 
 const Details = () => {
   //
@@ -160,7 +161,16 @@ const Details = () => {
     enabled: !isLoading,
   });
 
-  console.log(course, "single");
+  
+  const prod = (c: any) => {
+    console.log(c, "lo");
+    const storedData = localStorage.getItem("loca");
+    const loca = storedData ? JSON.parse(storedData) : [];
+    loca.push(c);
+    localStorage.setItem("loca", JSON.stringify(loca));
+    alert("Added to cart!");
+  };
+
 
   return (
     <div>
@@ -178,17 +188,7 @@ const Details = () => {
                   >
                     <Globe className="h-4 w-4" />
                     {isLoading ? "Detecting..." : `Location: ${con}`}
-                    {/* {locInfo && (
-                      <span className="ml-2 text-[10px] opacity-70">
-                        {locInfo === "cooldown"
-                          ? "rate-limited (cache)"
-                          : locInfo === "fallback"
-                          ? "via fallback"
-                          : locInfo === "cache"
-                          ? "cache"
-                          : "live"}
-                      </span>
-                    )} */}
+                    
                     <span className="ml-2 text-xs opacity-75">
                       Click to refresh
                     </span>
@@ -333,7 +333,7 @@ const Details = () => {
 
                     <div className="space-y-3">
                       <Button className="w-full text-lg h-12">Buy Now</Button>
-                      <Button variant="outline" className="w-full text-lg h-12">
+                      <Button onClick={()=>prod(course)} variant="outline" className="w-full text-lg h-12">
                         <ShoppingCart className="mr-2 h-5 w-5" />
                         Add to Cart
                       </Button>
@@ -386,6 +386,7 @@ const Details = () => {
               </div>
             </div>
           </div>
+          <Footer></Footer>
         </>
       ) : (
         <>
@@ -495,6 +496,7 @@ const Details = () => {
               </div>
             </div>
           </div>
+           <Footer></Footer>
         </>
       )}
 

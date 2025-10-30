@@ -1,10 +1,11 @@
 import AboutUs from "./components/Basic_Com/AboutUs/AboutUs";
 import AllProduct from "./components/Basic_Com/ALLPRODUCT/AllProduct";
+import Faq from "./components/Basic_Com/FAQ/Faq";
 import Footer from "./components/Basic_Com/Footer/Footer";
 // import Details from "./components/Basic_Com/Details/Details";
 import Hero from "./components/Basic_Com/Hero/Hero";
 import Nav from "./components/Basic_Com/Navbar/Nav";
-import { Review } from "./components/Basic_Com/Review/Review";
+// import { Review } from "./components/Basic_Com/Review/Review";
 // import ScrollValo from "./components/Basic_Com/ScrollValo/ScrollValo";
 
 function App() {
@@ -65,7 +66,8 @@ function App() {
           <AboutUs></AboutUs>
           {/* <ScrollValo></ScrollValo> */}
           <AllProduct></AllProduct>
-          <Review></Review>
+          <Faq></Faq>
+          {/* <Review></Review> */}
 
           <Footer></Footer>
         </div>

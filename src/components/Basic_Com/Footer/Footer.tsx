@@ -2,7 +2,7 @@
 
 import { Facebook, Mail, MapPin, Phone, Instagram, X, ArrowUp } from "lucide-react"
 import { Link } from "react-router"
-// import b from "../../../assets/home_bg.jpg"
+import b from "../../../../public/footer_bg.png"
 
 export default function Footer() {
   const scrollToTop = () => {
@@ -11,13 +11,13 @@ export default function Footer() {
 
   return (
     <footer
-  //   style={{
-  //   backgroundImage: `url(${b})`,
-  //   backgroundSize: "cover",
-  //   backgroundPosition: "center",
-  // }}
+    style={{
+    backgroundImage: `url(${b})`,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+  }}
     
-    className="bg-[#222222] text-gray-100">
+    className="bg-[#222222] text-gray-100 mb-0">
       {/* Main Footer Content */}
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         {/* Header Section with Logo and Social Icons */}
