@@ -1,70 +1,105 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ShoppingCart, Trash2, Star, Check } from "lucide-react";
 import Nav from "../Navbar/Nav";
 import Footer from "../Footer/Footer";
 
-interface CartItem {
+interface Course {
+  _id: string;
   id: number;
   title: string;
-  instructor: string;
-  price: number;
-  originalPrice: number;
-  image: string;
+  description: string;
+  fullDescription: string;
+  priceBDT: number;
+  priceUSD: number;
   rating: number;
   students: number;
+  image: string;
+  instructor: string;
+  duration: string;
+  level: string;
+  curriculum: string[];
+  whatYouLearn: string[];
 }
 
 export default function Carts() {
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      id: 1,
-      title: "Advanced React Patterns",
-      instructor: "Sarah Chen",
-      price: 99.99,
-      originalPrice: 149.99,
-      image: "/react-course.jpg",
-      rating: 4.8,
-      students: 12500,
-    },
-    {
-      id: 2,
-      title: "Next.js Mastery Course",
-      instructor: "John Smith",
-      price: 129.99,
-      originalPrice: 199.99,
-      image: "/nextjs-course.jpg",
-      rating: 4.9,
-      students: 8300,
-    },
-    {
-      id: 3,
-      title: "TypeScript for Professionals",
-      instructor: "Emma Wilson",
-      price: 79.99,
-      originalPrice: 129.99,
-      image: "/typescript-course.jpg",
-      rating: 4.7,
-      students: 6200,
-    },
-  ]);
+  // const [data, setdata] = useState<CartItem[]>([
+  //   {
+  //     id: 1,
+  //     title: "Advanced React Patterns",
+  //     instructor: "Sarah Chen",
+  //     price: 99.99,
+  //     originalPrice: 149.99,
+  //     image: "/react-course.jpg",
+  //     rating: 4.8,
+  //     students: 12500,
+  //   },
+  //   {
+  //     id: 2,
+  //     title: "Next.js Mastery Course",
+  //     instructor: "John Smith",
+  //     price: 129.99,
+  //     originalPrice: 199.99,
+  //     image: "/nextjs-course.jpg",
+  //     rating: 4.9,
+  //     students: 8300,
+  //   },
+  //   {
+  //     id: 3,
+  //     title: "TypeScript for Professionals",
+  //     instructor: "Emma Wilson",
+  //     price: 79.99,
+  //     originalPrice: 129.99,
+  //     image: "/typescript-course.jpg",
+  //     rating: 4.7,
+  //     students: 6200,
+  //   },
+  // ]);
 
+  // const removeItem = (id: number) => {
+  //   alert("Remove functionality is not implemented in this demo.");
+  // };
+
+  // const subtotal = data.reduce((sum, item) => sum + item.price, 0);
+  // const tax = subtotal * 0.1;
+  // const total = subtotal + tax;
+
+  const [data, setData] = useState<Course[]>([]);
+  const [con, setCon] = useState("BD");
+
+  // Load cart data and country from localStorage on mount
+  useEffect(() => {
+    const stData = localStorage.getItem("loca");
+    const cartData = stData ? JSON.parse(stData) : [];
+    setData(cartData);
+
+    // Get country from localStorage (set by Details page)
+    const country = localStorage.getItem("userCountry") || "BD";
+    setCon(country);
+  }, []);
+
+  // Remove item from cart
   const removeItem = (id: number) => {
-    alert("Remove functionality is not implemented in this demo.");
+    const updatedCart = data.filter((item) => item.id !== id);
+    setData(updatedCart);
+    localStorage.setItem("loca", JSON.stringify(updatedCart));
   };
 
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price, 0);
+  // Helper function to get price based on country
+  const getPrice = (item: Course) => {
+    return con === "BD" ? item.priceBDT : item.priceUSD;
+  };
+
+  // Calculate totals
+  const subtotal = data.reduce((sum, item) => sum + getPrice(item), 0);
   const tax = subtotal * 0.1;
   const total = subtotal + tax;
-
-  const discount = (item: CartItem) =>
-    Math.round(((item.originalPrice - item.price) / item.originalPrice) * 100);
 
   return (
     <div>
       <Nav></Nav>
-      <div className="min-h-screen bg-white">
+      <div className="poppins min-h-screen bg-white mt-20">
         {/* Header */}
         <header className="border-b border-gray-200 bg-white sticky top-0 z-50">
           <div className="w-full px-4 sm:px-6 lg:px-8 py-4">
@@ -76,7 +111,7 @@ export default function Carts() {
                 </h1>
               </div>
               <p className="text-xs sm:text-sm text-gray-600 flex-shrink-0 ml-2">
-                {cartItems.length} courses
+                {data.length} courses
               </p>
             </div>
           </div>
@@ -84,7 +119,7 @@ export default function Carts() {
 
         {/* Main Content */}
         <main className="w-full px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-          {cartItems.length === 0 ? (
+          {data.length === 0 ? (
             <div className="text-center py-12 sm:py-16">
               <ShoppingCart className="w-12 sm:w-16 h-12 sm:h-16 text-gray-300 mx-auto mb-4" />
               <h2 className="text-xl sm:text-2xl font-bold text-black mb-2">
@@ -102,7 +137,7 @@ export default function Carts() {
               {/* Cart Items */}
               <div className="lg:col-span-2">
                 <div className="space-y-3 sm:space-y-4">
-                  {cartItems.map((item) => (
+                  {data.map((item : Course) => (
                     <div
                       key={item.id}
                       className="flex flex-col sm:flex-row gap-3 sm:gap-4 p-3 sm:p-4 border border-gray-200 rounded-lg bg-white hover:shadow-md transition"
@@ -114,11 +149,7 @@ export default function Carts() {
                           alt={item.title}
                           className="w-full h-full object-cover"
                         />
-                        {discount(item) > 0 && (
-                          <div className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
-                            -{discount(item)}%
-                          </div>
-                        )}
+                        
                       </div>
 
                       {/* Course Details */}
@@ -149,7 +180,7 @@ export default function Carts() {
                         <div className="flex items-center justify-between gap-2">
                           <div className="flex items-center gap-2">
                             <span className="text-lg sm:text-xl font-bold text-black">
-                              ${item.price.toFixed(2)}
+                              {con === "BD" ? "TK" : "$"}{getPrice(item).toFixed(2)}
                             </span>
                             
                           </div>
@@ -187,16 +218,16 @@ export default function Carts() {
                   <div className="space-y-3 sm:space-y-4 mb-4 sm:mb-6 pb-4 sm:pb-6 border-b border-gray-200">
                     <div className="flex justify-between text-xs sm:text-sm">
                       <span className="text-gray-600">
-                        Subtotal ({cartItems.length} courses)
+                        Subtotal ({data.length} courses)
                       </span>
                       <span className="font-medium text-black">
-                        ${subtotal.toFixed(2)}
+                        {con === "BD" ? "TK" : "$"}{subtotal.toFixed(2)}
                       </span>
                     </div>
                     <div className="flex justify-between text-xs sm:text-sm">
                       <span className="text-gray-600">Tax (10%)</span>
                       <span className="font-medium text-black">
-                        ${tax.toFixed(2)}
+                        {con === "BD" ? "TK" : "$"}{tax.toFixed(2)}
                       </span>
                     </div>
                   </div>
@@ -207,7 +238,7 @@ export default function Carts() {
                       Total
                     </span>
                     <span className="text-xl sm:text-2xl font-bold text-black">
-                      ${total.toFixed(2)}
+                      {con === "BD" ? "TK" : "$"}{total.toFixed(2)}
                     </span>
                   </div>
 

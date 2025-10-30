@@ -30,7 +30,6 @@ const AllProduct = () => {
   //
   //
 
-  
   //
   //
   //
@@ -69,11 +68,22 @@ const AllProduct = () => {
       </div>
 
       <div className="flex sm:flex-col md:flex-row lg:flex-row gap-6 flex-wrap justify-center">
-        {data?.map((x: Course) => (
-          <Link to={`/d/${x._id}`}>
-            <Card key={x._id} course={x}></Card>
-          </Link>
-        ))}
+        {data ? (
+          data.map((x: Course) => (
+            <Link key={x._id} to={`/d/${x._id}`}>
+              <Card course={x}></Card>
+            </Link>
+          ))
+        ) : (
+          <div className="flex gap-6 flex-wrap justify-center">
+            {[1, 2, 3, 4].map((i) => (
+              <div
+                key={i}
+                className="w-[380px] h-[400px] bg-gray-200 animate-pulse rounded-xl"
+              ></div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

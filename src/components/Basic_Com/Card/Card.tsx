@@ -1,4 +1,4 @@
-import { Star, Clock, BarChart3, Globe } from "lucide-react"
+import { Star, Clock, BarChart3, Globe } from "lucide-react";
 
 interface Course {
   _id: string;
@@ -18,15 +18,15 @@ interface Course {
 }
 
 interface CourseCardProps {
-  course: Course
+  course: Course;
 }
 
 export default function Card({ course }: CourseCardProps) {
-  const fullStars = Math.floor(course.rating)
-  const hasHalfStar = course.rating % 1 >= 0.5
+  const fullStars = Math.floor(course.rating);
+  const hasHalfStar = course.rating % 1 >= 0.5;
 
   return (
-     <div
+    <div
       className="group bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 
       overflow-hidden border border-gray-200 flex flex-col h-full 
       w-full sm:w-[300px] md:w-[350px] lg:w-[380px] xl:w-[400px] 
@@ -50,10 +50,15 @@ export default function Card({ course }: CourseCardProps) {
 
           <div className="flex items-center justify-between">
             <span className="text-sm text-gray-600">
-              by <span className="font-medium text-gray-900">{course.instructor}</span>
+              by{" "}
+              <span className="font-medium text-gray-900">
+                {course.instructor}
+              </span>
             </span>
             <span className="text-lg font-bold text-gray-900">
-              {typeof course.price === "number" ? `$${course.price}` : course.price}
+              {typeof course.price === "number"
+                ? `$${course.price}`
+                : course.price}
             </span>
           </div>
 
@@ -66,13 +71,15 @@ export default function Card({ course }: CourseCardProps) {
                     i < fullStars
                       ? "fill-amber-400 text-amber-400"
                       : i === fullStars && hasHalfStar
-                        ? "fill-amber-400 text-amber-400"
-                        : "fill-gray-200 text-gray-200"
+                      ? "fill-amber-400 text-amber-400"
+                      : "fill-gray-200 text-gray-200"
                   }`}
                 />
               ))}
             </div>
-            <span className="text-sm font-semibold text-gray-900">{course.rating}</span>
+            <span className="text-sm font-semibold text-gray-900">
+              {course.rating}
+            </span>
             <span className="text-sm text-gray-500">({course.students})</span>
           </div>
 
@@ -97,5 +104,5 @@ export default function Card({ course }: CourseCardProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }
