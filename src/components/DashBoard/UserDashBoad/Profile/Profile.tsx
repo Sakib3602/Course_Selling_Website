@@ -1,5 +1,5 @@
-import {  useState } from "react";
-import { Mail, Phone, MapPin, Edit2 } from "lucide-react";
+
+import { Mail, Phone, MapPin,  } from "lucide-react";
 import Dialog from "./Dialog";
 
 interface UserProfile {
@@ -14,7 +14,8 @@ interface UserProfile {
 }
 
 export default function Profile() {
-  const [user, setUser] = useState<UserProfile>({
+ 
+ const user :UserProfile = {
     id: "",
     name: "Your Name",
     email: "user@example.com",
@@ -24,10 +25,7 @@ export default function Profile() {
     gender: "",
     image:
       "https://st5.depositphotos.com/5183619/67992/v/450/depositphotos_679927214-stock-illustration-default-avatar-profile-placeholder-abstract.jpg",
-  });
-
-  
-
+  }
   
   return (
     <div className="poppins bg-white rounded-lg shadow-lg border border-gray-100 overflow-hidden">

@@ -27,6 +27,7 @@
     "motion": "^12.23.24",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "react-fast-marquee": "^1.6.5",
     "react-router": "^7.9.3",
     "react-toastify": "^11.0.5",
     "simple-parallax-js": "^6.3.3",

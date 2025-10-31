@@ -21,6 +21,7 @@ type I = {
 };
 
 export function RegistrationForm() {
+  const [T, setT] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const axiosPub = useAxiosPublic();
@@ -35,6 +36,7 @@ export function RegistrationForm() {
 
   const Regi = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setT(true);
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
     const email = data.email as string;
@@ -52,6 +54,7 @@ export function RegistrationForm() {
         theme: "light",
         transition: Slide,
       });
+      setT(false);
       return;
     }
 
@@ -67,6 +70,7 @@ export function RegistrationForm() {
         theme: "light",
         transition: Slide,
       });
+      setT(false);
       return;
     }
 
@@ -83,6 +87,7 @@ export function RegistrationForm() {
         theme: "light",
         transition: Slide,
       });
+      setT(false);
       return;
     }
 
@@ -99,9 +104,7 @@ export function RegistrationForm() {
       await mutateAsync(u);
 
       // Wait 1 second before navigating (optional)
-      setTimeout(() => {
-        navigate("/login");
-      }, 1000);
+      
     } catch (error) {
       toast.error("Something went wrong!", {
         position: "top-right",
@@ -134,7 +137,6 @@ export function RegistrationForm() {
       };
 
       await mutateAsync(u);
-      
     } catch (e) {
       toast.error("Sign in Failed with google!");
       console.log(e);
@@ -158,7 +160,10 @@ export function RegistrationForm() {
         theme: "light",
         transition: Slide,
       });
-      navigate("/")
+      setT(false);
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
     },
   });
 
@@ -179,7 +184,7 @@ export function RegistrationForm() {
       />
 
       <Nav></Nav>
-      <div className="flex min-h-screen bg-background mt-30">
+      <div className="flex min-h-screen bg-background mt-16">
         <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-gradient-to-br from-slate-900 to-slate-800">
           <img
             src="https://images.unsplash.com/photo-1616017640739-44ce2bfd9b4e?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=687"
@@ -322,7 +327,24 @@ export function RegistrationForm() {
                 type="submit"
                 className="w-full h-11 bg-[#41246D] hover:bg-[#281347]  text-white font-medium"
               >
-                Create Account
+                {T ? (
+                  <div className="spinner ">
+                    <div className="spinner-blade"></div>
+                    <div className="spinner-blade"></div>
+                    <div className="spinner-blade"></div>
+                    <div className="spinner-blade"></div>
+                    <div className="spinner-blade"></div>
+                    <div className="spinner-blade"></div>
+                    <div className="spinner-blade"></div>
+                    <div className="spinner-blade"></div>
+                    <div className="spinner-blade"></div>
+                    <div className="spinner-blade"></div>
+                    <div className="spinner-blade"></div>
+                    <div className="spinner-blade"></div>
+                  </div>
+                ) : (
+                  "Create Account"
+                )}
               </Button>
 
               {/* Divider */}

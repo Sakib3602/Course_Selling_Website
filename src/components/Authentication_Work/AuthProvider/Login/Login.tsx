@@ -137,7 +137,7 @@ export function Login() {
       />
       <Nav></Nav>
 
-      <div className="flex min-h-screen bg-background mt-30">
+      <div className="flex min-h-screen bg-background mt-16">
 
         <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-8">
           <div className="w-full max-w-md">

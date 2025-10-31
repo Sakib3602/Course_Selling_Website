@@ -1,6 +1,6 @@
 "use client";
 
-import { Menu, X, House } from "lucide-react";
+import { Menu, X} from "lucide-react";
 
 interface NavbarProps {
   onMenuToggle: () => void;

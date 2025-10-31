@@ -1,11 +1,10 @@
 'use client';
-import React, {
+import {
   createContext,
-  useContext,
   useState,
   useEffect,
-  ReactNode,
 } from 'react';
+import type { ReactNode } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { X } from 'lucide-react';
 
@@ -15,14 +14,6 @@ interface ModalContextProps {
 }
 
 const ModalContext = createContext<ModalContextProps | undefined>(undefined);
-
-const useModal = () => {
-  const context = useContext(ModalContext);
-  if (!context) {
-    throw new Error('useModal must be used within a ModalProvider');
-  }
-  return context;
-};
 
 interface FramerModalProps {
   children: ReactNode;
