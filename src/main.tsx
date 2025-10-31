@@ -8,6 +8,8 @@ import AuthProvider from "./components/Authentication_Work/AuthProvider/AuthProv
 import RegistrationForm from "./components/Authentication_Work/AuthProvider/Registration/RegistrationForm.tsx";
 import { Login } from "./components/Authentication_Work/AuthProvider/Login/Login.tsx";
 import Carts from "./components/Basic_Com/Carts/Carts.tsx";
+import UserHomeDash from "./components/DashBoard/UserDashBoad/UserHomeDash.tsx";
+import Home from "./components/DashBoard/UserDashBoad/Home.tsx";
 
 const queryClient = new QueryClient();
 createRoot(document.getElementById("root")!).render(
@@ -18,9 +20,18 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/" element={<App />} />
           <Route path="/d/:id" element={<Details />} />
           <Route path="/register" element={<RegistrationForm />} />
-          <Route path="/login" element={<Login></Login> } />
-          <Route path="/carts" element={<Carts></Carts> } />
+          <Route path="/login" element={<Login></Login>} />
+          <Route path="/carts" element={<Carts></Carts>} />
         </Routes>
+        {/* User Work */}
+        <Routes>
+          <Route path="/dashboard" element={<UserHomeDash />}>
+            <Route index element={<Home />} />
+            
+          </Route>
+        </Routes>
+
+        {/* User Work */}
       </AuthProvider>
     </BrowserRouter>
     ,
