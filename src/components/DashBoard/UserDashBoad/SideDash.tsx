@@ -5,7 +5,7 @@ import { User, ShoppingCart, BookOpen, Bell, HelpCircle, LogOut } from "lucide-r
 import { useNavigate } from "react-router"
 
 
-interface SidebarProps {
+interface SidebarProps { 
   isOpen: boolean
   onClose: () => void
 }
@@ -18,7 +18,7 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { id: "profile", path: "/profile", icon: <User className="w-5 h-5" />, label: "Profile" },
+  { id: "profile", path: "/dashboard/profile", icon: <User className="w-5 h-5" />, label: "Profile" },
   { id: "carts", path: "/carts", icon: <ShoppingCart className="w-5 h-5" />, label: "Carts" },
   { id: "courses", path: "/courses", icon: <BookOpen className="w-5 h-5" />, label: "Courses" },
   { id: "announcements", path: "/announcements", icon: <Bell className="w-5 h-5" />, label: "Announcements" },

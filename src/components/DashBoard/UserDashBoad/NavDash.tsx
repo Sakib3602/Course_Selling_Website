@@ -9,7 +9,7 @@ interface NavbarProps {
 
 export default function NavDash({ onMenuToggle, sidebarOpen }: NavbarProps) {
   return (
-    <nav className="bg-white border-b border-gray-200 px-4 md:px-6 py-4 flex items-center justify-between">
+    <nav className="bg-white border-b border-gray-200 px-4 md:px-6 py-[22px] flex items-center justify-between">
       <button onClick={onMenuToggle} className="p-2 hover:bg-gray-100 rounded-lg md:hidden" aria-label="Toggle sidebar">
         {sidebarOpen ? <X className="w-6 h-6 text-black" /> : <Menu className="w-6 h-6 text-black" />}
       </button>

@@ -9,7 +9,7 @@ import RegistrationForm from "./components/Authentication_Work/AuthProvider/Regi
 import { Login } from "./components/Authentication_Work/AuthProvider/Login/Login.tsx";
 import Carts from "./components/Basic_Com/Carts/Carts.tsx";
 import UserHomeDash from "./components/DashBoard/UserDashBoad/UserHomeDash.tsx";
-import Home from "./components/DashBoard/UserDashBoad/Home.tsx";
+import Profile from "./components/DashBoard/UserDashBoad/Profile/Profile.tsx";
 
 const queryClient = new QueryClient();
 createRoot(document.getElementById("root")!).render(
@@ -26,8 +26,9 @@ createRoot(document.getElementById("root")!).render(
         {/* User Work */}
         <Routes>
           <Route path="/dashboard" element={<UserHomeDash />}>
-            <Route index element={<Home />} />
-            
+            <Route index element={<Profile />} />
+
+            {/* <Route path="/dashboard/profile" element={<Profile />} /> */}
           </Route>
         </Routes>
 
