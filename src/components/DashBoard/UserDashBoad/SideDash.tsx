@@ -22,7 +22,7 @@ const navItems: NavItem[] = [
   { id: "carts", path: "/carts", icon: <ShoppingCart className="w-5 h-5" />, label: "Carts" },
   { id: "courses", path: "/courses", icon: <BookOpen className="w-5 h-5" />, label: "Courses" },
   { id: "announcements", path: "/announcements", icon: <Bell className="w-5 h-5" />, label: "Announcements" },
-  { id: "helpdesk", path: "/helpdesk", icon: <HelpCircle className="w-5 h-5" />, label: "Help Desk" },
+  { id: "helpdesk", path: "/helpdesk", icon: <HelpCircle className="w-5 h-5" />, label: "Support" },
 ]
 
 export default function SideDash({ isOpen, onClose }: SidebarProps) {

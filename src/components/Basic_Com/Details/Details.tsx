@@ -4,9 +4,11 @@ import { useParams } from "react-router";
 import Nav from "../Navbar/Nav";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosPublic from "@/url/useAxiosPublic";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Footer from "../Footer/Footer";
 import { Slide, toast } from "react-toastify";
+import { AuthContext } from "@/components/Authentication_Work/AuthProvider/AuthProvider";
+import moment from 'moment';
 interface Course {
   _id: string;
   id: number;
@@ -22,8 +24,15 @@ interface Course {
   level: string;
   curriculum: string[];
   whatYouLearn: string[];
+  priceBDT ?: number;
+  priceUSD ?: number;
 }
 const Details = () => {
+  const auth = useContext(AuthContext)
+  if(!auth){
+    throw new Error("AuthContext is undefined");
+  }
+  const {person} = auth;
   //
   //
   //
@@ -164,9 +173,6 @@ const Details = () => {
   }, []);
 
   const { id } = useParams();
-
-  console.log(id);
-
   const axiosPub = useAxiosPublic();
   const { data: course } = useQuery({
     queryKey: ["all-courses-single", id, con],
@@ -178,6 +184,7 @@ const Details = () => {
   });
 
   
+  // add to local storage function
   const prod = (c: Course) => {
    
     const storedData = localStorage.getItem("loca");
@@ -211,6 +218,41 @@ const Details = () => {
         transition: Slide,
       });
   };
+
+
+  // Order work from here
+  const order = (c : Course) => {
+    if(!person){
+      toast.error("Please Login First!");
+      return;
+    }
+    console.log(c)
+
+    const orderData = {
+      courseId: c._id,
+      personEmail: person.email,
+      price:  con == "BD" ? c.priceBDT : c.priceUSD,
+      currency: con == "BD" ? "BDT" : "USD",
+      orderDate: moment().format('LL'),
+    
+    }
+
+
+    console.log(orderData);    
+    toast.success("Order Placed Successfully!", {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      transition: Slide,
+    });
+
+  }
+  // Order work end here
 
 
   return (
@@ -373,7 +415,7 @@ const Details = () => {
                     </p>
 
                     <div className="space-y-3">
-                      <Button className="w-full text-lg h-12">Buy Now</Button>
+                      <Button onClick={()=> order(course)} className="w-full text-lg h-12">Buy Now</Button>
                       <Button onClick={()=>prod(course)} variant="outline" className="w-full text-lg h-12">
                         <ShoppingCart className="mr-2 h-5 w-5" />
                         Add to Cart
