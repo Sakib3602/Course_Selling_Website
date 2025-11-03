@@ -9,6 +9,7 @@ import Footer from "../Footer/Footer";
 import { Slide, toast } from "react-toastify";
 import { AuthContext } from "@/components/Authentication_Work/AuthProvider/AuthProvider";
 import moment from 'moment';
+import { useMutation } from "@tanstack/react-query";
 interface Course {
   _id: string;
   id: number;
@@ -27,6 +28,14 @@ interface Course {
   priceBDT ?: number;
   priceUSD ?: number;
 }
+interface OrderDataType {
+  courseId: string;          // MongoDB ObjectId (as string)
+  personEmail: string;       // buyer email
+  price: number;             // course price
+  currency: "BDT" | "USD";   // limited to only these two
+  orderDate: string;         // formatted date string (e.g., "November 3, 2025")
+}
+
 const Details = () => {
   const auth = useContext(AuthContext)
   if(!auth){
@@ -234,12 +243,38 @@ const Details = () => {
       price:  con == "BD" ? c.priceBDT : c.priceUSD,
       currency: con == "BD" ? "BDT" : "USD",
       orderDate: moment().format('LL'),
+      deliveryStatus: "pending",
     
     }
 
+    const userUpdate={
+       courseId: c._id,
+    }
+
+    mutationUp.mutate(userUpdate)
+    mutationOrder.mutate(orderData)
+
 
     console.log(orderData);    
-    toast.success("Order Placed Successfully!", {
+   
+
+  }
+  // Order work end here
+
+  const mutationUp = useMutation({
+    mutationFn : async(user)=>{
+      const response = await axiosPub.patch(`/updateUser/${person?.email}`, user)
+      return response.data
+    },
+    
+  }) 
+  const mutationOrder = useMutation({
+    mutationFn : async(orderData : OrderDataType)=>{
+      const response = await axiosPub.post(`/orders`,orderData)
+      return response.data
+    },
+    onSuccess : ()=>{
+      toast.success("Order Placed Successfully!", {
       position: "top-right",
       autoClose: 3000,
       hideProgressBar: false,
@@ -250,9 +285,8 @@ const Details = () => {
       theme: "light",
       transition: Slide,
     });
-
-  }
-  // Order work end here
+    }
+  }) 
 
 
   return (

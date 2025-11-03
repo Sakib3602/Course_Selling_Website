@@ -10,6 +10,11 @@ import { Login } from "./components/Authentication_Work/AuthProvider/Login/Login
 import Carts from "./components/Basic_Com/Carts/Carts.tsx";
 import UserHomeDash from "./components/DashBoard/UserDashBoad/UserHomeDash.tsx";
 import Profile from "./components/DashBoard/UserDashBoad/Profile/Profile.tsx";
+import EnrolledCourses from "./components/DashBoard/UserDashBoad/EnrolledCourses/EnrolledCourses.tsx";
+import Announcements from "./components/DashBoard/UserDashBoad/Announcements/Announcements.tsx";
+import Tasks from "./components/DashBoard/UserDashBoad/Tasks/Tasks.tsx";
+import Support from "./components/DashBoard/UserDashBoad/Support/Support.tsx";
+import PrivateUserRoute from "./components/DashBoard/UserDashBoad/PrivateUserRoute/PrivateUserRoute.tsx";
 
 const queryClient = new QueryClient();
 createRoot(document.getElementById("root")!).render(
@@ -25,8 +30,12 @@ createRoot(document.getElementById("root")!).render(
         </Routes>
         {/* User Work */}
         <Routes>
-          <Route path="/dashboard" element={<UserHomeDash />}>
+          <Route path="/dashboard" element={<PrivateUserRoute><UserHomeDash /></PrivateUserRoute>}>
             <Route index element={<Profile />} />
+            <Route path="/dashboard/courses" element={<EnrolledCourses />} />
+            <Route path="/dashboard/announcements" element={<Announcements></Announcements>} />
+            <Route path="/dashboard/tasks" element={<Tasks></Tasks>} />
+              <Route path="/dashboard/helpdesk" element={<Support></Support>} />
 
             {/* <Route path="/dashboard/profile" element={<Profile />} /> */}
           </Route>

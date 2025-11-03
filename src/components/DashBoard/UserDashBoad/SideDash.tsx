@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { User, ShoppingCart, BookOpen, Bell, HelpCircle, LogOut } from "lucide-react"
+import { User, BookOpen, Bell, HelpCircle, LogOut ,Logs,Home} from "lucide-react"
 import { useNavigate } from "react-router"
 
 
@@ -18,11 +18,12 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { id: "profile", path: "/dashboard/profile", icon: <User className="w-5 h-5" />, label: "Profile" },
-  { id: "carts", path: "/carts", icon: <ShoppingCart className="w-5 h-5" />, label: "Carts" },
-  { id: "courses", path: "/courses", icon: <BookOpen className="w-5 h-5" />, label: "Courses" },
-  { id: "announcements", path: "/announcements", icon: <Bell className="w-5 h-5" />, label: "Announcements" },
-  { id: "helpdesk", path: "/helpdesk", icon: <HelpCircle className="w-5 h-5" />, label: "Support" },
+  { id: "home", path: "/", icon: <Home className="w-5 h-5" />, label: "Home" },
+  { id: "profile", path: "/dashboard", icon: <User className="w-5 h-5" />, label: "Profile" },
+  { id: "courses", path: "/dashboard/courses", icon: <BookOpen className="w-5 h-5" />, label: "Enrolled Courses" },
+  { id: "announcements", path: "/dashboard/announcements", icon: <Bell className="w-5 h-5" />, label: "Announcements" },
+  { id: "tasks", path: "/dashboard/tasks", icon: <Logs className="w-5 h-5" />, label: "Tasks" },
+  { id: "helpdesk", path: "/dashboard/helpdesk", icon: <HelpCircle className="w-5 h-5" />, label: "Support" },
 ]
 
 export default function SideDash({ isOpen, onClose }: SidebarProps) {
