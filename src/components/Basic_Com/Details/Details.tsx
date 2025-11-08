@@ -29,11 +29,15 @@ interface Course {
   priceUSD ?: number;
 }
 interface OrderDataType {
+  deliveryStatus : string;
   courseId: string;          // MongoDB ObjectId (as string)
   personEmail: string;       // buyer email
   price: number;             // course price
   currency: "BDT" | "USD";   // limited to only these two
   orderDate: string;         // formatted date string (e.g., "November 3, 2025")
+}
+interface UserUpdateType {
+  courseId: string;
 }
 
 const Details = () => {
@@ -236,12 +240,14 @@ const Details = () => {
       return;
     }
     console.log(c)
-
-    const orderData = {
+    const price = con === "BD" 
+    ? (c.priceBDT || 0) 
+    : (c.priceUSD || 0);
+    const orderData : OrderDataType = {
       courseId: c._id,
-      personEmail: person.email,
-      price:  con == "BD" ? c.priceBDT : c.priceUSD,
-      currency: con == "BD" ? "BDT" : "USD",
+      personEmail: person.email || "Unknown",
+      price:  price,
+      currency: con === "BD" ? "BDT" : "USD",
       orderDate: moment().format('LL'),
       deliveryStatus: "pending",
     
@@ -262,7 +268,7 @@ const Details = () => {
   // Order work end here
 
   const mutationUp = useMutation({
-    mutationFn : async(user)=>{
+    mutationFn : async(user : UserUpdateType)=>{
       const response = await axiosPub.patch(`/updateUser/${person?.email}`, user)
       return response.data
     },

@@ -3,6 +3,8 @@
 import type React from "react"
 import { User, BookOpen, Bell, HelpCircle, LogOut ,Logs,Home} from "lucide-react"
 import { useNavigate } from "react-router"
+import { useContext } from "react"
+import { AuthContext } from "@/components/Authentication_Work/AuthProvider/AuthProvider"
 
 
 interface SidebarProps { 
@@ -27,6 +29,11 @@ const navItems: NavItem[] = [
 ]
 
 export default function SideDash({ isOpen, onClose }: SidebarProps) {
+  const auth = useContext(AuthContext)
+  if(!auth){
+    throw new Error("AuthContext is undefined. Make sure you are using AuthProvider.")
+  }
+  const {out} = auth
   const navigate = useNavigate()
 
   const handleNavClick = (path: string) => {
@@ -81,7 +88,9 @@ export default function SideDash({ isOpen, onClose }: SidebarProps) {
         {/* Logout Button */}
         <div className="p-4">
           <button
-            onClick={() => alert("Logging out...")}
+            onClick={() => {
+              out()
+            }}
             className="w-full flex items-center gap-3 px-4 py-3 rounded-lg
               bg-red-50 text-red-600 hover:bg-red-100
               transition-colors duration-200 font-medium"
