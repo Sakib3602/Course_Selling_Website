@@ -294,6 +294,41 @@ const Details = () => {
     }
   }) 
 
+  // SEBL WORK START
+  // 
+  // 
+  // 
+  // const handleOrderNow = async () => {
+  //   if(!person){
+  //     toast.error("Please Login First!");
+  //     return;
+  //   }
+  //   try {
+  //     // ✅ Backend এ payment initiate request পাঠাচ্ছি
+  //     const res = await axiosPub.post("/api/initiate-payment", {
+  //       amount: 500, // Demo amount
+  //       currency : con === "BD" ? "BDT" : "USD",
+  //     });
+
+  //     // ✅ Gateway URL পেলে redirect
+  //     if (res.data.url) {
+  //       console.log(res.data, "SEBL data")
+  //       window.location.href = res.data.url;
+  //     } else {
+  //       alert("Payment gateway link not found!");
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //     alert("Error initiating payment!");
+  //   }
+  // };
+  // 
+  // 
+  // 
+  // 
+  // 
+  // SEBL WORK END
+
 
   return (
     <div>
@@ -303,7 +338,7 @@ const Details = () => {
       {course ? (
         <>
           <div className="poppins min-h-screen bg-background  md:mt-20 lg:mt-0  md:max-w-7xl sm:p-0 md:mx-auto md:px-4  lg:px-8 pt-16 pb-20 lg:pt-20 lg:pb-32">
-                <div className="container mx-auto px-4 py-4 lg:block hidden">
+               {/* <div className="container mx-auto px-4 py-4 lg:block hidden">
                   <button
                     onClick={handleRefreshCountry}
                     className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
@@ -316,7 +351,7 @@ const Details = () => {
                       Click to refresh
                     </span>
                   </button>
-                </div>
+                </div> */}
             {/* Hero Section */}
             <div className="relative h-96 bg-card border-b">
               <div
@@ -482,7 +517,7 @@ const Details = () => {
                   </div>
                 </div>
                 {/* Location Refresh Button */}
-                <div className="container mx-auto px-4 py-4 lg:hidden">
+                <div className="container mx-auto px-4 py-4 ">
                   <button
                     onClick={handleRefreshCountry}
                     className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"

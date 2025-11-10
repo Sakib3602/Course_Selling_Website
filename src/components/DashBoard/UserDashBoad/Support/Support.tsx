@@ -1,6 +1,83 @@
+import { AuthContext } from "@/components/Authentication_Work/AuthProvider/AuthProvider";
+import useAxiosPublic from "@/url/useAxiosPublic";
+import { useMutation } from "@tanstack/react-query";
+import moment from "moment";
+import { useContext } from "react";
+import { useForm } from "react-hook-form";
+import type { SubmitHandler } from "react-hook-form";
+import { Slide, toast, ToastContainer } from "react-toastify";
+import { Info, CheckCircle } from "lucide-react";
+
+type Inputs = {
+  subject: string;
+  description: string;
+};
+interface SupportData {
+  subject: string;
+  description: string;
+  userEmail?: string;
+  date: string;
+}
 const Support = () => {
+  const auth = useContext(AuthContext);
+  if (!auth) {
+    throw new Error("Auth context is not available");
+  }
+  const { person } = auth;
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Inputs>();
+  const onSubmit: SubmitHandler<Inputs> = (data) => {
+    const supportData = {
+      subject: data.subject,
+      description: data.description,
+      userEmail: person?.email || "",
+      date: moment().format("LLLL"),
+    };
+    console.log(supportData);
+    mutationUp.mutate(supportData);
+  };
+
+  const axiosPub = useAxiosPublic();
+
+  const mutationUp = useMutation({
+    mutationFn: async (supportData: SupportData) => {
+      const res = await axiosPub.post("/support", supportData);
+      return res.data;
+    },
+    onSuccess: () => {
+      toast.success("Support request submitted successfully!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Slide,
+      });
+    },
+    onError: (error) => {
+      toast.error(`Failed to submit support request: ${error.message}`, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Slide,
+      });
+    },
+  });
+
   return (
-    <div className="w-full min-h-screen flex flex-col lg:flex-row gap-6 p-4">
+    <div className="w-full min-h-screen flex flex-col lg:flex-row gap-6 lg:p-4">
+      <ToastContainer></ToastContainer>
       {/* Left Side - Modal */}
       <div className="w-full lg:w-1/2">
         <div className="bg-white rounded-lg shadow-md p-6">
@@ -23,33 +100,62 @@ const Support = () => {
           </div>
 
           {/* Modal Body */}
-          <div className="space-y-5">
+
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div>
-              <label className="block font-medium mb-1">Subject</label>
+              <label htmlFor="subject" className="block font-medium mb-1">
+                Subject
+              </label>
               <input
+                id="subject"
                 className="w-full border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-amber-400"
                 type="text"
+                {...register("subject", {
+                  required: "Subject is required",
+                  maxLength: { value: 32, message: "Maximum 32 characters" },
+                  minLength: { value: 15, message: "At least 15 characters" },
+                })}
               />
               <p className="text-sm text-gray-500 mt-1">
                 Maximum 32 characters
               </p>
+              {errors.subject && (
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.subject.message}
+                </p>
+              )}
             </div>
 
             <div>
-              <label className="block font-medium mb-1">Description</label>
-              <textarea className="w-full border border-gray-300 rounded p-2 h-24 focus:outline-none focus:ring-2 focus:ring-amber-400"></textarea>
+              <label htmlFor="description" className="block font-medium mb-1">
+                Description
+              </label>
+              <textarea
+                id="description"
+                className="w-full border border-gray-300 rounded p-2 h-24 focus:outline-none focus:ring-2 focus:ring-amber-400"
+                {...register("description", {
+                  required: "Description is required",
+                  minLength: { value: 40, message: "At least 40 characters" },
+                })}
+              />
               <p className="text-sm text-gray-500 mt-1">
                 Provide a clear description of your issues
               </p>
+              {errors.description && (
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.description.message}
+                </p>
+              )}
             </div>
-          </div>
-
-          {/* Modal Footer */}
-          <div className="mt-6">
-            <button className="bg-amber-400 text-white px-4 py-2 rounded hover:bg-amber-500 w-full lg:w-auto">
-              Post Now
-            </button>
-          </div>
+            <div className="mt-6">
+              <button
+                type="submit"
+                className="bg-amber-400 text-white px-4 py-2 rounded hover:bg-amber-500 w-full lg:w-auto"
+              >
+                Post Now
+              </button>
+            </div>
+          </form>
         </div>
       </div>
 
@@ -57,39 +163,139 @@ const Support = () => {
       <div className="w-full lg:w-1/2">
         <h3 className="text-xl font-bold mb-4">Replies To Support Request</h3>
 
-        <div className="card">
-          <span className="title">Comments</span>
-          <div className="comments">
-            <div className="comment-react"></div>
-            <div className="comment-container">
-              <div className="user">
-                <div className="user-pic"></div>
-                <div className="user-info">
-                  <span>Yassine Zanina</span>
-                  <p>Wednesday, March 13th at 2:45pm</p>
+        <div className="card p-4 ">
+          <span className="title mb-2">Comments</span>
+          <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-5 w-full max-w-xl mx-auto transition hover:shadow-md mt-2">
+            {/* Header */}
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+              {/* Title */}
+              <h2 className="text-lg font-semibold text-slate-900">
+                Problem: App crashes on login
+              </h2>
+
+              {/* Badges */}
+              <div className="flex flex-wrap items-center gap-2">
+                {/* Pending Badge */}
+                <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-yellow-50 text-yellow-800 text-xs font-medium border border-yellow-100 relative group">
+                  <Info className="h-3.5 w-3.5" />
+                  <span>Pending</span>
+                  <span className="ml-1 bg-yellow-200 text-yellow-900 px-2 py-0.5 rounded-full text-[10px] font-semibold">
+                    1
+                  </span>
+                  {/* Tooltip */}
+                  <div className="absolute hidden group-hover:block bottom-full mb-2 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gray-900 text-white text-[10px] px-2 py-1 rounded-md shadow">
+                    This problem is still pending
+                  </div>
+                </div>
+
+                {/* Solved Badge */}
+                <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-medium border border-emerald-100 relative group">
+                  <CheckCircle className="h-3.5 w-3.5" />
+                  <span>Problem Solved</span>
+                  <span className="ml-1 bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded-full text-[10px] font-semibold">
+                    1
+                  </span>
+                  {/* Tooltip */}
+                  <div className="absolute hidden group-hover:block bottom-full mb-2 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gray-900 text-white text-[10px] px-2 py-1 rounded-md shadow">
+                    Problem marked as solved
+                  </div>
                 </div>
               </div>
-              <p className="comment-content">
-                I've been using this product for a few days now and I'm really
-                impressed! The interface is intuitive and easy to use, and the
-                features are exactly what I need to streamline my workflow.
+            </div>
+
+            {/* Divider */}
+            <div className="my-4 border-t border-slate-100" />
+
+            {/* Time Info */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-6 text-xs text-slate-600">
+                <div>
+                  <div className="font-medium text-slate-800">Submitted</div>
+                  <div>Nov 8, 2025 · 10:47 PM</div>
+                </div>
+                <div>
+                  <div className="font-medium text-slate-800">Answered</div>
+                  <div>Nov 9, 2025 · 03:15 PM</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Answer Section */}
+            <div className="mt-4">
+              <h3 className="text-sm font-semibold text-slate-800 mb-1">
+                Answer:
+              </h3>
+              <p className="text-sm text-slate-600 leading-relaxed">
+                The issue was caused by a missing token validation step. We’ve
+                added proper null checks and updated the login handler. Please
+                re-test on Android 13.
               </p>
             </div>
           </div>
-          <div className="comments">
-            <div className="comment-react"></div>
-            <div className="comment-container">
-              <div className="user">
-                <div className="user-pic"></div>
-                <div className="user-info">
-                  <span>Yassine Zanina</span>
-                  <p>Wednesday, March 13th at 2:45pm</p>
+          <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-5 w-full max-w-xl mx-auto transition hover:shadow-md mt-2">
+            {/* Header */}
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+              {/* Title */}
+              <h2 className="text-lg font-semibold text-slate-900">
+                Problem: App crashes on login
+              </h2>
+
+              {/* Badges */}
+              <div className="flex flex-wrap items-center gap-2">
+                {/* Pending Badge */}
+                <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-yellow-50 text-yellow-800 text-xs font-medium border border-yellow-100 relative group">
+                  <Info className="h-3.5 w-3.5" />
+                  <span>Pending</span>
+                  <span className="ml-1 bg-yellow-200 text-yellow-900 px-2 py-0.5 rounded-full text-[10px] font-semibold">
+                    1
+                  </span>
+                  {/* Tooltip */}
+                  <div className="absolute hidden group-hover:block bottom-full mb-2 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gray-900 text-white text-[10px] px-2 py-1 rounded-md shadow">
+                    This problem is still pending
+                  </div>
+                </div>
+
+                {/* Solved Badge */}
+                <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-medium border border-emerald-100 relative group">
+                  <CheckCircle className="h-3.5 w-3.5" />
+                  <span>Problem Solved</span>
+                  <span className="ml-1 bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded-full text-[10px] font-semibold">
+                    1
+                  </span>
+                  {/* Tooltip */}
+                  <div className="absolute hidden group-hover:block bottom-full mb-2 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gray-900 text-white text-[10px] px-2 py-1 rounded-md shadow">
+                    Problem marked as solved
+                  </div>
                 </div>
               </div>
-              <p className="comment-content">
-                I've been using this product for a few days now and I'm really
-                impressed! The interface is intuitive and easy to use, and the
-                features are exactly what I need to streamline my workflow.
+            </div>
+
+            {/* Divider */}
+            <div className="my-4 border-t border-slate-100" />
+
+            {/* Time Info */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-6 text-xs text-slate-600">
+                <div>
+                  <div className="font-medium text-slate-800">Submitted</div>
+                  <div>Nov 8, 2025 · 10:47 PM</div>
+                </div>
+                <div>
+                  <div className="font-medium text-slate-800">Answered</div>
+                  <div>Nov 9, 2025 · 03:15 PM</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Answer Section */}
+            <div className="mt-4">
+              <h3 className="text-sm font-semibold text-slate-800 mb-1">
+                Answer:
+              </h3>
+              <p className="text-sm text-slate-600 leading-relaxed">
+                The issue was caused by a missing token validation step. We’ve
+                added proper null checks and updated the login handler. Please
+                re-test on Android 13.
               </p>
             </div>
           </div>
