@@ -1,6 +1,6 @@
 import { AuthContext } from "@/components/Authentication_Work/AuthProvider/AuthProvider";
 import useAxiosPublic from "@/url/useAxiosPublic";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import moment from "moment";
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
@@ -17,6 +17,7 @@ interface SupportData {
   description: string;
   userEmail?: string;
   date: string;
+  status: string;
 }
 const Support = () => {
   const auth = useContext(AuthContext);
@@ -27,6 +28,7 @@ const Support = () => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<Inputs>();
   const onSubmit: SubmitHandler<Inputs> = (data) => {
@@ -35,6 +37,7 @@ const Support = () => {
       description: data.description,
       userEmail: person?.email || "",
       date: moment().format("LLLL"),
+      status: "Pending",
     };
     console.log(supportData);
     mutationUp.mutate(supportData);
@@ -48,6 +51,8 @@ const Support = () => {
       return res.data;
     },
     onSuccess: () => {
+      refetch();
+      reset();
       toast.success("Support request submitted successfully!", {
         position: "top-right",
         autoClose: 3000,
@@ -74,6 +79,23 @@ const Support = () => {
       });
     },
   });
+
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: ["supportRequests", person?.email],
+    queryFn: async () => {
+      const res = await axiosPub.get(`/support/${person?.email}`); // Removed extra colon
+      return res.data;
+    },
+  });
+  const sortedData = data && data.length > 0 
+  ? [...data].sort((a: SupportData, b: SupportData) => {
+      const dateA = moment(a.date, "LLLL");
+      const dateB = moment(b.date, "LLLL");
+      return dateB.valueOf() - dateA.valueOf();
+    })
+  : [];
+console.log(sortedData);
+
 
   return (
     <div className="w-full min-h-screen flex flex-col lg:flex-row gap-6 lg:p-4">
@@ -165,140 +187,130 @@ const Support = () => {
 
         <div className="card p-4 ">
           <span className="title mb-2">Comments</span>
-          <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-5 w-full max-w-xl mx-auto transition hover:shadow-md mt-2">
-            {/* Header */}
-            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-              {/* Title */}
-              <h2 className="text-lg font-semibold text-slate-900">
-                Problem: App crashes on login
-              </h2>
 
-              {/* Badges */}
-              <div className="flex flex-wrap items-center gap-2">
-                {/* Pending Badge */}
-                <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-yellow-50 text-yellow-800 text-xs font-medium border border-yellow-100 relative group">
-                  <Info className="h-3.5 w-3.5" />
-                  <span>Pending</span>
-                  <span className="ml-1 bg-yellow-200 text-yellow-900 px-2 py-0.5 rounded-full text-[10px] font-semibold">
-                    1
-                  </span>
-                  {/* Tooltip */}
-                  <div className="absolute hidden group-hover:block bottom-full mb-2 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gray-900 text-white text-[10px] px-2 py-1 rounded-md shadow">
-                    This problem is still pending
+          {isLoading ? (
+            <>
+              <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-5 w-full max-w-xl mx-auto transition hover:shadow-md mt-2 animate-pulse">
+                {/* Header */}
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                  {/* Title Skeleton */}
+                  <div className="h-6 w-3/4 bg-slate-200 rounded-md mb-2 sm:mb-0"></div>
+
+                  {/* Badges Skeleton */}
+                  <div className="flex flex-wrap items-center gap-2">
+                    <div className="h-5 w-16 bg-slate-200 rounded-full"></div>
+                    <div className="h-5 w-20 bg-slate-200 rounded-full"></div>
                   </div>
                 </div>
 
-                {/* Solved Badge */}
-                <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-medium border border-emerald-100 relative group">
-                  <CheckCircle className="h-3.5 w-3.5" />
-                  <span>Problem Solved</span>
-                  <span className="ml-1 bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded-full text-[10px] font-semibold">
-                    1
-                  </span>
-                  {/* Tooltip */}
-                  <div className="absolute hidden group-hover:block bottom-full mb-2 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gray-900 text-white text-[10px] px-2 py-1 rounded-md shadow">
-                    Problem marked as solved
-                  </div>
-                </div>
-              </div>
-            </div>
+                {/* Divider */}
+                <div className="my-4 border-t border-slate-100"></div>
 
-            {/* Divider */}
-            <div className="my-4 border-t border-slate-100" />
-
-            {/* Time Info */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-              <div className="flex flex-col sm:flex-row sm:items-center gap-6 text-xs text-slate-600">
-                <div>
-                  <div className="font-medium text-slate-800">Submitted</div>
-                  <div>Nov 8, 2025 · 10:47 PM</div>
-                </div>
-                <div>
-                  <div className="font-medium text-slate-800">Answered</div>
-                  <div>Nov 9, 2025 · 03:15 PM</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Answer Section */}
-            <div className="mt-4">
-              <h3 className="text-sm font-semibold text-slate-800 mb-1">
-                Answer:
-              </h3>
-              <p className="text-sm text-slate-600 leading-relaxed">
-                The issue was caused by a missing token validation step. We’ve
-                added proper null checks and updated the login handler. Please
-                re-test on Android 13.
-              </p>
-            </div>
-          </div>
-          <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-5 w-full max-w-xl mx-auto transition hover:shadow-md mt-2">
-            {/* Header */}
-            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-              {/* Title */}
-              <h2 className="text-lg font-semibold text-slate-900">
-                Problem: App crashes on login
-              </h2>
-
-              {/* Badges */}
-              <div className="flex flex-wrap items-center gap-2">
-                {/* Pending Badge */}
-                <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-yellow-50 text-yellow-800 text-xs font-medium border border-yellow-100 relative group">
-                  <Info className="h-3.5 w-3.5" />
-                  <span>Pending</span>
-                  <span className="ml-1 bg-yellow-200 text-yellow-900 px-2 py-0.5 rounded-full text-[10px] font-semibold">
-                    1
-                  </span>
-                  {/* Tooltip */}
-                  <div className="absolute hidden group-hover:block bottom-full mb-2 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gray-900 text-white text-[10px] px-2 py-1 rounded-md shadow">
-                    This problem is still pending
+                {/* Time Info Skeleton */}
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-6 text-xs text-slate-600">
+                    <div className="h-4 w-24 bg-slate-200 rounded-md mb-2 sm:mb-0"></div>
+                    <div className="h-4 w-24 bg-slate-200 rounded-md"></div>
                   </div>
                 </div>
 
-                {/* Solved Badge */}
-                <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-medium border border-emerald-100 relative group">
-                  <CheckCircle className="h-3.5 w-3.5" />
-                  <span>Problem Solved</span>
-                  <span className="ml-1 bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded-full text-[10px] font-semibold">
-                    1
-                  </span>
-                  {/* Tooltip */}
-                  <div className="absolute hidden group-hover:block bottom-full mb-2 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gray-900 text-white text-[10px] px-2 py-1 rounded-md shadow">
-                    Problem marked as solved
-                  </div>
+                {/* Answer Section Skeleton */}
+                <div className="mt-4 space-y-2">
+                  <div className="h-4 w-20 bg-slate-200 rounded-md"></div>
+                  <div className="h-3 w-full bg-slate-200 rounded-md"></div>
+                  <div className="h-3 w-full bg-slate-200 rounded-md"></div>
+                  <div className="h-3 w-5/6 bg-slate-200 rounded-md"></div>
                 </div>
               </div>
-            </div>
+            </>
+          ) : (
+            <>
+              {sortedData && sortedData.length > 0 ? (
+                <>
+                  {sortedData.slice(0,3).map((item : SupportData) => (
+                    <div
+                      key={item.date}
+                      className="bg-white border border-slate-200 rounded-2xl shadow-sm p-5 w-full max-w-xl mx-auto transition hover:shadow-md mt-2"
+                    >
+                      {/* Header */}
+                      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                        {/* Title */}
+                        <h2 className="text-lg font-semibold text-slate-900">
+                          Problem: {item?.subject}
+                        </h2>
 
-            {/* Divider */}
-            <div className="my-4 border-t border-slate-100" />
+                        {/* Badges */}
+                        <div className="flex flex-wrap items-center gap-2">
+                          {/* Pending Badge */}
+                          <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-yellow-50 text-yellow-800 text-xs font-medium border border-yellow-100 relative group">
+                            <Info className="h-3.5 w-3.5" />
+                            <span>Pending</span>
+                            <span className="ml-1 bg-yellow-200 text-yellow-900 px-2 py-0.5 rounded-full text-[10px] font-semibold">
+                              1
+                            </span>
+                            {/* Tooltip */}
+                            <div className="absolute hidden group-hover:block bottom-full mb-2 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gray-900 text-white text-[10px] px-2 py-1 rounded-md shadow">
+                              This problem is still pending
+                            </div>
+                          </div>
 
-            {/* Time Info */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-              <div className="flex flex-col sm:flex-row sm:items-center gap-6 text-xs text-slate-600">
-                <div>
-                  <div className="font-medium text-slate-800">Submitted</div>
-                  <div>Nov 8, 2025 · 10:47 PM</div>
-                </div>
-                <div>
-                  <div className="font-medium text-slate-800">Answered</div>
-                  <div>Nov 9, 2025 · 03:15 PM</div>
-                </div>
-              </div>
-            </div>
+                          {/* Solved Badge */}
+                          <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-medium border border-emerald-100 relative group">
+                            <CheckCircle className="h-3.5 w-3.5" />
+                            <span>Problem Solved</span>
+                            <span className="ml-1 bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded-full text-[10px] font-semibold">
+                              1
+                            </span>
+                            {/* Tooltip */}
+                            <div className="absolute hidden group-hover:block bottom-full mb-2 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gray-900 text-white text-[10px] px-2 py-1 rounded-md shadow">
+                              Problem marked as solved
+                            </div>
+                          </div>
+                        </div>
+                      </div>
 
-            {/* Answer Section */}
-            <div className="mt-4">
-              <h3 className="text-sm font-semibold text-slate-800 mb-1">
-                Answer:
-              </h3>
-              <p className="text-sm text-slate-600 leading-relaxed">
-                The issue was caused by a missing token validation step. We’ve
-                added proper null checks and updated the login handler. Please
-                re-test on Android 13.
-              </p>
-            </div>
-          </div>
+                      {/* Divider */}
+                      <div className="my-4 border-t border-slate-100" />
+
+                      {/* Time Info */}
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-6 text-xs text-slate-600">
+                          <div>
+                            <div className="font-medium text-slate-800">
+                              Submitted
+                            </div>
+                            <div>{item.date}</div>
+                          </div>
+                          <div>
+                            <div className="font-medium text-slate-800">
+                              Answered
+                            </div>
+                            <div>Nov 9, 2025 · 03:15 PM</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Answer Section */}
+                      <div className="mt-4">
+                        <h3 className="text-sm font-semibold text-slate-800 mb-1">
+                          Answer:
+                        </h3>
+                        <p className="text-sm text-slate-600 leading-relaxed">
+                          The issue was caused by a missing token validation
+                          step. We’ve added proper null checks and updated the
+                          login handler. Please re-test on Android 13.
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </>
+              ) : (
+                <p className="text-sm text-gray-500">
+                  No support requests found.
+                </p>
+              )}
+            </>
+          )}
         </div>
       </div>
     </div>

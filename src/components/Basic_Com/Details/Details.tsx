@@ -27,6 +27,7 @@ interface Course {
   whatYouLearn: string[];
   priceBDT ?: number;
   priceUSD ?: number;
+ 
 }
 interface OrderDataType {
   deliveryStatus : string;
@@ -35,6 +36,8 @@ interface OrderDataType {
   price: number;             // course price
   currency: "BDT" | "USD";   // limited to only these two
   orderDate: string;         // formatted date string (e.g., "November 3, 2025")
+  title: string;
+  img : string;
 }
 interface UserUpdateType {
   courseId: string;
@@ -245,6 +248,8 @@ const Details = () => {
     : (c.priceUSD || 0);
     const orderData : OrderDataType = {
       courseId: c._id,
+      title: c.title,
+      img : c.image,
       personEmail: person.email || "Unknown",
       price:  price,
       currency: con === "BD" ? "BDT" : "USD",
