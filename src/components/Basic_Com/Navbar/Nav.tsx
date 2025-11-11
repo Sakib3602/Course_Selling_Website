@@ -61,7 +61,7 @@ export default function Nav() {
     navItems.push({ name: "Dashboard", href: "/dashboard" });
   }
 
-  console.log(data?.role);
+ 
   return (
     <div>
       <nav className="poppins-semibold fixed top-0 left-0 right-0 z-100 bg-white/30 backdrop-blur-2xl border-b border-black/10 ">
@@ -71,9 +71,9 @@ export default function Nav() {
           <div className="flex items-center justify-between h-16">
             {/* Brand Name - Left */}
             <div className="flex-shrink-0">
-              <a href="/" className="text-2xl font-bold text-[#4D2E7D]">
+              <Link to={'/'} className="text-2xl font-bold text-[#4D2E7D]">
                 Brand
-              </a>
+              </Link>
             </div>
 
             {/* Navigation Items - Center (Desktop) */}

@@ -19,6 +19,12 @@ import ProfileAdmin from "./components/DashBoard/AdminDashBoard/ProfileAdmin/Pro
 import PrivateAdminroute from "./components/DashBoard/AdminDashBoard/PrivateAdminroute/PrivateAdminroute.tsx";
 import ProfileA from "./components/DashBoard/AdminDashBoard/ProfieA/ProfileA.tsx";
 import SupportReq from "./components/DashBoard/AdminDashBoard/SupportReq/SupportReq.tsx";
+import Instractors from "./components/DashBoard/AdminDashBoard/Instractors/Instractors.tsx";
+import Announcement from "./components/DashBoard/AdminDashBoard/Announcement/Announcement.tsx";
+import AddCourse from "./components/DashBoard/AdminDashBoard/AddCourse/AddCourse.tsx";
+import AllUsers from "./components/DashBoard/AdminDashBoard/AllUsers/AllUsers.tsx";
+import PrimiumUsers from "./components/DashBoard/AdminDashBoard/PrimiumUsers/PrimiumUsers.tsx";
+import AllStudents from "./components/DashBoard/AdminDashBoard/AllStudents/AllStudents.tsx";
 
 const queryClient = new QueryClient();
 createRoot(document.getElementById("root")!).render(
@@ -50,6 +56,12 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/admin/dashboard" element={<PrivateAdminroute><ProfileAdmin></ProfileAdmin></PrivateAdminroute>}>
             <Route index element={<ProfileA></ProfileA>} />
             <Route path="/admin/dashboard/supportreq" element={<SupportReq></SupportReq>} />
+            <Route path="/admin/dashboard/ins" element={<Instractors></Instractors>} />
+            <Route path="/admin/dashboard/anc" element={<Announcement></Announcement>} />
+            <Route path="/admin/dashboard/addcourse" element={<AddCourse></AddCourse>} />
+            <Route path="/admin/dashboard/allusers" element={<AllUsers></AllUsers>} />
+            <Route path="/admin/dashboard/pusers" element={<PrimiumUsers></PrimiumUsers>} />
+            <Route path="/admin/dashboard/students" element={<AllStudents></AllStudents>} />
           </Route>
         </Routes>
 
