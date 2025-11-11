@@ -15,6 +15,9 @@ import Announcements from "./components/DashBoard/UserDashBoad/Announcements/Ann
 import Tasks from "./components/DashBoard/UserDashBoad/Tasks/Tasks.tsx";
 import Support from "./components/DashBoard/UserDashBoad/Support/Support.tsx";
 import PrivateUserRoute from "./components/DashBoard/UserDashBoad/PrivateUserRoute/PrivateUserRoute.tsx";
+import ProfileAdmin from "./components/DashBoard/AdminDashBoard/ProfileAdmin/ProfileAdmin.tsx";
+import PrivateAdminroute from "./components/DashBoard/AdminDashBoard/PrivateAdminroute/PrivateAdminroute.tsx";
+import ProfileA from "./components/DashBoard/AdminDashBoard/ProfieA/ProfileA.tsx";
 
 const queryClient = new QueryClient();
 createRoot(document.getElementById("root")!).render(
@@ -40,8 +43,16 @@ createRoot(document.getElementById("root")!).render(
             {/* <Route path="/dashboard/profile" element={<Profile />} /> */}
           </Route>
         </Routes>
-
         {/* User Work */}
+        {/* Admin Work */}
+        <Routes>
+          <Route path="/admin/dashboard" element={<PrivateAdminroute><ProfileAdmin></ProfileAdmin></PrivateAdminroute>}>
+            <Route index element={<ProfileA></ProfileA>} />
+            
+          </Route>
+        </Routes>
+
+        {/* Admin Work */}
       </AuthProvider>
     </BrowserRouter>
     ,

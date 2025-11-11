@@ -2,7 +2,16 @@ import { AuthContext } from "@/components/Authentication_Work/AuthProvider/AuthP
 import useAxiosPublic from "@/url/useAxiosPublic";
 import { useQuery } from "@tanstack/react-query";
 import { useContext } from "react";
-
+interface OrderDataType {
+  deliveryStatus : string;
+  courseId: string;          // MongoDB ObjectId (as string)
+  personEmail: string;       // buyer email
+  price: number;             // course price
+  currency: "BDT" | "USD";   // limited to only these two
+  orderDate: string;         // formatted date string (e.g., "November 3, 2025")
+  title: string;
+  img : string;
+}
 const EnrolledCourses = () => {
   const axiosPub = useAxiosPublic();
   const auth = useContext(AuthContext);
@@ -28,7 +37,7 @@ const EnrolledCourses = () => {
       {isLoading && <p>Loading...</p>}
       
       {data && data.length > 0 ? (
-        data.map((course: any, index: number) => (
+        data.map((course: OrderDataType, index: number) => (
           <div
             key={index}
             className="bg-white border border-slate-200 rounded-2xl shadow-md overflow-hidden w-full max-w-sm mx-auto transition hover:shadow-lg"
@@ -44,9 +53,7 @@ const EnrolledCourses = () => {
                 {course.title}
               </h3>
 
-              <p className="text-sm text-slate-600">
-                {course.description}
-              </p>
+             
 
               <span className="text-sm font-medium text-amber-500 underline cursor-pointer w-full block">
                 Continue Learning
