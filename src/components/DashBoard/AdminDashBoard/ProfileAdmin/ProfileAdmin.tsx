@@ -1,8 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { Menu, X, User, Users, ShoppingCart, Settings, LogOut, ChevronDown } from "lucide-react"
-import { Outlet } from "react-router"
+import { Menu, X,MessageCircleQuestionMark,Megaphone,ShieldUser,FolderPlus, User, Users,UserCog, ShoppingCart, Settings, LogOut, ChevronDown } from "lucide-react"
+import { Link, Outlet } from "react-router"
 
 export default function ProfileAdmin() {
   const [sidebarOpen, setSidebarOpen] = useState(true)
@@ -15,26 +15,51 @@ export default function ProfileAdmin() {
       id: "dashboard",
       label: "Dashboard",
       icon: "📊",
-      path: "/dashboard",
+      path: "/admin/dashboard",
     },
     {
-      id: "profile",
-      label: "Profile",
-      icon: <User size={20} />,
-      path: "/profile",
-    },
-    {
-      id: "users",
-      label: "All Users",
+      id: "instructors",
+      label: "Instructors",
       icon: <Users size={20} />,
-      path: "/users",
+      path: "/admin/dashboard/instructors",
+    },
+    {
+      id: "support requests",
+      label: "Support Requests",
+      icon: <MessageCircleQuestionMark size={20} />,
+      path: "/admin/dashboard/supportreq",
     },
     {
       id: "orders",
-      label: "Orders",
+      label: "Pending Orders",
       icon: <ShoppingCart size={20} />,
       path: "/orders",
     },
+    {
+      id: "addcourses",
+      label: "Add Courses",
+      icon: <FolderPlus size={20} />,
+      path: "/orders",
+    },
+    {
+      id: "annaouncements",
+      label: "Announcements",
+      icon: <Megaphone size={20} />,
+      path: "/orders",
+    },
+    {
+      id: "premium users",
+      label: "Premium Users",
+      icon: <ShieldUser size={20} />,
+      path: "/orders",
+    },
+    {
+      id: "all users",
+      label: "All Users",
+      icon: <UserCog size={20} />,
+      path: "/orders",
+    },
+
     {
       id: "settings",
       label: "Settings",
@@ -70,6 +95,7 @@ export default function ProfileAdmin() {
         {/* Sidebar Menu */}
         <nav className="flex-1 px-4 py-6 space-y-2">
           {menuItems.map((item) => (
+            <Link to={item.path}>
             <button
               key={item.id}
               onClick={() => {
@@ -85,6 +111,8 @@ export default function ProfileAdmin() {
               <span className="flex-shrink-0 text-xl">{item.icon}</span>
               {sidebarOpen && <span className="text-left">{item.label}</span>}
             </button>
+            
+            </Link>
           ))}
         </nav>
 

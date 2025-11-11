@@ -18,6 +18,7 @@ import PrivateUserRoute from "./components/DashBoard/UserDashBoad/PrivateUserRou
 import ProfileAdmin from "./components/DashBoard/AdminDashBoard/ProfileAdmin/ProfileAdmin.tsx";
 import PrivateAdminroute from "./components/DashBoard/AdminDashBoard/PrivateAdminroute/PrivateAdminroute.tsx";
 import ProfileA from "./components/DashBoard/AdminDashBoard/ProfieA/ProfileA.tsx";
+import SupportReq from "./components/DashBoard/AdminDashBoard/SupportReq/SupportReq.tsx";
 
 const queryClient = new QueryClient();
 createRoot(document.getElementById("root")!).render(
@@ -48,7 +49,7 @@ createRoot(document.getElementById("root")!).render(
         <Routes>
           <Route path="/admin/dashboard" element={<PrivateAdminroute><ProfileAdmin></ProfileAdmin></PrivateAdminroute>}>
             <Route index element={<ProfileA></ProfileA>} />
-            
+            <Route path="/admin/dashboard/supportreq" element={<SupportReq></SupportReq>} />
           </Route>
         </Routes>
 

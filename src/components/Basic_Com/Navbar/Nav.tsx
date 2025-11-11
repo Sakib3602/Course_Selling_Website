@@ -8,6 +8,8 @@ import { Link } from "react-router";
 
 import { Slide, toast, ToastContainer } from "react-toastify";
 import { AuthContext } from "@/components/Authentication_Work/AuthProvider/AuthProvider";
+import { useQuery } from "@tanstack/react-query";
+import useAxiosPublic from "@/url/useAxiosPublic";
 
 export default function Nav() {
   const [isOpen, setIsOpen] = useState(false);
@@ -38,9 +40,28 @@ export default function Nav() {
     { name: "Services", href: "#" },
     { name: "Contact", href: "#" },
     { name: "Carts", href: "/carts" },
-    { name: "Dashboard", href: "/dashboard" },
+    // { name: "Dashboard", href: "/dashboard" },
   ];
+  
+  const axiosPub = useAxiosPublic()
+  const {data} = useQuery({
+    queryKey: ['useremail', person?.email],
+    queryFn : async ()=>{
+      const res = await axiosPub.get(`/users/${person?.email}`);
+      return res.data;
+    }
+  })
+  if(data?.role === "admin"){
+    navItems.push({ name: "Admin Dashboard", href: "/admin/dashboard" });
+  }
+  if(data?.role === "instructor"){
+    navItems.push({ name: "Instructor Dashboard", href: "/instructor/dashboard" });
+  }
+  if(data?.role !== "admin" && data?.role !== "instructor"){
+    navItems.push({ name: "Dashboard", href: "/dashboard" });
+  }
 
+  console.log(data?.role);
   return (
     <div>
       <nav className="poppins-semibold fixed top-0 left-0 right-0 z-100 bg-white/30 backdrop-blur-2xl border-b border-black/10 ">
@@ -50,7 +71,7 @@ export default function Nav() {
           <div className="flex items-center justify-between h-16">
             {/* Brand Name - Left */}
             <div className="flex-shrink-0">
-              <a href="#" className="text-2xl font-bold text-[#4D2E7D]">
+              <a href="/" className="text-2xl font-bold text-[#4D2E7D]">
                 Brand
               </a>
             </div>

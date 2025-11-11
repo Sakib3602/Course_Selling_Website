@@ -12,8 +12,14 @@ import { Link, useNavigate } from "react-router"
 import Nav from "@/components/Basic_Com/Navbar/Nav"
 import Footer from "@/components/Basic_Com/Footer/Footer"
 import { AuthContext } from "../AuthProvider"
+import { useMutation } from "@tanstack/react-query"
+import useAxiosPublic from "@/url/useAxiosPublic"
 
-
+type I = {
+  email: string;
+  name: string;
+  role: string;
+};
 export function Login() {
   const [showPassword, setShowPassword] = useState(false)
 
@@ -101,8 +107,20 @@ export function Login() {
 
 
   const GO = async()=>{
-    await GoogleS()
-    toast.success("Google log in successful!", {
+    const result = await GoogleS()
+    const user = result.user;
+
+      const name = user.displayName;
+      const email = user.email;
+
+      const u: I = {
+        name: name || "Unknown",
+        email: email || "",
+        role: "user",
+      };
+
+      await mutateAsync(u);
+      toast.success("Welcome To Our World!", {
         position: "top-right",
         autoClose: 3000,
         hideProgressBar: false,
@@ -113,12 +131,40 @@ export function Login() {
         theme: "light",
         transition: Slide,
       });
+      navigate("/")
+
 
       setTimeout(()=>{
-        navigate("/")
+        
+        
       },1500)
     
   }
+
+  const axiosPub = useAxiosPublic()
+  const { mutateAsync } = useMutation({
+    mutationFn: async (newUser: I) => {
+      const response = await axiosPub.post("/users", newUser);
+      return response.data;
+    },
+    onSuccess: () => {
+      toast.success("Welcome To Our World!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Slide,
+      });
+      
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
+    },
+  });
 
   return (
     <div>

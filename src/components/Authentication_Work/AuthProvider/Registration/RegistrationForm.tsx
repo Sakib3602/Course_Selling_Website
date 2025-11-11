@@ -16,7 +16,6 @@ import { useMutation } from "@tanstack/react-query";
 type I = {
   email: string;
   name: string;
-  password: string;
   role: string;
 };
 
@@ -97,7 +96,6 @@ export function RegistrationForm() {
       const u: I = {
         name: name,
         email: email,
-        password: password,
         role: "user",
       };
 
@@ -127,12 +125,10 @@ export function RegistrationForm() {
 
       const name = user.displayName;
       const email = user.email;
-      const password = "googlelogin";
 
       const u: I = {
         name: name || "Unknown",
         email: email || "",
-        password: password,
         role: "user",
       };
 
