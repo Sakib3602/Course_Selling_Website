@@ -216,8 +216,9 @@ export default function ProfileAdmin() {
         {/* Mobile Menu Items */}
         <nav className="flex-1 px-4 py-6 space-y-2">
           {menuItems.map((item) => (
-            <button
+            <Link
               key={item.id}
+              to={item.path}
               onClick={() => {
                 setActiveMenu(item.id)
                 setMobileMenuOpen(false)
@@ -230,7 +231,7 @@ export default function ProfileAdmin() {
             >
               <span className="text-xl">{item.icon}</span>
               <span>{item.label}</span>
-            </button>
+            </Link>
           ))}
         </nav>
 
