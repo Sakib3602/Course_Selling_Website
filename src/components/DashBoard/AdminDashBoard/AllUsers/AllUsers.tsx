@@ -2,13 +2,19 @@ import useAxiosPrivate from "@/url/useAxiosPrivate";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Slide, toast, ToastContainer } from "react-toastify";
 
+type Us ={
+    _id: string;
+    name: string;
+    email: string;
+    role: string;
+}
 const AllUsers = () => {
   const axiosPrivate = useAxiosPrivate();
 
   const { data, isLoading ,refetch} = useQuery({
     queryKey: ["users"],
     queryFn: async () => {
-      const res = await axiosPrivate.get("/Onlyusers");
+      const res = await axiosPrivate.get("/Onlyusers", { params: { role: "user" } });
       return res.data;
     },
   });
@@ -80,8 +86,8 @@ const AllUsers = () => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {data?.map((user) => (
-              <tr key={user.id}>
+            {data?.map((user :Us) => (
+              <tr key={user._id}>
                 <td className="px-6 py-4 whitespace-nowrap">{user.name}</td>
                 <td className="px-6 py-4 whitespace-nowrap">{user.role}</td>
                 <td className="px-6 py-4 whitespace-nowrap">{user.email}</td>
@@ -99,8 +105,8 @@ const AllUsers = () => {
         </table>
 
         <div className="md:hidden divide-y">
-          {data?.map((user) => (
-            <div key={user.id} className="p-4">
+          {data?.map((user :Us) => (
+            <div key={user._id} className="p-4">
               <div className="flex items-center justify-between">
                 <div>
                   <div className="text-sm font-medium text-gray-900">
