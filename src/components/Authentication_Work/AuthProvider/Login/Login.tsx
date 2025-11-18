@@ -74,6 +74,10 @@ export function Login() {
     try {
       // Add your login logic here
       await SignNow(email, password)
+      const res = await axiosPub.post("/jwt", { email },{ withCredentials: true })
+
+      console.log(res.data)  
+
       toast.success("Log in successful!", {
         position: "top-right",
         autoClose: 3000,
