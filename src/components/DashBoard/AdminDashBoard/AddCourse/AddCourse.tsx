@@ -18,6 +18,8 @@ import {
 } from 'lucide-react';
 import useAxiosPrivate from '@/url/useAxiosPrivate';
 import axios from 'axios';
+import { useMutation } from '@tanstack/react-query';
+import { Slide, toast, ToastContainer } from 'react-toastify';
 
 type CourseForm = {
   title: string;
@@ -28,7 +30,7 @@ type CourseForm = {
   students: string;
   duration: string;
   level: string;
-  image: File | null;
+  image: string | File | null;
   description: string;
   fullDescription: string;
   curriculum: string[];
@@ -69,13 +71,13 @@ const AddCourse: React.FC = () => {
   // Handle Image Upload
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files && e.target.files[0];
-    // console.log(file);
     setImg(file);
     if (file) {
-      // setFormData(prev => ({
-      //   ...prev,
-      //   image: file
-      // } as CourseForm));
+      // keep formData.image in sync with chosen File
+      setFormData(prev => ({
+        ...prev,
+        image: file
+      } as CourseForm));
       // Create a local URL for preview
       const previewUrl = URL.createObjectURL(file);
       setImagePreview(previewUrl);
@@ -84,7 +86,8 @@ const AddCourse: React.FC = () => {
 
   // Remove selected image
   const removeImage = () => {
-    setFormData(prev => ({ ...prev, image: null }));
+    setImg(null);
+    setFormData(prev => ({ ...prev, image: null } as CourseForm));
     setImagePreview(null);
   };
 
@@ -113,13 +116,14 @@ const AddCourse: React.FC = () => {
     } as CourseForm));
   };
 
-  // const axiosPrivate = useAxiosPrivate()
+  const axiosPrivate = useAxiosPrivate()
 
   const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     try {
       if (!img) {
+        setLoading(false);
         return alert('Please upload an image');
       }
       const data = new FormData();
@@ -128,25 +132,72 @@ const AddCourse: React.FC = () => {
       data.append("cloud_name", import.meta.env.VITE_CLOUD_NAME)
 
       const res = await axios.post(`https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUD_NAME}/image/upload` , data)
-      console.log(res.data.url);
-
-
+      const uploadedUrl = res.data.url;
+      // update form state and preview with uploaded URL
+      setFormData(prev => ({
+        ...prev,
+        image: uploadedUrl
+      } as CourseForm));
+      setImagePreview(uploadedUrl);
+      // clear the local File reference since image is uploaded
+      setImg(null);
+      
     } catch (error) {
       console.error('Error uploading image:', error);
-      
     }
-    // 
-    console.log('Form Submitted:', formData);
+    
+    // formData state update above is async — build payload explicitly
+    const payload: CourseForm = {
+      ...formData,
+      image: (typeof formData.image === 'string' && formData.image) ? formData.image : imagePreview
+    };
+    console.log('Form Submitted payload:', payload);
+    await mutateAsync(payload)
 
     setLoading(false);
     
     
   };
 
+  const { mutateAsync } = useMutation({
+    mutationFn: async (d : CourseForm) => {
+      const response = await axiosPrivate.post('/addCourse', d);
+      return response.data;
+    },
+    onSuccess: ()=>{
+      setLoading(false);
+       toast.success("Course Added Successfully!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Slide,
+      });
+    },
+    onError: ()=>{
+      setLoading(false);
+      toast.error("Failed to Add Course!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Slide,
+      });
+    }
+  })
+
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8 font-sans">
       <div className="max-w-5xl mx-auto">
-        
+        <ToastContainer></ToastContainer>
         {/* Header */}
         <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
@@ -162,7 +213,8 @@ const AddCourse: React.FC = () => {
               Cancel
             </button>
             <button 
-              onClick={handleSubmit}
+              type="submit"
+              form="add-course-form"
               disabled={loading}
               className="flex items-center gap-2 px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium shadow-sm transition-all disabled:opacity-70"
             >
@@ -172,7 +224,7 @@ const AddCourse: React.FC = () => {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form id="add-course-form" onSubmit={handleSubmit} className="space-y-6">
           
           {/* Main Content Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -242,6 +294,7 @@ const AddCourse: React.FC = () => {
                       <div className="relative">
                         <Clock className="absolute left-3 top-2.5 text-gray-400" size={18} />
                         <input
+                        required
                           type="text"
                           name="duration"
                           value={formData.duration}
@@ -257,6 +310,7 @@ const AddCourse: React.FC = () => {
                         <Star className="absolute left-3 top-2.5 text-gray-400" size={18} />
                         <input
                           type="number"
+                          required
                           step="0.1"
                           max="5"
                           name="rating"
@@ -271,6 +325,7 @@ const AddCourse: React.FC = () => {
                       <div className="relative">
                         <Users className="absolute left-3 top-2.5 text-gray-400" size={18} />
                         <input
+                        required
                           type="number"
                           name="students"
                           value={formData.students}
@@ -294,8 +349,9 @@ const AddCourse: React.FC = () => {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Short Description</label>
                     <textarea
+                    required
                       name="description"
-                      rows="2"
+                      // rows="2"
                       value={formData.description}
                       onChange={handleChange}
                       placeholder="Brief overview shown on cards..."
@@ -305,8 +361,9 @@ const AddCourse: React.FC = () => {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Full Description</label>
                     <textarea
+                    required
                       name="fullDescription"
-                      rows="6"
+                      // rows="6"
                       value={formData.fullDescription}
                       onChange={handleChange}
                       placeholder="Detailed course breakdown..."
@@ -338,6 +395,7 @@ const AddCourse: React.FC = () => {
                       <div className="flex-1">
                         <input
                           type="text"
+                          required
                           value={item}
                           onChange={(e) => handleArrayChange(index, 'curriculum', e.target.value)}
                           placeholder={`Module ${index + 1}`}
@@ -375,6 +433,7 @@ const AddCourse: React.FC = () => {
                     <div className="relative">
                       <span className="absolute left-3 top-2 text-gray-500 font-medium">$</span>
                       <input
+                      required
                         type="number"
                         name="priceUSD"
                         value={formData.priceUSD}
@@ -391,6 +450,7 @@ const AddCourse: React.FC = () => {
                       <input
                         type="number"
                         name="priceBDT"
+                        required
                         value={formData.priceBDT}
                         onChange={handleChange}
                         placeholder="8990"
@@ -414,6 +474,7 @@ const AddCourse: React.FC = () => {
                   {!imagePreview ? (
                     <div className="relative w-full h-48 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300 hover:border-indigo-400 hover:bg-gray-100 transition-all flex flex-col items-center justify-center cursor-pointer group">
                       <input 
+                      required
                         type="file" 
                         accept="image/*"
                         onChange={handleImageUpload}
@@ -464,6 +525,7 @@ const AddCourse: React.FC = () => {
                   {formData.whatYouLearn.map((item, index) => (
                     <div key={index} className="flex gap-2">
                       <input
+                      required
                         type="text"
                         value={item}
                         onChange={(e) => handleArrayChange(index, 'whatYouLearn', e.target.value)}
