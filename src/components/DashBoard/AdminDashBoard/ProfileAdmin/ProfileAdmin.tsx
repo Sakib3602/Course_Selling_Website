@@ -92,7 +92,7 @@ export default function ProfileAdmin() {
     <div className="flex min-h-screen bg-white poppins">
       {/* Sidebar */}
       <aside
-        className={`fixed lg:relative z-40 h-screen bg-black text-white transition-all duration-300 ease-in-out ${
+        className={`fixed lg:relative z-40 bg-black text-white transition-all duration-300 ease-in-out ${
           sidebarOpen ? "w-64" : "w-0 lg:w-20"
         } overflow-hidden`}
       >

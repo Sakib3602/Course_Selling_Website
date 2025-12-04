@@ -1,5 +1,7 @@
+import { AuthContext } from "@/components/Authentication_Work/AuthProvider/AuthProvider";
 import useAxiosPrivate from "@/url/useAxiosPrivate";
 import { useQuery } from "@tanstack/react-query";
+import { useContext } from "react";
 
 type SupportItem = {
   _id: string;
@@ -13,11 +15,18 @@ type SupportItem = {
 
 const SupportReq = () => {
   const axiosPrivate = useAxiosPrivate();
+  const auth = useContext(AuthContext)
+  if(!auth){
+    throw new Error("AuthContext is undefined");
+  }
+  const {person} = auth;
 
   const { data, isLoading } = useQuery<SupportItem[]>({
     queryKey: ["support-requests"],
     queryFn: async () => {
-      const res = await axiosPrivate.get("/supportAll");
+      const res = await axiosPrivate.get("/supportAll", {
+      params: { email: person?.email }   
+    });
       return res.data;
     },
   });
