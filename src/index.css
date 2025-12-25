@@ -496,8 +496,6 @@
 }
 /* form suppot */
 
-
-
 /* comment reply */
 /* From Uiverse.io by zanina-yassine */ 
 /* Card container */
@@ -734,5 +732,14 @@
   .text-box textarea {
     height: 30px;
     font-size: 12px;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
   }
 }

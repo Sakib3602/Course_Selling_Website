@@ -5,7 +5,7 @@ import axios from "axios";
     baseURL: "http://localhost:3000",
     // baseURL: ""
     // baseURL: import.meta.env.VITE_BASE_URL_PROD
-    withCredentials: true,
+    // withCredentials: true,
  })
 
 const useAxiosPrivate = () => {
