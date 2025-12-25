@@ -43,11 +43,18 @@ export default function ProfileAdmin() {
       path: "/admin/dashboard/students",
     },
     {
+      id: "Courses",
+      label: "Manage Courses",
+      icon: "📚",
+      path: "/admin/dashboard/CourseAll",
+    },
+    {
       id: "addcourses",
       label: "Add Courses",
       icon: "📁",
       path: "/admin/dashboard/addcourse",
     },
+   
     {
       id: "annaouncements",
       label: "Announcements",

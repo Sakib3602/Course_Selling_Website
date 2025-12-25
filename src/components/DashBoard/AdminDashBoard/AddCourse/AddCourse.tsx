@@ -21,7 +21,7 @@ import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
 import { Slide, toast, ToastContainer } from 'react-toastify';
 
-type CourseForm = {
+export type CourseForm = {
   title: string;
   instructor: string;
   priceUSD: string;
