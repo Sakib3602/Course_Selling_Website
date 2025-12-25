@@ -26,6 +26,7 @@ import AllUsers from "./components/DashBoard/AdminDashBoard/AllUsers/AllUsers.ts
 import PrimiumUsers from "./components/DashBoard/AdminDashBoard/PrimiumUsers/PrimiumUsers.tsx";
 import AllStudents from "./components/DashBoard/AdminDashBoard/AllStudents/AllStudents.tsx";
 import ManageCourses from "./components/DashBoard/AdminDashBoard/ManageCourses/ManageCourses.tsx";
+import UpdateCourse from "./components/DashBoard/AdminDashBoard/ManageCourses/UpdateCourse.tsx";
 
 const queryClient = new QueryClient();
 createRoot(document.getElementById("root")!).render(
@@ -64,6 +65,7 @@ createRoot(document.getElementById("root")!).render(
             <Route path="/admin/dashboard/pusers" element={<PrimiumUsers></PrimiumUsers>} />
             <Route path="/admin/dashboard/students" element={<AllStudents></AllStudents>} />
             <Route path="/admin/dashboard/CourseAll" element={<ManageCourses></ManageCourses>} />
+            <Route path="/admin/dashboard/updateCourse" element={<UpdateCourse></UpdateCourse>} />
           </Route>
         </Routes>
 

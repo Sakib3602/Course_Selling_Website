@@ -1,5 +1,6 @@
 import useAxiosPrivate from "@/url/useAxiosPrivate";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { Link } from "react-router";
 import Swal from "sweetalert2";
 type CourseF = {
   _id: string;
@@ -53,11 +54,11 @@ const ManageCourses = () => {
       const res = await axiosPrivate.delete(`/manage-courses/${id}`);
       return res.data;
     },
-    onSuccess: ()=>{
-        refetch();
-    }
-    
+    onSuccess: () => {
+      refetch();
+    },
   });
+
 
   if (isLoading) {
     return (
@@ -114,10 +115,16 @@ const ManageCourses = () => {
           </div>
 
           <div className="p-5 pt-0 flex gap-3 mt-auto">
-            <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold py-2.5 px-4 rounded-lg transition-colors duration-200 focus:ring-2 focus:ring-blue-500 focus:ring-offset-1">
+    <Link to={"/admin/dashboard/updateCourse"} state={{courseData: x}}>
+    <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold py-2.5 px-4 rounded-lg transition-colors duration-200 focus:ring-2 focus:ring-blue-500 focus:ring-offset-1">
               Update
             </button>
-            <button onClick={()=> DeleteData(x?._id)} className="flex-1 bg-red-500 hover:bg-red-600 text-white text-sm font-semibold py-2.5 px-4 rounded-lg transition-colors duration-200 focus:ring-2 focus:ring-red-500 focus:ring-offset-1">
+            
+            </Link>
+            <button
+              onClick={() => DeleteData(x?._id)}
+              className="flex-1 bg-red-500 hover:bg-red-600 text-white text-sm font-semibold py-2.5 px-4 rounded-lg transition-colors duration-200 focus:ring-2 focus:ring-red-500 focus:ring-offset-1"
+            >
               Delete
             </button>
           </div>
