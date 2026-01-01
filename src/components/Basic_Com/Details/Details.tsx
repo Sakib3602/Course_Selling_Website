@@ -13,6 +13,7 @@ import { useMutation } from "@tanstack/react-query";
 interface Course {
   _id: string;
   id: number;
+  drive: string;
   title: string;
   description: string;
   fullDescription: string;
@@ -38,6 +39,7 @@ interface OrderDataType {
   orderDate: string;         // formatted date string (e.g., "November 3, 2025")
   title: string;
   img : string;
+  drive: string;
 }
 interface UserUpdateType {
   courseId: string;
@@ -242,6 +244,7 @@ const Details = () => {
       toast.error("Please Login First!");
       return;
     }
+  
     console.log(c)
     const price = con === "BD" 
     ? (c.priceBDT || 0) 
@@ -254,7 +257,8 @@ const Details = () => {
       price:  price,
       currency: con === "BD" ? "BDT" : "USD",
       orderDate: moment().format('LL'),
-      deliveryStatus: "pending",
+      deliveryStatus: "purchased",
+      drive: c?.drive,
     
     }
 

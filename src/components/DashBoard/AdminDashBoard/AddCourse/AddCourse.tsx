@@ -23,6 +23,7 @@ import { Slide, toast, ToastContainer } from 'react-toastify';
 
 export type CourseForm = {
   title: string;
+  drive: string;
   instructor: string;
   priceUSD: string;
   priceBDT: string;
@@ -41,6 +42,7 @@ const AddCourse: React.FC = () => {
   const [img,setImg] = useState<File | null>(null);
   const [formData, setFormData] = useState<CourseForm>({
     title: '',
+    drive: '',
     instructor: '',
     priceUSD: '',
     priceBDT: '',
@@ -67,6 +69,10 @@ const AddCourse: React.FC = () => {
       [name]: value
     } as unknown as CourseForm));
   };
+  const handleDrive = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const { name, value } = e.target;
+  setFormData(prev => ({ ...prev, [name]: value } as CourseForm));
+};
 
   // Handle Image Upload
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -249,6 +255,18 @@ const AddCourse: React.FC = () => {
                       value={formData.title}
                       onChange={handleChange}
                       placeholder="e.g. Full-Stack Web Development with MERN"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Course Drive Link</label>
+                    <input
+                      required
+                      type="text"
+                      name="drive"
+                      value={formData.drive}
+                      onChange={handleDrive}
+                      placeholder="e.g. paste your google drive link here"
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none"
                     />
                   </div>

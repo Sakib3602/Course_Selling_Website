@@ -18,6 +18,10 @@ interface SupportData {
   userEmail?: string;
   date: string;
   status: string;
+  reply?: {
+    replyText?: string;
+  };
+  replyDate?: string;
 }
 const Support = () => {
   const auth = useContext(AuthContext);
@@ -242,7 +246,9 @@ console.log(sortedData);
                         {/* Badges */}
                         <div className="flex flex-wrap items-center gap-2">
                           {/* Pending Badge */}
-                          <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-yellow-50 text-yellow-800 text-xs font-medium border border-yellow-100 relative group">
+
+                          {
+                            item.status === "Pending" ? <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-yellow-50 text-yellow-800 text-xs font-medium border border-yellow-100 relative group">
                             <Info className="h-3.5 w-3.5" />
                             <span>Pending</span>
                             <span className="ml-1 bg-yellow-200 text-yellow-900 px-2 py-0.5 rounded-full text-[10px] font-semibold">
@@ -252,10 +258,7 @@ console.log(sortedData);
                             <div className="absolute hidden group-hover:block bottom-full mb-2 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gray-900 text-white text-[10px] px-2 py-1 rounded-md shadow">
                               This problem is still pending
                             </div>
-                          </div>
-
-                          {/* Solved Badge */}
-                          <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-medium border border-emerald-100 relative group">
+                          </div> : <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-medium border border-emerald-100 relative group">
                             <CheckCircle className="h-3.5 w-3.5" />
                             <span>Problem Solved</span>
                             <span className="ml-1 bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded-full text-[10px] font-semibold">
@@ -266,6 +269,11 @@ console.log(sortedData);
                               Problem marked as solved
                             </div>
                           </div>
+                          }
+                          
+
+                          {/* Solved Badge */}
+                          
                         </div>
                       </div>
 
@@ -279,13 +287,13 @@ console.log(sortedData);
                             <div className="font-medium text-slate-800">
                               Submitted
                             </div>
-                            <div>{item.date}</div>
+                            <div>{item?.date}</div>
                           </div>
                           <div>
                             <div className="font-medium text-slate-800">
                               Answered
                             </div>
-                            <div>Nov 9, 2025 · 03:15 PM</div>
+                            <div>{item?.replyDate ? item?.replyDate : "Not answered yet"}</div>
                           </div>
                         </div>
                       </div>
@@ -296,9 +304,8 @@ console.log(sortedData);
                           Answer:
                         </h3>
                         <p className="text-sm text-slate-600 leading-relaxed">
-                          The issue was caused by a missing token validation
-                          step. We’ve added proper null checks and updated the
-                          login handler. Please re-test on Android 13.
+                          {item?.reply?.replyText ? item?.reply?.replyText : "Our support team is reviewing your request and will get back to you shortly."}
+                          
                         </p>
                       </div>
                     </div>

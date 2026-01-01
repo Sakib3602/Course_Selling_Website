@@ -67,7 +67,7 @@ const AllProduct = () => {
         <hr className="w-[62px] h-[4px] bg-gray-500 " />
       </div>
 
-      <div className="flex sm:flex-col md:flex-row lg:flex-row gap-6 flex-wrap justify-center">
+      <div className="flex sm:flex-col md:flex-row lg:flex-row gap-2 flex-wrap justify-center">
         {data ? (
           data.map((x: Course) => (
             <Link key={x._id} to={`/d/${x._id}`}>
