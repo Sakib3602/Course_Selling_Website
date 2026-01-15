@@ -46,9 +46,7 @@ type Order = {
   link: string;
 };
 
-interface UserUpdateType {
-  courseId: string;
-}
+
 
 const Details = () => {
   const auth = useContext(AuthContext);
