@@ -27,6 +27,7 @@ import PrimiumUsers from "./components/DashBoard/AdminDashBoard/PrimiumUsers/Pri
 import AllStudents from "./components/DashBoard/AdminDashBoard/AllStudents/AllStudents.tsx";
 import ManageCourses from "./components/DashBoard/AdminDashBoard/ManageCourses/ManageCourses.tsx";
 import UpdateCourse from "./components/DashBoard/AdminDashBoard/ManageCourses/UpdateCourse.tsx";
+import AllProduct from "./components/Basic_Com/ALLPRODUCT/AllProduct.tsx";
 
 const queryClient = new QueryClient();
 createRoot(document.getElementById("root")!).render(
@@ -39,6 +40,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/register" element={<RegistrationForm />} />
           <Route path="/login" element={<Login></Login>} />
           <Route path="/carts" element={<Carts></Carts>} />
+          <Route path="/allproducts" element={<AllProduct />} />
         </Routes>
         {/* User Work */}
         <Routes>

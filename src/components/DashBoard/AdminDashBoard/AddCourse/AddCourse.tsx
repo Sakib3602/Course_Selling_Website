@@ -124,46 +124,41 @@ const AddCourse: React.FC = () => {
 
   const axiosPrivate = useAxiosPrivate()
 
-  const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      if (!img) {
-        setLoading(false);
-        return alert('Please upload an image');
-      }
-      const data = new FormData();
-      data.append("file", img);
-      data.append("upload_preset", import.meta.env.VITE_UPLOAD_PRESET)
-      data.append("cloud_name", import.meta.env.VITE_CLOUD_NAME)
-
-      const res = await axios.post(`https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUD_NAME}/image/upload` , data)
-      const uploadedUrl = res.data.url;
-      // update form state and preview with uploaded URL
-      setFormData(prev => ({
-        ...prev,
-        image: uploadedUrl
-      } as CourseForm));
-      setImagePreview(uploadedUrl);
-      // clear the local File reference since image is uploaded
-      setImg(null);
-      
-    } catch (error) {
-      console.error('Error uploading image:', error);
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  setLoading(true);
+  try {
+    if (!img) {
+      setLoading(false);
+      return alert('Please upload an image');
     }
-    
-    // formData state update above is async — build payload explicitly
-    const payload: CourseForm = {
-      ...formData,
-      image: (typeof formData.image === 'string' && formData.image) ? formData.image : imagePreview
-    };
-    console.log('Form Submitted payload:', payload);
-    await mutateAsync(payload)
 
+    const data = new FormData();
+    data.append('file', img);
+    data.append('upload_preset', import.meta.env.VITE_UPLOAD_PRESET);
+    data.append('cloud_name', import.meta.env.VITE_CLOUD_NAME);
+
+    const res = await axios.post(
+      `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUD_NAME}/image/upload`,
+      data
+    );
+    const uploadedUrl: string = res.data.url;
+
+    // optional UI state updates
+    setFormData(prev => ({ ...prev, image: uploadedUrl } as CourseForm));
+    setImagePreview(uploadedUrl);
+    setImg(null);
+
+    // use the URL we just got, not the (possibly stale) state
+    const payload: CourseForm = { ...formData, image: uploadedUrl };
+    console.log('Form Submitted payload:', payload);
+    await mutateAsync(payload);
+  } catch (error) {
+    console.error('Error uploading image:', error);
+  } finally {
     setLoading(false);
-    
-    
-  };
+  }
+};
 
   const { mutateAsync } = useMutation({
     mutationFn: async (d : CourseForm) => {

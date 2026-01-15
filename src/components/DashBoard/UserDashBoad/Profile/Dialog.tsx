@@ -1,8 +1,50 @@
 import { FramerModal, ModalContent } from '@/../components/uilayouts/dialog';
-import { useState } from 'react';
+import { AuthContext } from '@/components/Authentication_Work/AuthProvider/AuthProvider';
+import useAxiosPrivate from '@/url/useAxiosPrivate';
+import { useMutation } from '@tanstack/react-query';
+import { useContext, useState } from 'react';
 
+type FormValues = {
+  name: string;
+  phone: string;
+  address: string;
+};
 const Dialog = () => {
+  const auth = useContext(AuthContext)
+  if (!auth) {
+    throw new Error("AuthContext is undefined");
+  }   
+  const { person } = auth;
   const [modalOpen, setModalOpen] = useState(false);
+  const [formValues, setFormValues] = useState({
+    name: '',
+    phone: '',
+    address: ''
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    setFormValues(prev => ({ ...prev, [id]: value }));
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log('Profile form submitted:', formValues);
+    mutationup.mutate(formValues);
+    setModalOpen(false);
+  };
+
+  const axisSec = useAxiosPrivate()
+  // /updateUser/:email
+  const mutationup = useMutation({
+    mutationFn: async(d: FormValues)=>{
+      const res = await axisSec.patch(`/updateUser/${person?.email}`, d);
+      return res.data;
+    },
+    onSuccess : ()=>{
+      alert('Profile updated successfully!');
+    }
+  })
 
   return (
     <div className=' h-full flex justify-center items-center'>
@@ -23,7 +65,8 @@ const Dialog = () => {
               Make changes to your profile here. Click save when you're done.
             </p>
           </div>
-          <div className='grid gap-4 py-4'>
+          <form onSubmit={handleSubmit}>
+            <div className='grid gap-4 py-4'>
             <div className='grid grid-cols-4 items-center gap-4'>
               <label className='text-sm font-medium leading-none text-right'>
                 Name
@@ -31,29 +74,45 @@ const Dialog = () => {
               <input
                 className='flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm shadow-xs transition-colors placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-1 disabled:cursor-not-allowed disabled:opacity-50 col-span-3'
                 id='name'
-                defaultValue='Pedro Duarte'
+                placeholder='Lionel Andrés Messi Cuccitini'
+                value={formValues.name}
+                onChange={handleChange}
               />
             </div>
             <div className='grid grid-cols-4 items-center gap-4'>
               <label className='text-sm font-medium leading-none text-right'>
-                Username
+                phone
               </label>
               <input
                 className='flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm shadow-xs transition-colors placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-1 disabled:cursor-not-allowed disabled:opacity-50 col-span-3'
-                id='username'
-                defaultValue='@peduarte'
+                id='phone'
+                placeholder='*** **** **** **'
+                value={formValues.phone}
+                onChange={handleChange}
+              />
+            </div>
+            <div className='grid grid-cols-4 items-center gap-4'>
+              <label className='text-sm font-medium leading-none text-right'>
+                Address
+              </label>
+              <input
+                className='flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm shadow-xs transition-colors placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-1 disabled:cursor-not-allowed disabled:opacity-50 col-span-3'
+                id='address'
+                placeholder='Enter your address'
+                value={formValues.address}
+                onChange={handleChange}
               />
             </div>
           </div>
           <div className='mt-4'>
             <button
-              onClick={() => setModalOpen(false)}
               className='w-full p-3 bg-black dark:bg-white text-white dark:text-black rounded-md'
-              type='button'
+              type='submit'
             >
-              Got it, thanks!
+              Save changes
             </button>
           </div>
+          </form>
         </ModalContent>
       </FramerModal>
     </div>

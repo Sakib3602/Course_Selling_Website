@@ -80,7 +80,7 @@ export default function Nav() {
             <div className="hidden md:flex items-center justify-center flex-1">
               <div className="flex items-center gap-8">
                 {navItems.map((item) => (
-                  <Link to={item.href}>
+                  <Link key={item.name} to={item.href}>
                     <p className="text-black hover:text-black/70 transition-colors duration-200 font-medium text-[14px]">
                       {item.name}
                     </p>
@@ -128,9 +128,8 @@ export default function Nav() {
         >
           <div className="px-4 pt-2 pb-4 space-y-3 bg-white/30 backdrop-blur-2xl border-t border-black/10">
             {navItems.map((item) => (
-              <Link to={item.href}>
+              <Link key={item.name} to={item.href}>
                 <p
-                  key={item.name}
                   className="block text-black hover:text-black/70 transition-colors duration-200 font-medium py-2"
                   onClick={() => setIsOpen(false)}
                 >

@@ -8,7 +8,7 @@ import { useContext, useEffect, useState } from "react";
 import Footer from "../Footer/Footer";
 import { Slide, toast } from "react-toastify";
 import { AuthContext } from "@/components/Authentication_Work/AuthProvider/AuthProvider";
-import moment from 'moment';
+import moment from "moment";
 import { useMutation } from "@tanstack/react-query";
 interface Course {
   _id: string;
@@ -26,31 +26,36 @@ interface Course {
   level: string;
   curriculum: string[];
   whatYouLearn: string[];
-  priceBDT ?: number;
-  priceUSD ?: number;
- 
+  priceBDT?: number;
+  priceUSD?: number;
 }
-interface OrderDataType {
-  deliveryStatus : string;
-  courseId: string;          // MongoDB ObjectId (as string)
-  personEmail: string;       // buyer email
-  price: number;             // course price
-  currency: "BDT" | "USD";   // limited to only these two
-  orderDate: string;         // formatted date string (e.g., "November 3, 2025")
-  title: string;
-  img : string;
-  drive: string;
-}
+type OrderCourse = {
+  name: string;
+  id: string;
+  img: string;
+  status: "pending" | "completed";
+  price: number;
+};
+type Order = {
+  courses: OrderCourse[];
+  totalAmount: number;
+  currency: "BDT" | "USD";
+  paymentStatus: "Pending" | "Paid" | "Failed";
+  email: string | null;
+  orderDate: string;
+  link: string;
+};
+
 interface UserUpdateType {
   courseId: string;
 }
 
 const Details = () => {
-  const auth = useContext(AuthContext)
-  if(!auth){
+  const auth = useContext(AuthContext);
+  if (!auth) {
     throw new Error("AuthContext is undefined");
   }
-  const {person} = auth;
+  const { person } = auth;
   //
   //
   //
@@ -58,7 +63,6 @@ const Details = () => {
   //
   const [con, setCon] = useState("BD");
   const [isLoading, setIsLoading] = useState(true);
-  
 
   // Optimized country detection
   const fetchCountry = async () => {
@@ -80,19 +84,20 @@ const Details = () => {
 
     try {
       // Respect cooldown if previously rate-limited
-      const cooldownUntil = parseInt(localStorage.getItem(RATE_LIMIT_COOLDOWN_UNTIL) || "0", 10);
+      const cooldownUntil = parseInt(
+        localStorage.getItem(RATE_LIMIT_COOLDOWN_UNTIL) || "0",
+        10
+      );
       if (cooldownUntil && Date.now() < cooldownUntil) {
         const cached = localStorage.getItem(COUNTRY_CACHE_KEY);
         if (cached) {
           setCon((prev) => (prev !== cached ? cached : prev));
-          
         }
         setIsLoading(false);
         return;
       }
 
       let newCountry: string | null = null;
-     
 
       // Primary provider: ipapi.co
       try {
@@ -100,13 +105,16 @@ const Details = () => {
         if (!res.ok) {
           // If rate-limited, set cooldown for 10 minutes
           if (res.status === 429) {
-            localStorage.setItem(RATE_LIMIT_COOLDOWN_UNTIL, String(Date.now() + 10 * 60 * 1000));
+            localStorage.setItem(
+              RATE_LIMIT_COOLDOWN_UNTIL,
+              String(Date.now() + 10 * 60 * 1000)
+            );
           }
           throw new Error(`ipapi.co failed with ${res.status}`);
         }
         const data = await res.json();
         newCountry = data?.country || null;
-  } catch {
+      } catch {
         // Fallback provider: ipwho.is
         try {
           const res2 = await fetchWithTimeout("https://ipwho.is/", 6000);
@@ -114,7 +122,6 @@ const Details = () => {
             const data2 = await res2.json();
             if (data2 && data2.success !== false) {
               newCountry = data2?.country_code || null;
-             
             }
           }
         } catch {
@@ -127,7 +134,7 @@ const Details = () => {
         const cached = localStorage.getItem(COUNTRY_CACHE_KEY);
         if (cached) {
           setCon((prev) => (prev !== cached ? cached : prev));
-         
+
           setIsLoading(false);
           return;
         }
@@ -147,7 +154,6 @@ const Details = () => {
       // Cache successful result
       localStorage.setItem(COUNTRY_CACHE_KEY, newCountry);
       localStorage.setItem(COUNTRY_CACHE_AT, String(Date.now()));
-      
 
       setIsLoading(false);
     } catch (error) {
@@ -156,7 +162,6 @@ const Details = () => {
       const cached = localStorage.getItem("userCountry");
       if (cached) {
         setCon((prev) => (prev !== cached ? cached : prev));
-        
       }
       setIsLoading(false);
     }
@@ -201,14 +206,12 @@ const Details = () => {
     enabled: !isLoading,
   });
 
-  
   // add to local storage function
   const prod = (c: Course) => {
-   
     const storedData = localStorage.getItem("loca");
     const loca = storedData ? JSON.parse(storedData) : [];
-    const x = loca.find((item: Course) => item._id == c._id)
-    if(x){
+    const x = loca.find((item: Course) => item._id == c._id);
+    if (x) {
       toast.success("Already Added To Cart!", {
         position: "top-right",
         autoClose: 3000,
@@ -225,71 +228,6 @@ const Details = () => {
     loca.push(c);
     localStorage.setItem("loca", JSON.stringify(loca));
     toast.success("Added To Cart!", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        transition: Slide,
-      });
-  };
-
-
-  // Order work from here
-  const order = (c : Course) => {
-    if(!person){
-      toast.error("Please Login First!");
-      return;
-    }
-  
-    console.log(c)
-    const price = con === "BD" 
-    ? (c.priceBDT || 0) 
-    : (c.priceUSD || 0);
-    const orderData : OrderDataType = {
-      courseId: c._id,
-      title: c.title,
-      img : c.image,
-      personEmail: person.email || "Unknown",
-      price:  price,
-      currency: con === "BD" ? "BDT" : "USD",
-      orderDate: moment().format('LL'),
-      deliveryStatus: "purchased",
-      drive: c?.drive,
-    
-    }
-
-    const userUpdate={
-       courseId: c._id,
-    }
-
-    mutationUp.mutate(userUpdate)
-    mutationOrder.mutate(orderData)
-
-
-    console.log(orderData);    
-   
-
-  }
-  // Order work end here
-
-  const mutationUp = useMutation({
-    mutationFn : async(user : UserUpdateType)=>{
-      const response = await axiosPub.patch(`/updateUser/${person?.email}`, user)
-      return response.data
-    },
-    
-  }) 
-  const mutationOrder = useMutation({
-    mutationFn : async(orderData : OrderDataType)=>{
-      const response = await axiosPub.post(`/orders`,orderData)
-      return response.data
-    },
-    onSuccess : ()=>{
-      toast.success("Order Placed Successfully!", {
       position: "top-right",
       autoClose: 3000,
       hideProgressBar: false,
@@ -300,13 +238,77 @@ const Details = () => {
       theme: "light",
       transition: Slide,
     });
+  };
+
+  // Order work from here
+  const order = (c: Course) => {
+    if (!person) {
+      toast.error("Please Login First!");
+      return;
     }
-  }) 
+
+    console.log(c, "=============");
+
+    const price = con === "BD" ? c.priceBDT || 0 : c.priceUSD || 0;
+    // const orderData : OrderDataType = {
+    //   courseId: c._id,
+    //   title: c.title,
+    //   img : c.image,
+    //   personEmail: person.email || "Unknown",
+    //   price:  price,
+    //   currency: con === "BD" ? "BDT" : "USD",
+    //   orderDate: moment().format('LL'),
+    //   deliveryStatus: "purchased",
+    //   drive: c?.drive,
+
+    // }
+
+    const orderInfo: Order = {
+      courses: [
+        {
+          name: c?.title,
+          id: c._id,
+          img: c.image,
+          status: "pending",
+          price: con === "BD" ? c?.priceBDT : c?.priceUSD,
+        },
+      ],
+      totalAmount: price,
+      currency: con === "BDT" ? "BDT" : "USD",
+      paymentStatus: "Pending",
+      email: person.email,
+      orderDate: moment().format("LL"),
+      link: "pending",
+    };
+
+    mutationOrder.mutate(orderInfo);
+  };
+  // Order work end here
+
+  const mutationOrder = useMutation({
+    mutationFn: async (orderData: Order) => {
+      const response = await axiosPub.post(`/finalorders`, orderData);
+      return response.data;
+    },
+    onSuccess: () => {
+      toast.success("Order Placed Successfully!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Slide,
+      });
+    },
+  });
 
   // SEBL WORK START
-  // 
-  // 
-  // 
+  //
+  //
+  //
   // const handleOrderNow = async () => {
   //   if(!person){
   //     toast.error("Please Login First!");
@@ -331,13 +333,12 @@ const Details = () => {
   //     alert("Error initiating payment!");
   //   }
   // };
-  // 
-  // 
-  // 
-  // 
-  // 
+  //
+  //
+  //
+  //
+  //
   // SEBL WORK END
-
 
   return (
     <div>
@@ -347,7 +348,7 @@ const Details = () => {
       {course ? (
         <>
           <div className="poppins min-h-screen bg-background  md:mt-20 lg:mt-0  md:max-w-7xl sm:p-0 md:mx-auto md:px-4  lg:px-8 pt-16 pb-20 lg:pt-20 lg:pb-32">
-               {/* <div className="container mx-auto px-4 py-4 lg:block hidden">
+            {/* <div className="container mx-auto px-4 py-4 lg:block hidden">
                   <button
                     onClick={handleRefreshCountry}
                     className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
@@ -494,13 +495,26 @@ const Details = () => {
                     </div>
 
                     <p className="text-4xl font-bold text-primary mb-6">
-                      {con == "BD" ? <span className="font-semibold text-5xl">BDT </span> : <span className="font-semibold text-5xl">USD </span>} 
-                       {con == "BD" ? course.priceBDT : course.priceUSD}
+                      {con == "BD" ? (
+                        <span className="font-semibold text-5xl">BDT </span>
+                      ) : (
+                        <span className="font-semibold text-5xl">USD </span>
+                      )}
+                      {con == "BD" ? course.priceBDT : course.priceUSD}
                     </p>
 
                     <div className="space-y-3">
-                      <Button onClick={()=> order(course)} className="w-full text-lg h-12">Buy Now</Button>
-                      <Button onClick={()=>prod(course)} variant="outline" className="w-full text-lg h-12">
+                      <Button
+                        onClick={() => order(course)}
+                        className="w-full text-lg h-12"
+                      >
+                        Buy Now
+                      </Button>
+                      <Button
+                        onClick={() => prod(course)}
+                        variant="outline"
+                        className="w-full text-lg h-12"
+                      >
                         <ShoppingCart className="mr-2 h-5 w-5" />
                         Add to Cart
                       </Button>
@@ -663,7 +677,7 @@ const Details = () => {
               </div>
             </div>
           </div>
-           <Footer></Footer>
+          <Footer></Footer>
         </>
       )}
 

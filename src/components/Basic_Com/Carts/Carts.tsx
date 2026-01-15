@@ -1,11 +1,32 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { ShoppingCart, Trash2, Star, Check } from "lucide-react";
 import Nav from "../Navbar/Nav";
 import Footer from "../Footer/Footer";
 import { Slide, toast } from "react-toastify";
+import { AuthContext } from "@/components/Authentication_Work/AuthProvider/AuthProvider";
+import moment from "moment";
+import { useMutation } from "@tanstack/react-query";
+import useAxiosPublic from "@/url/useAxiosPublic";
 import { Link } from "react-router";
+
+type CourseItem = {
+  name: string;
+  id: string;
+  price: number;
+  img: string;
+};
+
+type CartInfo = {
+  courses: CourseItem[];
+  totalAmount: number;
+  currency: "BDT" | "USD";
+  paymentStatus: "Pending" | "Paid" | "Failed";
+  email: string | null;
+  orderDate: string;
+  link: string;
+};
 
 interface Course {
   _id: string;
@@ -26,55 +47,33 @@ interface Course {
 }
 
 export default function Carts() {
-  // const [data, setdata] = useState<CartItem[]>([
-  //   {
-  //     id: 1,
-  //     title: "Advanced React Patterns",
-  //     instructor: "Sarah Chen",
-  //     price: 99.99,
-  //     originalPrice: 149.99,
-  //     image: "/react-course.jpg",
-  //     rating: 4.8,
-  //     students: 12500,
-  //   },
-  //   {
-  //     id: 2,
-  //     title: "Next.js Mastery Course",
-  //     instructor: "John Smith",
-  //     price: 129.99,
-  //     originalPrice: 199.99,
-  //     image: "/nextjs-course.jpg",
-  //     rating: 4.9,
-  //     students: 8300,
-  //   },
-  //   {
-  //     id: 3,
-  //     title: "TypeScript for Professionals",
-  //     instructor: "Emma Wilson",
-  //     price: 79.99,
-  //     originalPrice: 129.99,
-  //     image: "/typescript-course.jpg",
-  //     rating: 4.7,
-  //     students: 6200,
-  //   },
-  // ]);
-
-  // const removeItem = (id: number) => {
-  //   alert("Remove functionality is not implemented in this demo.");
-  // };
-
-  // const subtotal = data.reduce((sum, item) => sum + item.price, 0);
-  // const tax = subtotal * 0.1;
-  // const total = subtotal + tax;
+  const authContext = useContext(AuthContext);
+  // FIX 1: Safely access person without throwing an error that crashes the app
+  const person = authContext?.person;
 
   const [data, setData] = useState<Course[]>([]);
   const [con, setCon] = useState("BD");
+  const [mounted, setMounted] = useState(false); // FIX 2: Prevents hydration mismatch
 
   // Load cart data and country from localStorage on mount
   useEffect(() => {
-    const stData = localStorage.getItem("loca");
-    const cartData = stData ? JSON.parse(stData) : [];
-    setData(cartData);
+    setMounted(true); // Indicate component has mounted on client
+    
+    // FIX 3: Safe JSON parsing
+    try {
+      const stData = localStorage.getItem("loca");
+      const cartData = stData ? JSON.parse(stData) : [];
+      
+      // Double check if it's actually an array
+      if (Array.isArray(cartData)) {
+        setData(cartData);
+      } else {
+        setData([]);
+      }
+    } catch (error) {
+      console.error("Error loading cart:", error);
+      setData([]); // Fallback to empty to prevent crash
+    }
 
     // Get country from localStorage (set by Details page)
     const country = localStorage.getItem("userCountry") || "BD";
@@ -83,11 +82,45 @@ export default function Carts() {
 
   // Remove item from cart
   const removeItem = (id: string) => {
-   
     const updatedCart = data.filter((item) => item._id !== id);
     setData(updatedCart);
     localStorage.setItem("loca", JSON.stringify(updatedCart));
     toast.success("Item Removed From Cart!", {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      transition: Slide,
+    });
+  };
+
+
+  const getPrice = (item: Course) => {
+    const rawPrice = con === "BD" ? item.priceBDT : item.priceUSD;
+    // convert to number
+    const finalPrice = Number(rawPrice);
+    return isNaN(finalPrice) ? 0 : finalPrice;
+  };
+
+  // Calculate totals
+  const subtotal = data.reduce((sum, item) => sum + getPrice(item), 0);
+  const tax = subtotal * 0.1;
+  const total = subtotal + tax;
+
+  const axiosPub = useAxiosPublic();
+  const mutationUp = useMutation({
+    mutationFn: async (cartInfoo: CartInfo) => {
+      const res = await axiosPub.post('/finalorders', cartInfoo);
+      return res.data;
+    },
+    onSuccess: () => {
+      localStorage.setItem('loca', JSON.stringify([]));
+      setData([]);
+      toast.success("Order placed successfully!", {
         position: "top-right",
         autoClose: 3000,
         hideProgressBar: false,
@@ -98,17 +131,50 @@ export default function Carts() {
         theme: "light",
         transition: Slide,
       });
+    }
+  });
+
+  // proceed to checkout
+  const ProceedToCheckout = () => {
+    if (!person) {
+      toast.error("Please log in to proceed to checkout!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Slide,
+      });
+      return;
+    }
+
+    const selectedData = data.map((item) => ({
+      name: item?.title,
+      id: item._id,
+      price: con === "BD" ? item.priceBDT : item.priceUSD,
+      img: item.image,
+      status: "pending"
+    }));
+
+    const cartInfo: CartInfo = {
+      courses: selectedData,
+      totalAmount: total,
+      currency: con === "BD" ? "BDT" : "USD",
+      paymentStatus: "Pending",
+      email: person.email,
+      orderDate: moment().format('LL'),
+      link: 'pending',
+    };
+
+    console.log(cartInfo);
+    mutationUp.mutate(cartInfo);
   };
 
-  // Helper function to get price based on country
-  const getPrice = (item: Course) => {
-    return con === "BD" ? item.priceBDT : item.priceUSD;
-  };
-
-  // Calculate totals
-  const subtotal = data.reduce((sum, item) => sum + getPrice(item), 0);
-  const tax = subtotal * 0.1;
-  const total = subtotal + tax;
+  // FIX 4: Don't render until mounted to prevent hydration errors/white screen
+  if (!mounted) return null;
 
   return (
     <div>
@@ -142,86 +208,89 @@ export default function Carts() {
               <p className="text-sm sm:text-base text-gray-600 mb-6">
                 Start learning by adding courses to your cart
               </p>
-              <button className="bg-black text-white px-4 sm:px-6 py-2 rounded-lg font-medium hover:bg-gray-800 transition text-sm sm:text-base">
-                Browse Courses
-              </button>
+              <Link to="/allproducts">
+                <button className="bg-black text-white px-4 sm:px-6 py-2 rounded-lg font-medium hover:bg-gray-800 transition text-sm sm:text-base">
+                  Browse Courses
+                </button>
+              </Link>
             </div>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
               {/* Cart Items */}
               <div className="lg:col-span-2">
                 <div className="space-y-3 sm:space-y-4">
-                  {data.map((item : Course) => (
-                    <Link to={`/d/${item._id}`}>
-                    <div
-                      key={item.id}
-                      className="flex flex-col sm:flex-row gap-3 sm:gap-4 p-3 sm:p-4 border border-gray-200 rounded-lg bg-white hover:shadow-md transition"
-                    >
-                      {/* Course Image */}
-                      <div className="relative w-full sm:w-24 sm:h-24 h-40 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
-                        <img
-                          src={item.image || "/placeholder.svg"}
-                          alt={item.title}
-                          className="w-full h-full object-cover"
-                        />
-                        
-                      </div>
+                  {data.map((item: Course) => (
+                    <Link key={item._id} to={`/d/${item._id}`}>
+                      <div
+                        className="flex flex-col sm:flex-row gap-3 sm:gap-4 p-3 sm:p-4 border border-gray-200 rounded-lg bg-white hover:shadow-md transition"
+                      >
+                        {/* Course Image */}
+                        <div className="relative w-full sm:w-24 sm:h-24 h-40 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
+                          <img
+                            src={item.image || "/placeholder.svg"}
+                            alt={item.title}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
 
-                      {/* Course Details */}
-                      <div className="flex-1 min-w-0 flex flex-col justify-between">
-                        <div>
-                          <h3 className="text-base sm:text-lg font-semibold text-black line-clamp-2">
-                            {item.title}
-                          </h3>
-                          <p className="text-xs sm:text-sm text-gray-600 mb-2">
-                            by {item.instructor}
-                          </p>
+                        {/* Course Details */}
+                        <div className="flex-1 min-w-0 flex flex-col justify-between">
+                          <div>
+                            <h3 className="text-base sm:text-lg font-semibold text-black line-clamp-2">
+                              {item.title}
+                            </h3>
+                            <p className="text-xs sm:text-sm text-gray-600 mb-2">
+                              by {item.instructor}
+                            </p>
 
-                          {/* Rating and Students */}
-                          <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-600 mb-3">
-                            <div className="flex items-center gap-1">
-                              <Star className="w-3 sm:w-4 h-3 sm:h-4 fill-yellow-400 text-yellow-400" />
-                              <span className="font-medium text-black">
-                                {item.rating}
+                            {/* Rating and Students */}
+                            <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-600 mb-3">
+                              <div className="flex items-center gap-1">
+                                <Star className="w-3 sm:w-4 h-3 sm:h-4 fill-yellow-400 text-yellow-400" />
+                                <span className="font-medium text-black">
+                                  {item.rating}
+                                </span>
+                              </div>
+                              <span className="whitespace-nowrap">
+                                ({item.students.toLocaleString()} students)
                               </span>
                             </div>
-                            <span className="whitespace-nowrap">
-                              ({item.students.toLocaleString()} students)
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Price and Remove Button */}
-                        <div className="flex items-center justify-between gap-2">
-                          <div className="flex items-center gap-2">
-                            <span className="text-lg sm:text-xl font-bold text-black">
-                              {con === "BD" ? "TK" : "$"}{getPrice(item).toFixed(2)}
-                            </span>
-                            
                           </div>
 
-                          {/* Remove Button */}
-                          <button
-                            onClick={() => removeItem(item._id)}
-                            className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition flex-shrink-0"
-                            aria-label="Remove item"
-                          >
-                            <Trash2 className="w-4 sm:w-5 h-4 sm:h-5" />
-                          </button>
+                          {/* Price and Remove Button */}
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="flex items-center gap-2">
+                              <span className="text-lg sm:text-xl font-bold text-black">
+                                {con === "BD" ? "TK" : "$"}
+                                {getPrice(item).toFixed(2)}
+                              </span>
+                            </div>
+
+                            {/* Remove Button */}
+                            <button
+                              onClick={(e) => {
+                                e.preventDefault();
+                                removeItem(item._id);
+                              }}
+                              className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition flex-shrink-0"
+                              aria-label="Remove item"
+                            >
+                              <Trash2 className="w-4 sm:w-5 h-4 sm:h-5" />
+                            </button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    
-                    
                     </Link>
                   ))}
                 </div>
 
                 {/* Continue Shopping */}
                 <div className="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-gray-200">
-                  <button className="text-black font-medium hover:text-gray-600 transition text-sm sm:text-base">
-                    ← Continue Shopping
-                  </button>
+                  <Link to="/allproducts">
+                    <button className="text-black font-medium hover:text-gray-600 transition text-sm sm:text-base">
+                      ← Continue Shopping
+                    </button>
+                  </Link>
                 </div>
               </div>
 
@@ -239,13 +308,15 @@ export default function Carts() {
                         Subtotal ({data.length} courses)
                       </span>
                       <span className="font-medium text-black">
-                        {con === "BD" ? "TK" : "$"}{subtotal.toFixed(2)}
+                        {con === "BD" ? "TK" : "$"}
+                        {subtotal.toFixed(2)}
                       </span>
                     </div>
                     <div className="flex justify-between text-xs sm:text-sm">
                       <span className="text-gray-600">Tax (10%)</span>
                       <span className="font-medium text-black">
-                        {con === "BD" ? "TK" : "$"}{tax.toFixed(2)}
+                        {con === "BD" ? "TK" : "$"}
+                        {tax.toFixed(2)}
                       </span>
                     </div>
                   </div>
@@ -256,19 +327,25 @@ export default function Carts() {
                       Total
                     </span>
                     <span className="text-xl sm:text-2xl font-bold text-black">
-                      {con === "BD" ? "TK" : "$"}{total.toFixed(2)}
+                      {con === "BD" ? "TK" : "$"}
+                      {total.toFixed(2)}
                     </span>
                   </div>
 
                   {/* Checkout Button */}
-                  <button className="w-full bg-black text-white py-2.5 sm:py-3 rounded-lg font-semibold hover:bg-gray-800 transition mb-2 sm:mb-3 text-sm sm:text-base">
+                  <button
+                    onClick={() => ProceedToCheckout()}
+                    className="w-full bg-black text-white py-2.5 sm:py-3 rounded-lg font-semibold hover:bg-gray-800 transition mb-2 sm:mb-3 text-sm sm:text-base"
+                  >
                     Proceed to Checkout
                   </button>
 
                   {/* Continue Shopping */}
-                  <button className="w-full border border-gray-300 text-black py-2.5 sm:py-3 rounded-lg font-medium hover:bg-gray-50 transition text-sm sm:text-base">
-                    Continue Shopping
-                  </button>
+                  <Link to="/allproducts">
+                    <button className="w-full border border-gray-300 text-black py-2.5 sm:py-3 rounded-lg font-medium hover:bg-gray-50 transition text-sm sm:text-base">
+                      Continue Shopping
+                    </button>
+                  </Link>
 
                   {/* Benefits */}
                   <div className="mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-gray-200 space-y-2 sm:space-y-3">
