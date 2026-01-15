@@ -203,23 +203,25 @@ const EnrolledCourses = () => {
                 {selectedCourse.name}
               </h3>
 
-              <div className=" text-xl font-bold mb-6">
-                {selectedCourse?.drive ? (
+              <div className=" text-sm text-gray-600 mb-6">
+                {selectedCourse?.downloadLink ? (
                   <span>
-                    Drive Link :{" "}
-                    <Link to={selectedCourse.drive}>
-                      <span className="text-indigo-600">Click to Learn</span>
-                    </Link>
+                    Your Learning Meterial Is Live Continue Learning.
                   </span>
                 ) : (
                   <span className="text-red-600">No Drive Link Available. Wait for it!</span>
                 )}
               </div>
-              <div className="space-y-3">
-                <button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-indigo-200">
+              <div className="space-y-3 ">
+                {
+                  selectedCourse?.downloadLink ? <Link to={selectedCourse?.downloadLink}><button className="mb-2 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-indigo-200">
+                  <PlayCircle className="w-5 h-5" />
+                  Start Watching Now
+                </button> </Link> : <button className="mb-2 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-indigo-200">
                   <PlayCircle className="w-5 h-5" />
                   Start Watching Now
                 </button>
+                }
 
                 <Link to={`/d/${selectedCourse.id}`}>
                   <button

@@ -27,7 +27,7 @@ export default function Profile() {
   }
   const { person } = auth;
 
-  const {data} = useQuery({
+  const {data } = useQuery({
     queryKey : ['user-profile', person?.email],
     queryFn : async()=>{
       const res = await axiosPub.get(`userP/${person?.email}`);

@@ -118,26 +118,7 @@ export function RegistrationForm() {
       console.error(error);
     }
   };
-  const GO = async () => {
-    try {
-      const result = await GoogleS(); // result.user contains all info
-      const user = result.user;
-
-      const name = user.displayName;
-      const email = user.email;
-
-      const u: I = {
-        name: name || "Unknown",
-        email: email || "",
-        role: "user",
-      };
-
-      await mutateAsync(u);
-    } catch (e) {
-      toast.error("Sign in Failed with google!");
-      console.log(e);
-    }
-  };
+ 
 
   const { mutateAsync } = useMutation({
     mutationFn: async (newUser: I) => {
@@ -355,15 +336,7 @@ export function RegistrationForm() {
                 </div>
               </div>
 
-              <Button
-                type="button"
-                variant="outline"
-                className="w-full h-11 border-input hover:bg-accent bg-transparent"
-                onClick={GO}
-              >
-                <Chrome className="w-5 h-5 mr-2" />
-                Sign up with Google
-              </Button>
+             
             </form>
 
             {/* Sign In Link */}
