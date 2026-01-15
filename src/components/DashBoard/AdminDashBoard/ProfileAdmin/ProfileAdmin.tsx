@@ -25,6 +25,12 @@ export default function ProfileAdmin() {
       path: "/admin/dashboard",
     },
     {
+      id: "PendingWork",
+      label: "Pending Work",
+      icon: "⏳",
+      path: "/admin/dashboard/pendings",
+    },
+    {
       id: "instructors",
       label: "Instructors",
       icon: "👥",

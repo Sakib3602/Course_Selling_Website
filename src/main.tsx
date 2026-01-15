@@ -28,6 +28,7 @@ import AllStudents from "./components/DashBoard/AdminDashBoard/AllStudents/AllSt
 import ManageCourses from "./components/DashBoard/AdminDashBoard/ManageCourses/ManageCourses.tsx";
 import UpdateCourse from "./components/DashBoard/AdminDashBoard/ManageCourses/UpdateCourse.tsx";
 import AllProduct from "./components/Basic_Com/ALLPRODUCT/AllProduct.tsx";
+import PendingWork from "./components/DashBoard/AdminDashBoard/PendingWork/PendingWork.tsx";
 
 const queryClient = new QueryClient();
 createRoot(document.getElementById("root")!).render(
@@ -68,6 +69,7 @@ createRoot(document.getElementById("root")!).render(
             <Route path="/admin/dashboard/students" element={<AllStudents></AllStudents>} />
             <Route path="/admin/dashboard/CourseAll" element={<ManageCourses></ManageCourses>} />
             <Route path="/admin/dashboard/updateCourse" element={<UpdateCourse></UpdateCourse>} />
+            <Route path="/admin/dashboard/pendings" element={<PendingWork></PendingWork>} />
           </Route>
         </Routes>
 

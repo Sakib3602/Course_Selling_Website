@@ -45,6 +45,8 @@ const EnrolledCourses = () => {
     enabled: !!person?.email,
   });
 
+  console.log(data)
+
   // --- Handlers ---
   const openModal = (course: OrderDataType) => {
     console.log(course);
