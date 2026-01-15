@@ -4,7 +4,7 @@ import { useContext, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Eye, EyeOff, Chrome } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import Nav from "@/components/Basic_Com/Navbar/Nav";
 import { Slide, ToastContainer, toast } from "react-toastify";
 import { AuthContext } from "../AuthProvider";
@@ -30,7 +30,7 @@ export function RegistrationForm() {
       "AuthContext is not available. Wrap your app with <AuthProvider>."
     );
   }
-  const { creatPerson, out, GoogleS } = auth;
+  const { creatPerson, out} = auth;
   const navigate = useNavigate();
 
   const Regi = async (e: React.FormEvent<HTMLFormElement>) => {

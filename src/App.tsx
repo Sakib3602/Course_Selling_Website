@@ -5,6 +5,7 @@ import Footer from "./components/Basic_Com/Footer/Footer";
 // import Details from "./components/Basic_Com/Details/Details";
 import Hero from "./components/Basic_Com/Hero/Hero";
 import Nav from "./components/Basic_Com/Navbar/Nav";
+import Premium from "./components/Basic_Com/Premium/Premium";
 // import { Review } from "./components/Basic_Com/Review/Review";
 // import ScrollValo from "./components/Basic_Com/ScrollValo/ScrollValo";
 
@@ -66,6 +67,7 @@ function App() {
           <AboutUs></AboutUs>
           {/* <ScrollValo></ScrollValo> */}
           <AllProduct></AllProduct>
+          <Premium></Premium>
           <Faq></Faq>
           {/* <Review></Review> */}
 

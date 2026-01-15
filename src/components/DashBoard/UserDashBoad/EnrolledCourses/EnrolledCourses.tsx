@@ -13,7 +13,7 @@ import { useContext, useState } from "react";
 import { Link } from "react-router";
 
 interface OrderDataType {
-  drive: string;
+  downloadLink: string;
   id: string;
   orderDate: string;
   name: string;

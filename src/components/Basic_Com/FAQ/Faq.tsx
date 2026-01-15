@@ -1,9 +1,18 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { ChevronDown, Search } from "lucide-react";
+import { useState, useRef } from "react";
+import { ChevronDown, Search, HelpCircle, MessageCircle, ArrowRight } from "lucide-react";
 
-const faqData = [
+// --- Types ---
+interface FaqItem {
+  id: number;
+  category: string;
+  question: string;
+  answer: string;
+}
+
+// --- Data ---
+const faqData: FaqItem[] = [
   {
     id: 1,
     category: "Getting Started",
@@ -14,125 +23,110 @@ const faqData = [
   {
     id: 2,
     category: "Getting Started",
-    question: "Do I need any prerequisites to start learning?",
+    question: "Do I need any prerequisites?",
     answer:
-      "Most of our courses are designed for beginners and don't require prior knowledge. However, some advanced courses may recommend foundational knowledge. Each course page clearly lists any prerequisites, so you can choose courses that match your skill level.",
+      "Most of our courses are designed for beginners and don't require prior knowledge. However, some advanced courses may recommend foundational knowledge. Each course page clearly lists any prerequisites.",
   },
   {
     id: 3,
     category: "Getting Started",
-    question: "Can I access courses on mobile devices?",
+    question: "Can I access courses on mobile?",
     answer:
       "Our platform is fully responsive and works seamlessly on smartphones, tablets, and desktops. You can download course materials for offline access on our mobile app, available on iOS and Android.",
   },
   {
     id: 4,
-    category: "Payments & Billing",
+    category: "Payments",
     question: "What payment methods do you accept?",
     answer:
       "We accept all major credit cards (Visa, Mastercard, American Express), PayPal, and various digital wallets. All transactions are secure and encrypted. We also offer flexible payment plans for certain courses.",
   },
-
   {
     id: 6,
-    category: "Payments & Billing",
-    question: "Do you offer discounts or promotional codes?",
+    category: "Payments",
+    question: "Do you offer discounts?",
     answer:
       "We frequently offer seasonal discounts and promotional codes. Subscribe to our newsletter to stay updated on special offers. We also provide discounts for bulk purchases and corporate training programs.",
   },
   {
-    id: 7,
-    category: "Course Content",
-    question: "How long does it take to complete a course?",
-    answer:
-      "Course duration varies depending on the subject and depth. Most courses range from 4 to 12 weeks of study. However, you can learn at your own pace—there are no strict deadlines. You have lifetime access to course materials.",
-  },
-  {
     id: 8,
-    category: "Course Content",
-    question: "Will I receive a certificate upon completion?",
+    category: "Certificates",
+    question: "Will I receive a certificate?",
     answer:
       "Yes! Upon completing all course modules and passing the final assessment, you'll receive a professional certificate. These certificates are recognized by industry leaders and can be added to your LinkedIn profile and resume.",
   },
   {
-    id: 9,
-    category: "Course Content",
-    question: "Can I download course materials?",
-    answer:
-      "Most course materials including videos, PDFs, and resources can be downloaded for offline access. Some interactive content may require an internet connection. Check individual course pages for specific download options.",
-  },
-  {
     id: 10,
     category: "Support",
-    question: "How can I get help if I'm stuck on a topic?",
+    question: "How can I get help if I'm stuck?",
     answer:
-      "We offer multiple support channels: live chat with instructors, community forums where you can ask peers, detailed FAQ sections, and email support. Most questions are answered within 24 hours. Premium members get priority support.",
-  },
-  {
-    id: 11,
-    category: "Support",
-    question: "Is there a community or forum to connect with other students?",
-    answer:
-      "Yes! Each course has a dedicated community forum where students can discuss topics, share projects, and help each other. We also host monthly live Q&A sessions with instructors and networking events for our community members.",
+      "We offer multiple support channels: live chat with instructors, community forums where you can ask peers, detailed FAQ sections, and email support. Most questions are answered within 24 hours.",
   },
 ];
 
+// --- Individual FAQ Card Component ---
 function FAQItem({
   item,
   isExpanded,
   onToggle,
 }: {
-  item: (typeof faqData)[0];
+  item: FaqItem;
   isExpanded: boolean;
   onToggle: () => void;
 }) {
-  const [isAnimating, setIsAnimating] = useState(false);
-
-  useEffect(() => {
-    if (isExpanded) {
-      setIsAnimating(true);
-    } else {
-      const timer = setTimeout(() => setIsAnimating(false), 300);
-      return () => clearTimeout(timer);
-    }
-  }, [isExpanded]);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div className="border-b border-gray-200 last:border-b-0">
+    <div
+      className={`group rounded-2xl border transition-all duration-300 ${
+        isExpanded
+          ? "bg-white border-amber-200 shadow-xl shadow-amber-900/5 ring-1 ring-amber-100"
+          : "bg-white border-slate-200 shadow-sm hover:border-amber-200 hover:shadow-md"
+      }`}
+    >
       <button
         onClick={onToggle}
-        className="flex w-full items-center justify-between px-6 py-4 text-left transition-colors duration-200 hover:bg-gray-50"
+        className="flex w-full items-center justify-between px-6 py-5 text-left focus:outline-none"
       >
-        <div className="flex-1">
-          <h3 className="text-base font-medium text-gray-800 leading-tight">
-            {item.question}
-          </h3>
-        </div>
-        <ChevronDown
-          className={`ml-4 h-5 w-5 flex-shrink-0 text-gray-600 transition-transform duration-300 ${
-            isExpanded ? "rotate-180" : ""
-          }`}
-        />
-      </button>
-
-      {isAnimating && (
-        <div
-          className={`overflow-hidden transition-all duration-300 ${
-            isExpanded ? "max-h-96" : "max-h-0"
+        <span
+          className={`text-lg font-semibold transition-colors duration-300 ${
+            isExpanded ? "text-slate-900" : "text-slate-700 group-hover:text-amber-700"
           }`}
         >
-          <div className="border-t border-gray-100 px-6 py-4 text-gray-600 leading-relaxed text-sm">
-            {item.answer}
-          </div>
+          {item.question}
+        </span>
+        <div
+          className={`ml-4 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full transition-all duration-300 ${
+            isExpanded
+              ? "bg-gradient-to-r from-amber-500 to-yellow-600 text-white rotate-180"
+              : "bg-slate-100 text-slate-500 group-hover:bg-amber-50 group-hover:text-amber-600"
+          }`}
+        >
+          <ChevronDown className="h-5 w-5" />
         </div>
-      )}
+      </button>
+
+      <div
+        ref={contentRef}
+        style={{
+          maxHeight: isExpanded ? `${contentRef.current?.scrollHeight}px` : "0px",
+          opacity: isExpanded ? 1 : 0,
+        }}
+        className="overflow-hidden transition-all duration-500 ease-in-out"
+      >
+        <div className="px-6 pb-6 pt-0">
+          <p className="text-base text-slate-500 leading-relaxed border-t border-slate-100 pt-4">
+            {item.answer}
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
 
 export default function Faq() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [expandedId, setExpandedId] = useState<number | null>(1); // Default open first one
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const categories = Array.from(new Set(faqData.map((item) => item.category)));
@@ -147,66 +141,87 @@ export default function Faq() {
   });
 
   return (
-    <div className="poppins min-h-screen bg-[#ffffff]">
-      {/* Header */}
-      <header className="border-b border-gray-200 bg-white">
-        <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="mb-4 text-4xl font-[600] tracking-tight text-gray-900 sm:text-4xl font-poppins">
-              Frequently Asked Questions
-            </h1>
-            <p className="mx-auto max-w-2xl text-lg text-gray-600">
-              Find answers to common questions about our courses, enrollment,
-              payments, and support.
-            </p>
-          </div>
-        </div>
-      </header>
+    <section className="relative min-h-screen bg-slate-50 selection:bg-amber-100 selection:text-amber-900 overflow-hidden">
+      
+      {/* --- Background Effects (Matching AllProduct) --- */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-amber-100/40 rounded-full blur-[120px] opacity-60" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#e2e8f0_1px,transparent_1px),linear-gradient(to_bottom,#e2e8f0_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-40"></div>
+      </div>
 
-      <main className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
-        {/* Search Section */}
-        <div className="mb-10">
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+      <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
+        
+        {/* --- Header --- */}
+        <div className="text-center mb-12">
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-amber-200 bg-white shadow-sm mb-6 transition-transform hover:scale-105 cursor-default">
+            <HelpCircle className="w-3.5 h-3.5 text-amber-600" />
+            <span className="text-amber-700 text-xs font-bold tracking-[0.2em] uppercase">
+              Help Center
+            </span>
+          </div>
+
+          <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 mb-6 leading-tight">
+            Frequently Asked <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 via-yellow-600 to-amber-700">
+              Questions
+            </span>
+          </h1>
+          
+          <p className="mx-auto max-w-2xl text-lg text-slate-600 leading-relaxed">
+            Everything you need to know about the product and billing. 
+            Can’t find the answer you’re looking for? Please chat to our friendly team.
+          </p>
+        </div>
+
+        {/* --- Search & Filter --- */}
+        <div className="mb-12 space-y-8">
+          {/* Search Bar */}
+          <div className="relative max-w-2xl mx-auto">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <Search className="h-5 w-5 text-slate-400" />
+            </div>
             <input
               type="text"
-              placeholder="Search questions..."
+              placeholder="Search for answers..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-lg border border-gray-200 bg-white py-3 pl-12 pr-4 text-gray-900 placeholder-gray-400 shadow-sm transition-all duration-200 focus:border-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200 font-poppins"
+              className="block w-full pl-11 pr-4 py-4 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all duration-200"
             />
+            {/* Decorative shadow for input */}
+            <div className="absolute -inset-1 bg-gradient-to-r from-amber-500 to-amber-200 rounded-xl blur opacity-20 -z-10 transition duration-200"></div>
+          </div>
+
+          {/* Category Tabs */}
+          <div className="flex flex-wrap justify-center gap-2 md:gap-3">
+            <button
+              onClick={() => setSelectedCategory(null)}
+              className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${
+                selectedCategory === null
+                  ? "bg-slate-900 text-white shadow-lg shadow-slate-900/20 scale-105"
+                  : "bg-white text-slate-600 border border-slate-200 hover:border-amber-300 hover:text-amber-700"
+              }`}
+            >
+              All Topics
+            </button>
+            {categories.map((category) => (
+              <button
+                key={category}
+                onClick={() => setSelectedCategory(category)}
+                className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${
+                  selectedCategory === category
+                    ? "bg-gradient-to-r from-amber-500 to-yellow-600 text-white shadow-lg shadow-amber-500/25 scale-105"
+                    : "bg-white text-slate-600 border border-slate-200 hover:border-amber-300 hover:text-amber-700"
+                }`}
+              >
+                {category}
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* Category Filters */}
-        <div className="mb-8 flex flex-wrap gap-2">
-          <button
-            onClick={() => setSelectedCategory(null)}
-            className={`px-4 py-2 text-sm font-medium transition-colors duration-200 font-poppins ${
-              selectedCategory === null
-                ? "text-gray-900"
-                : "text-gray-600 hover:text-gray-900"
-            }`}
-          >
-            All Topics
-          </button>
-          {categories.map((category) => (
-            <button
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              className={`px-4 py-2 text-sm font-medium transition-colors duration-200 font-poppins ${
-                selectedCategory === category
-                  ? "text-gray-900"
-                  : "text-gray-600 hover:text-gray-900"
-              }`}
-            >
-              {category}
-            </button>
-          ))}
-        </div>
-
-        {/* FAQ Items */}
-        <div className="rounded-lg border border-gray-200 bg-white overflow-hidden">
+        {/* --- FAQ Grid --- */}
+        <div className="space-y-4 max-w-3xl mx-auto">
           {filteredFAQ.length > 0 ? (
             filteredFAQ.map((item) => (
               <FAQItem
@@ -219,29 +234,41 @@ export default function Faq() {
               />
             ))
           ) : (
-            <div className="p-12 text-center">
-              <p className="text-gray-600 text-base font-poppins">
-                No questions found matching your search. Try different keywords
-                or browse all topics.
-              </p>
+            <div className="text-center py-12 bg-white rounded-2xl border border-dashed border-slate-300">
+              <div className="bg-slate-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                 <Search className="w-8 h-8 text-slate-400" />
+              </div>
+              <h3 className="text-lg font-medium text-slate-900">No matching questions</h3>
+              <p className="text-slate-500 mt-1">Try adjusting your search terms or browse all categories.</p>
             </div>
           )}
         </div>
 
-        {/* CTA Section */}
-        <div className="mt-12 text-center">
-          <h2 className="poppins mb-3 text-2xl font-bold text-gray-900 font-poppins">
-            Still have questions?
-          </h2>
-          <p className="mb-6 text-gray-600 text-base font-poppins">
-            Can't find the answer you're looking for? Our support team is here
-            to help you 24/7.
-          </p>
-          <button className="rounded-md bg-[#FFB900] px-6 py-2.5 font-medium text-white transition-all duration-200 hover:bg-[#ffbb00] active:scale-95 font-poppins">
-            Contact Support
-          </button>
+        {/* --- CTA Footer --- */}
+        <div className="mt-20 relative overflow-hidden rounded-3xl bg-slate-900 px-6 py-12 shadow-2xl shadow-slate-900/20 sm:px-12 lg:px-16">
+          {/* Abstract glow inside the card */}
+          <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-amber-500/20 blur-3xl"></div>
+          <div className="absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-amber-500/20 blur-3xl"></div>
+          
+          <div className="relative flex flex-col items-center text-center z-10">
+            <div className="bg-white/10 p-3 rounded-2xl mb-6 backdrop-blur-sm border border-white/10">
+               <MessageCircle className="h-8 w-8 text-amber-400" />
+            </div>
+            
+            <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl mb-4">
+              Still have questions?
+            </h2>
+            <p className="mx-auto max-w-xl text-lg text-slate-300 mb-8">
+              Can't find the answer you're looking for? Our dedicated support team is here to help you unlock your full potential.
+            </p>
+            <button className="group inline-flex items-center gap-2 rounded-lg bg-white px-8 py-4 text-sm font-bold text-slate-900 transition-all hover:bg-amber-50 hover:text-amber-700">
+              Contact Support
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </button>
+          </div>
         </div>
-      </main>
-    </div>
+
+      </div>
+    </section>
   );
 }

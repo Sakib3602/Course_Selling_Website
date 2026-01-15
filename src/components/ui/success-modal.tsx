@@ -1,14 +1,13 @@
-"use client";
-
 import React, { useState } from "react";
 import Modal from "./modal";
-import Button from "../button/button";
+import { Button } from "./button";
+// import Button from "../button/button";
 
 const SuccessModalView: React.FC = () => {
   const [isSuccessOpen, setIsSuccessOpen] = useState(false);
   const [isCompletionOpen, setIsCompletionOpen] = useState(false);
   const [isAchievementOpen, setIsAchievementOpen] = useState(false);
-
+// 
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap gap-3">

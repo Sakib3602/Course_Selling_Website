@@ -268,7 +268,7 @@ const Details = () => {
           id: c._id,
           img: c.image,
           status: "pending",
-          price: con === "BD" ? c?.priceBDT : c?.priceUSD,
+          price: con === "BD" ? c?.priceBDT || 0 : c?.priceUSD || 0,
         },
       ],
       totalAmount: price,
