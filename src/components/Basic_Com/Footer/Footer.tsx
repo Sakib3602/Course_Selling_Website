@@ -36,7 +36,7 @@ export default function Footer() {
         
         {/* Top Section: Logo & Socials */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-8 mb-16 pb-12 border-b border-white/5">
-          {/* Brand Logo */}
+          {/* EduPro Logo */}
           <div className="flex items-center gap-4 group">
             <div className="relative flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-yellow-700 shadow-lg shadow-amber-900/20 group-hover:scale-105 transition-transform duration-300">
               <span className="text-2xl font-extrabold text-black font-serif">B</span>
@@ -44,7 +44,7 @@ export default function Footer() {
               <div className="absolute inset-0 bg-white/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </div>
             <div>
-              <h3 className="text-2xl font-bold text-white tracking-tight">BRAND</h3>
+              <h3 className="text-2xl font-bold text-white tracking-tight">EduPro</h3>
               <p className="text-[10px] font-bold text-amber-500 tracking-[0.3em] uppercase">Education</p>
             </div>
           </div>
@@ -143,7 +143,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="flex flex-col items-center justify-between gap-6 border-t border-white/5 pt-8 sm:flex-row">
           <p className="text-center text-xs text-slate-500 sm:text-left">
-            © 2026 <span className="text-amber-500 font-bold">BRAND</span>. All rights reserved. 
+            © 2026 <span className="text-amber-500 font-bold">EduPro</span>. All rights reserved. 
             <span className="hidden sm:inline mx-2 text-slate-700">|</span> 
             <Link to="#" className="hover:text-white transition-colors">Privacy Policy</Link>
           </p>

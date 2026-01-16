@@ -23,6 +23,7 @@ const navItems: NavItem[] = [
   { id: "home", path: "/", icon: <Home className="w-5 h-5" />, label: "Home" },
   { id: "profile", path: "/dashboard", icon: <User className="w-5 h-5" />, label: "Profile" },
   { id: "courses", path: "/dashboard/courses", icon: <BookOpen className="w-5 h-5" />, label: "Enrolled Courses" },
+  { id: "premium", path: "/dashboard/premium", icon: <BookOpen className="w-5 h-5" />, label: "MemberShip Facility" },
   { id: "announcements", path: "/dashboard/announcements", icon: <Bell className="w-5 h-5" />, label: "Announcements" },
   { id: "tasks", path: "/dashboard/tasks", icon: <Logs className="w-5 h-5" />, label: "Tasks" },
   { id: "helpdesk", path: "/dashboard/helpdesk", icon: <HelpCircle className="w-5 h-5" />, label: "Support" },
@@ -63,7 +64,7 @@ export default function SideDash({ isOpen, onClose }: SidebarProps) {
       >
         {/* Sidebar Header */}
         <div className="p-6 border-b border-gray-200">
-          <h2 className="poppins font-extrabold text-2xl text-black">Brand</h2>
+          <h2 className="poppins font-extrabold text-2xl text-black">EduPro</h2>
         </div>
 
         {/* Navigation Items */}

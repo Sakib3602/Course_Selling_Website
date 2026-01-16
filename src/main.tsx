@@ -29,6 +29,7 @@ import ManageCourses from "./components/DashBoard/AdminDashBoard/ManageCourses/M
 import UpdateCourse from "./components/DashBoard/AdminDashBoard/ManageCourses/UpdateCourse.tsx";
 import AllProduct from "./components/Basic_Com/ALLPRODUCT/AllProduct.tsx";
 import PendingWork from "./components/DashBoard/AdminDashBoard/PendingWork/PendingWork.tsx";
+import PremiumDas from "./components/DashBoard/UserDashBoad/PremiumDas/PremiumDas.tsx";
 
 const queryClient = new QueryClient();
 createRoot(document.getElementById("root")!).render(
@@ -48,6 +49,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/dashboard" element={<PrivateUserRoute><UserHomeDash /></PrivateUserRoute>}>
             <Route index element={<Profile />} />
             <Route path="/dashboard/courses" element={<EnrolledCourses />} />
+            <Route path="/dashboard/premium" element={<PremiumDas />} />
             <Route path="/dashboard/announcements" element={<Announcements></Announcements>} />
             <Route path="/dashboard/tasks" element={<Tasks></Tasks>} />
               <Route path="/dashboard/helpdesk" element={<Support></Support>} />
