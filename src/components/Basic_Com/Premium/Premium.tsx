@@ -49,7 +49,7 @@ const Premium = () => {
       return response.data;
     },
   });
-  console.log(data.role);
+
 
   const auth = useContext(AuthContext);
   if (!auth) {

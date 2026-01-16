@@ -247,20 +247,8 @@ const Details = () => {
 
     console.log(c, "=============");
 
-    const price = con === "BD" ? c.priceBDT || 0 : c.priceUSD || 0;
-    // const orderData : OrderDataType = {
-    //   courseId: c._id,
-    //   title: c.title,
-    //   img : c.image,
-    //   personEmail: person.email || "Unknown",
-    //   price:  price,
-    //   currency: con === "BD" ? "BDT" : "USD",
-    //   orderDate: moment().format('LL'),
-    //   deliveryStatus: "purchased",
-    //   drive: c?.drive,
-
-    // }
-
+    
+    
     const orderInfo: Order = {
       courses: [
         {
@@ -268,10 +256,10 @@ const Details = () => {
           id: c._id,
           img: c.image,
           status: "pending",
-          price: con === "BD" ? c?.priceBDT || 0 : c?.priceUSD || 0,
+          price: con == "BD" ? conPremium ? Number( course.priceBDT )* 0.8 : Number( course.priceBDT ): conPremium ? Number(course.priceUSD) * 0.8 : Number(course.priceUSD),
         },
       ],
-      totalAmount: price,
+      totalAmount: con == "BD" ? conPremium ? Number( course.priceBDT )* 0.8 : Number( course.priceBDT ): conPremium ? Number(course.priceUSD) * 0.8 : Number(course.priceUSD),
       currency: con === "BDT" ? "BDT" : "USD",
       paymentStatus: "Pending",
       email: person.email,
@@ -302,6 +290,17 @@ const Details = () => {
       });
     },
   });
+  const { data : premiumData } = useQuery({
+    queryKey: ["premium"],
+    queryFn: async () => {
+      const response = await axiosPub.get(`/premium/${person?.email}`);
+      return response.data;
+    },
+  });
+
+  const conPremium = premiumData?.Premium;
+
+  
 
   // SEBL WORK START
   //
@@ -483,60 +482,100 @@ const Details = () => {
 
                 {/* Right Column - Purchase Card */}
                 <div className="lg:col-span-1">
-                  <div className="sticky top-4 bg-card border rounded-lg p-6 shadow-lg">
-                    <div className="aspect-video w-full bg-muted rounded-lg mb-4 overflow-hidden">
-                      <img
-                        src={course.image}
-                        alt={course.title}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
+  <div className="sticky top-4 bg-card border rounded-lg p-6 shadow-lg">
+    {/* Course Image */}
+    <div className="aspect-video w-full bg-muted rounded-lg mb-4 overflow-hidden relative">
+      <img
+        src={course.image}
+        alt={course.title}
+        className="w-full h-full object-cover"
+      />
+      {/* Optional: Overlay Badge on image if Premium */}
+      {conPremium && (
+        <div className="absolute top-2 right-2 bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded-full shadow-md">
+          Premium 20% OFF
+        </div>
+      )}
+    </div>
 
-                    <p className="text-4xl font-bold text-primary mb-6">
-                      {con == "BD" ? (
-                        <span className="font-semibold text-5xl">BDT </span>
-                      ) : (
-                        <span className="font-semibold text-5xl">USD </span>
-                      )}
-                      {con == "BD" ? course.priceBDT : course.priceUSD}
-                    </p>
+    {/* Price Section */}
+    <div className="mb-6">
+      {(() => {
+        // 1. Calculate variables cleanly before rendering
+        const currency = con === "BD" ? "BDT" : "USD";
+        const originalPrice = con === "BD" ? Number( course.priceBDT ): Number(course.priceUSD);
+        // Calculate discounted price if premium, otherwise use original
+        const finalPrice = conPremium ? originalPrice * 0.8 : originalPrice;
 
-                    <div className="space-y-3">
-                      <Button
-                        onClick={() => order(course)}
-                        className="w-full text-lg h-12"
-                      >
-                        Buy Now
-                      </Button>
-                      <Button
-                        onClick={() => prod(course)}
-                        variant="outline"
-                        className="w-full text-lg h-12"
-                      >
-                        <ShoppingCart className="mr-2 h-5 w-5" />
-                        Add to Cart
-                      </Button>
-                    </div>
+        return (
+          <div className="space-y-1">
+            {/* Conditional Premium Badge above price */}
+            {conPremium && (
+              <div className="flex items-center gap-2 mb-2">
+                <span className="bg-blue-100 text-blue-700 border border-blue-200 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                  Membership Active
+                </span>
+                <span className="text-xs text-green-600 font-bold">
+                  20% Saved
+                </span>
+              </div>
+            )}
 
-                    <div className="mt-6 pt-6 border-t space-y-3">
-                      <h3 className="font-semibold mb-3">
-                        This course includes:
-                      </h3>
-                      <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                        <Clock className="h-4 w-4" />
-                        <span>{course.duration} of content</span>
-                      </div>
-                      <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                        <Award className="h-4 w-4" />
-                        <span>Certificate of completion</span>
-                      </div>
-                      <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                        <Users className="h-4 w-4" />
-                        <span>Lifetime access</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+            <div className="flex items-end flex-wrap gap-2">
+              {/* Main Price */}
+              <p className="text-4xl font-bold text-primary">
+                <span className="text-2xl font-semibold text-muted-foreground mr-1">
+                  {currency}
+                </span>
+                {/* Math.round or toFixed(0) creates cleaner numbers */}
+                {Math.round(Number(finalPrice))} 
+              </p>
+
+              {/* Strikethrough Original Price (Only if Premium) */}
+              {conPremium && (
+                <p className="text-lg text-muted-foreground line-through mb-1">
+                   {Math.round(originalPrice)}
+                </p>
+              )}
+            </div>
+          </div>
+        );
+      })()}
+    </div>
+
+    {/* Actions */}
+    <div className="space-y-3">
+      <Button onClick={() => order(course)} className="w-full text-lg h-12">
+        Buy Now
+      </Button>
+      <Button
+        onClick={() => prod(course)}
+        variant="outline"
+        className="w-full text-lg h-12"
+      >
+        <ShoppingCart className="mr-2 h-5 w-5" />
+        Add to Cart
+      </Button>
+    </div>
+
+    {/* Features */}
+    <div className="mt-6 pt-6 border-t space-y-3">
+      <h3 className="font-semibold mb-3">This course includes:</h3>
+      <div className="flex items-center gap-3 text-sm text-muted-foreground">
+        <Clock className="h-4 w-4" />
+        <span>{course.duration} of content</span>
+      </div>
+      <div className="flex items-center gap-3 text-sm text-muted-foreground">
+        <Award className="h-4 w-4" />
+        <span>Certificate of completion</span>
+      </div>
+      <div className="flex items-center gap-3 text-sm text-muted-foreground">
+        <Users className="h-4 w-4" />
+        <span>Lifetime access</span>
+      </div>
+    </div>
+  </div>
+</div>
                 {/* Location Refresh Button */}
                 <div className="container mx-auto px-4 py-4 ">
                   <button

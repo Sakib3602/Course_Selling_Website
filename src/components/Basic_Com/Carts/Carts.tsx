@@ -7,7 +7,8 @@ import Footer from "../Footer/Footer";
 import { Slide, toast } from "react-toastify";
 import { AuthContext } from "@/components/Authentication_Work/AuthProvider/AuthProvider";
 import moment from "moment";
-import { useMutation } from "@tanstack/react-query";
+import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import useAxiosPublic from "@/url/useAxiosPublic";
 import { Link } from "react-router";
 
@@ -58,12 +59,12 @@ export default function Carts() {
   // Load cart data and country from localStorage on mount
   useEffect(() => {
     setMounted(true); // Indicate component has mounted on client
-    
+
     // FIX 3: Safe JSON parsing
     try {
       const stData = localStorage.getItem("loca");
       const cartData = stData ? JSON.parse(stData) : [];
-      
+
       // Double check if it's actually an array
       if (Array.isArray(cartData)) {
         setData(cartData);
@@ -98,6 +99,17 @@ export default function Carts() {
     });
   };
 
+  //
+  const axiosPub = useAxiosPublic();
+  const { data: user } = useQuery({
+    queryKey: ["premium-user"],
+    queryFn: async () => {
+      const response = await axiosPub.get(`/premium/${person?.email}`);
+      return response.data;
+    },
+  });
+
+  console.log(user?.Premium);
 
   const getPrice = (item: Course) => {
     const rawPrice = con === "BD" ? item.priceBDT : item.priceUSD;
@@ -109,16 +121,17 @@ export default function Carts() {
   // Calculate totals
   const subtotal = data.reduce((sum, item) => sum + getPrice(item), 0);
   const tax = subtotal * 0.1;
-  const total = subtotal + tax;
+  const total =
+    user?.Premium === true ? (subtotal + tax) * 0.8 : subtotal + tax;
+  // const total = subtotal + tax;
 
-  const axiosPub = useAxiosPublic();
   const mutationUp = useMutation({
     mutationFn: async (cartInfoo: CartInfo) => {
-      const res = await axiosPub.post('/finalorders', cartInfoo);
+      const res = await axiosPub.post("/finalorders", cartInfoo);
       return res.data;
     },
     onSuccess: () => {
-      localStorage.setItem('loca', JSON.stringify([]));
+      localStorage.setItem("loca", JSON.stringify([]));
       setData([]);
       toast.success("Order placed successfully!", {
         position: "top-right",
@@ -131,7 +144,7 @@ export default function Carts() {
         theme: "light",
         transition: Slide,
       });
-    }
+    },
   });
 
   // proceed to checkout
@@ -156,7 +169,7 @@ export default function Carts() {
       id: item._id,
       price: con === "BD" ? item.priceBDT : item.priceUSD,
       img: item.image,
-      status: "pending"
+      status: "pending",
     }));
 
     const cartInfo: CartInfo = {
@@ -165,13 +178,67 @@ export default function Carts() {
       currency: con === "BD" ? "BDT" : "USD",
       paymentStatus: "Pending",
       email: person.email,
-      orderDate: moment().format('LL'),
-      link: 'pending',
+      orderDate: moment().format("LL"),
+      link: "pending",
     };
 
     console.log(cartInfo);
     mutationUp.mutate(cartInfo);
   };
+    const buyPre = () => {
+    if (!person) {
+      toast.error("Please log in to purchase premium membership!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Slide,
+      });
+      return;
+    }
+    if (user?.Premium === true) {
+      toast.info("You already have a premium membership!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Slide,
+      });
+      return;
+    }
+    mutationUpX.mutate();
+
+  };
+  const queryClient = useQueryClient();
+
+  const mutationUpX = useMutation({
+    mutationFn: async () => {
+      const response = await axiosPub.patch(`/premium/${person?.email}`);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["premium-user"] });
+      toast.success("Premium membership activated successfully!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Slide,
+      });
+    },
+  });
 
   // FIX 4: Don't render until mounted to prevent hydration errors/white screen
   if (!mounted) return null;
@@ -218,49 +285,60 @@ export default function Carts() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
               {/* Cart Items */}
               <div className="lg:col-span-2">
-                <div className="space-y-3 sm:space-y-4">
+                <div className="space-y-4 sm:space-y-5">
                   {data.map((item: Course) => (
                     <Link key={item._id} to={`/d/${item._id}`}>
-                      <div
-                        className="flex flex-col sm:flex-row gap-3 sm:gap-4 p-3 sm:p-4 border border-gray-200 rounded-lg bg-white hover:shadow-md transition"
-                      >
+                      <div className="group relative flex flex-col sm:flex-row gap-4 sm:gap-5 p-4 sm:p-5 border-2 border-gray-200 rounded-2xl bg-gradient-to-br from-white to-gray-50 hover:shadow-xl hover:border-gray-400 transition-all duration-300 hover:-translate-y-1">
                         {/* Course Image */}
-                        <div className="relative w-full sm:w-24 sm:h-24 h-40 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
+                        <div className="relative w-full sm:w-32 sm:h-32 h-48 flex-shrink-0 rounded-xl overflow-hidden bg-gray-100 shadow-md">
                           <img
                             src={item.image || "/placeholder.svg"}
                             alt={item.title}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                           />
+                          {/* Overlay Badge */}
+                          <div className="absolute top-2 right-2 bg-black/80 backdrop-blur-sm text-white text-xs font-bold px-2.5 py-1 rounded-full">
+                            {item.level}
+                          </div>
                         </div>
 
                         {/* Course Details */}
                         <div className="flex-1 min-w-0 flex flex-col justify-between">
                           <div>
-                            <h3 className="text-base sm:text-lg font-semibold text-black line-clamp-2">
+                            <h3 className="text-lg sm:text-xl font-bold text-gray-900 line-clamp-2 mb-2 group-hover:text-black transition-colors">
                               {item.title}
                             </h3>
-                            <p className="text-xs sm:text-sm text-gray-600 mb-2">
-                              by {item.instructor}
+                            <p className="text-sm text-gray-600 mb-3 font-medium">
+                              by <span className="text-gray-900">{item.instructor}</span>
                             </p>
 
                             {/* Rating and Students */}
-                            <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-600 mb-3">
-                              <div className="flex items-center gap-1">
-                                <Star className="w-3 sm:w-4 h-3 sm:h-4 fill-yellow-400 text-yellow-400" />
-                                <span className="font-medium text-black">
+                            <div className="flex flex-wrap items-center gap-4 text-sm mb-3">
+                              <div className="flex items-center gap-1.5 bg-yellow-50 px-3 py-1.5 rounded-full border border-yellow-200">
+                                <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                                <span className="font-bold text-gray-900">
                                   {item.rating}
                                 </span>
                               </div>
-                              <span className="whitespace-nowrap">
-                                ({item.students.toLocaleString()} students)
-                              </span>
+                              <div className="flex items-center gap-1.5 bg-blue-50 px-3 py-1.5 rounded-full border border-blue-200">
+                                <span className="text-xs font-semibold text-blue-900">
+                                  {item.students.toLocaleString()} students
+                                </span>
+                              </div>
+                            </div>
+
+                            {/* Duration Badge */}
+                            <div className="inline-flex items-center gap-2 text-xs text-gray-600 bg-gray-100 px-3 py-1.5 rounded-lg">
+                              <span className="font-medium">Duration:</span>
+                              <span className="font-bold text-gray-900">{item.duration}</span>
                             </div>
                           </div>
 
                           {/* Price and Remove Button */}
-                          <div className="flex items-center justify-between gap-2">
-                            <div className="flex items-center gap-2">
-                              <span className="text-lg sm:text-xl font-bold text-black">
+                          <div className="flex items-center justify-between gap-3 mt-4 pt-4 border-t border-gray-200">
+                            <div className="flex flex-col">
+                              <span className="text-xs text-gray-500 font-medium mb-1">Price</span>
+                              <span className="text-2xl sm:text-3xl font-extrabold text-black">
                                 {con === "BD" ? "TK" : "$"}
                                 {getPrice(item).toFixed(2)}
                               </span>
@@ -272,10 +350,10 @@ export default function Carts() {
                                 e.preventDefault();
                                 removeItem(item._id);
                               }}
-                              className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition flex-shrink-0"
+                              className="group/btn p-3 text-gray-400 hover:text-white hover:bg-red-500 rounded-xl transition-all duration-300 flex-shrink-0 border-2 border-gray-300 hover:border-red-500 shadow-sm hover:shadow-md"
                               aria-label="Remove item"
                             >
-                              <Trash2 className="w-4 sm:w-5 h-4 sm:h-5" />
+                              <Trash2 className="w-5 h-5" />
                             </button>
                           </div>
                         </div>
@@ -285,10 +363,11 @@ export default function Carts() {
                 </div>
 
                 {/* Continue Shopping */}
-                <div className="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-gray-200">
+                <div className="mt-8 sm:mt-10">
                   <Link to="/allproducts">
-                    <button className="text-black font-medium hover:text-gray-600 transition text-sm sm:text-base">
-                      ← Continue Shopping
+                    <button className="group flex items-center gap-2 text-black font-bold hover:text-gray-600 transition-all duration-300 text-base px-5 py-3 bg-gray-100 hover:bg-gray-200 rounded-xl border-2 border-gray-300">
+                      <span className="group-hover:-translate-x-1 transition-transform duration-300">←</span>
+                      <span>Continue Shopping</span>
                     </button>
                   </Link>
                 </div>
@@ -296,76 +375,141 @@ export default function Carts() {
 
               {/* Pricing Summary */}
               <div className="lg:col-span-1">
-                <div className="sticky top-20 sm:top-24 bg-white border border-gray-200 rounded-lg p-4 sm:p-6">
-                  <h2 className="text-lg sm:text-xl font-bold text-black mb-4 sm:mb-6">
-                    Order Summary
-                  </h2>
-
-                  {/* Price Breakdown */}
-                  <div className="space-y-3 sm:space-y-4 mb-4 sm:mb-6 pb-4 sm:pb-6 border-b border-gray-200">
-                    <div className="flex justify-between text-xs sm:text-sm">
-                      <span className="text-gray-600">
-                        Subtotal ({data.length} courses)
-                      </span>
-                      <span className="font-medium text-black">
-                        {con === "BD" ? "TK" : "$"}
-                        {subtotal.toFixed(2)}
-                      </span>
+                <div className="sticky top-20 sm:top-24">
+                  {/* Premium Badge */}
+                  {user?.Premium === true && (
+                    <div className="mb-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-xl p-4 shadow-sm">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="bg-blue-500 rounded-full p-1.5">
+                            <Check className="w-3 h-3 text-white" />
+                          </div>
+                          <span className="text-sm font-bold text-blue-900">
+                            Premium Active
+                          </span>
+                        </div>
+                        <div className="bg-green-100 text-green-700 text-xs font-bold px-3 py-1 rounded-full border border-green-300">
+                          20% OFF
+                        </div>
+                      </div>
                     </div>
-                    <div className="flex justify-between text-xs sm:text-sm">
-                      <span className="text-gray-600">Tax (10%)</span>
-                      <span className="font-medium text-black">
-                        {con === "BD" ? "TK" : "$"}
-                        {tax.toFixed(2)}
-                      </span>
+                  )}
+                  {user?.Premium === false && (
+                    <div className="mb-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-xl p-4 shadow-sm">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="bg-red-500 rounded-full p-1.5">
+                            <Check className="w-3 h-3 text-white" />
+                          </div>
+                          <span className="text-sm font-bold text-blue-900">
+                            Get Premium for 20% OFF
+                          </span>
+                        </div>
+                        <div onClick={() => buyPre()} className="cursor-pointer bg-green-100 text-green-700 text-xs font-bold px-3 py-1 rounded-full border border-green-300">
+                          Upgrade
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  )}
 
-                  {/* Total */}
-                  <div className="flex justify-between items-center mb-4 sm:mb-6">
-                    <span className="text-base sm:text-lg font-semibold text-black">
-                      Total
-                    </span>
-                    <span className="text-xl sm:text-2xl font-bold text-black">
-                      {con === "BD" ? "TK" : "$"}
-                      {total.toFixed(2)}
-                    </span>
-                  </div>
-
-                  {/* Checkout Button */}
-                  <button
-                    onClick={() => ProceedToCheckout()}
-                    className="w-full bg-black text-white py-2.5 sm:py-3 rounded-lg font-semibold hover:bg-gray-800 transition mb-2 sm:mb-3 text-sm sm:text-base"
-                  >
-                    Proceed to Checkout
-                  </button>
-
-                  {/* Continue Shopping */}
-                  <Link to="/allproducts">
-                    <button className="w-full border border-gray-300 text-black py-2.5 sm:py-3 rounded-lg font-medium hover:bg-gray-50 transition text-sm sm:text-base">
-                      Continue Shopping
-                    </button>
-                  </Link>
-
-                  {/* Benefits */}
-                  <div className="mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-gray-200 space-y-2 sm:space-y-3">
-                    <div className="flex items-start gap-2 sm:gap-3">
-                      <Check className="w-4 sm:w-5 h-4 sm:h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                      <span className="text-xs sm:text-sm text-gray-700">
-                        Lifetime access to all courses
-                      </span>
+                  {/* Order Summary Card */}
+                  <div className="bg-gradient-to-br from-gray-50 to-gray-100 border-2 border-gray-300 rounded-2xl p-5 sm:p-7 shadow-lg">
+                    {/* Header */}
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="bg-black rounded-lg p-2">
+                        <ShoppingCart className="w-5 h-5 text-white" />
+                      </div>
+                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
+                        Order Summary
+                      </h2>
                     </div>
-                    <div className="flex items-start gap-2 sm:gap-3">
-                      <Check className="w-4 sm:w-5 h-4 sm:h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                      <span className="text-xs sm:text-sm text-gray-700">
-                        30-day money-back guarantee
-                      </span>
+
+                    {/* Price Breakdown */}
+                    <div className="bg-white rounded-xl p-4 mb-5 shadow-sm">
+                      <div className="space-y-3.5">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-gray-600 font-medium">
+                            Subtotal ({data.length} {data.length === 1 ? 'course' : 'courses'})
+                          </span>
+                          <span className="font-semibold text-gray-900 text-base">
+                            {con === "BD" ? "TK" : "$"}
+                            {subtotal.toFixed(2)}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-gray-600 font-medium">
+                            Tax (10%)
+                          </span>
+                          <span className="font-semibold text-gray-900 text-base">
+                            {con === "BD" ? "TK" : "$"}
+                            {tax.toFixed(2)}
+                          </span>
+                        </div>
+                        
+                        {/* Divider */}
+                        <div className="border-t-2 border-dashed border-gray-300 my-3"></div>
+                        
+                        {/* Total */}
+                        <div className="flex justify-between items-center pt-2">
+                          <span className="text-lg font-bold text-gray-900">
+                            Total Amount
+                          </span>
+                          <span className="text-2xl font-extrabold text-black">
+                            {con === "BD" ? "TK" : "$"}
+                            {total.toFixed(2)}
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                    <div className="flex items-start gap-2 sm:gap-3">
-                      <Check className="w-4 sm:w-5 h-4 sm:h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                      <span className="text-xs sm:text-sm text-gray-700">
-                        Certificate of completion
-                      </span>
+
+                    {/* Action Buttons */}
+                    <div className="space-y-3 mb-5">
+                      <button
+                        onClick={() => ProceedToCheckout()}
+                        className="w-full bg-gradient-to-r from-black to-gray-800 text-white py-3.5 rounded-xl font-bold hover:from-gray-800 hover:to-black transition-all duration-300 shadow-md hover:shadow-xl transform hover:-translate-y-0.5 text-base"
+                      >
+                        Proceed to Checkout →
+                      </button>
+
+                      <Link to="/allproducts">
+                        <button className="w-full border-2 border-gray-300 bg-white text-gray-900 py-3 rounded-xl font-semibold hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 text-base">
+                          Continue Shopping
+                        </button>
+                      </Link>
+                    </div>
+
+                    {/* Benefits Section */}
+                    <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 border border-green-200">
+                      <h3 className="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
+                        <Check className="w-4 h-4 text-green-600" />
+                        What's Included
+                      </h3>
+                      <div className="space-y-2.5">
+                        <div className="flex items-start gap-2.5">
+                          <div className="bg-green-500 rounded-full p-0.5 mt-0.5">
+                            <Check className="w-3 h-3 text-white" />
+                          </div>
+                          <span className="text-xs sm:text-sm text-gray-700 font-medium">
+                            Lifetime access to all courses
+                          </span>
+                        </div>
+                        <div className="flex items-start gap-2.5">
+                          <div className="bg-green-500 rounded-full p-0.5 mt-0.5">
+                            <Check className="w-3 h-3 text-white" />
+                          </div>
+                          <span className="text-xs sm:text-sm text-gray-700 font-medium">
+                            30-day money-back guarantee
+                          </span>
+                        </div>
+                        <div className="flex items-start gap-2.5">
+                          <div className="bg-green-500 rounded-full p-0.5 mt-0.5">
+                            <Check className="w-3 h-3 text-white" />
+                          </div>
+                          <span className="text-xs sm:text-sm text-gray-700 font-medium">
+                            Certificate of completion
+                          </span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>

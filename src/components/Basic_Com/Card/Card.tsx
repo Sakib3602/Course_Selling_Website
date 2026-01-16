@@ -25,6 +25,7 @@ export default function Card({ course }: CourseCardProps) {
   const fullStars = Math.floor(course.rating);
   const hasHalfStar = course.rating % 1 >= 0.5;
 
+  
   return (
     <div
       className="group bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 
@@ -55,11 +56,11 @@ export default function Card({ course }: CourseCardProps) {
                 {course.instructor}
               </span>
             </span>
-            <span className="text-lg font-bold text-gray-900">
-              {typeof course.price === "number"
+            {/* <span className="text-lg font-bold text-gray-900">
+              {typeof course.price === "number" || typeof course.price === "string"
                 ? `$${course.price}`
                 : course.price}
-            </span>
+            </span> */}
           </div>
 
           <div className="flex items-center gap-2">
