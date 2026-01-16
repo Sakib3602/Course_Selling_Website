@@ -31,6 +31,10 @@ import AllProduct from "./components/Basic_Com/ALLPRODUCT/AllProduct.tsx";
 import PendingWork from "./components/DashBoard/AdminDashBoard/PendingWork/PendingWork.tsx";
 import PremiumDas from "./components/DashBoard/UserDashBoad/PremiumDas/PremiumDas.tsx";
 import PremiumReq from "./components/DashBoard/AdminDashBoard/PremiumReq/PremiumReq.tsx";
+import InsHome from "./components/DashBoard/InstractorDashboard/InsHome/InsHome.tsx";
+import InsP from "./components/DashBoard/InstractorDashboard/InsP/InsP.tsx";
+import InsOP from "./components/DashBoard/InstractorDashboard/InsOP/InsOP.tsx";
+import AddTask from "./components/DashBoard/InstractorDashboard/AddTask/AddTask.tsx";
 
 const queryClient = new QueryClient();
 createRoot(document.getElementById("root")!).render(
@@ -75,6 +79,19 @@ createRoot(document.getElementById("root")!).render(
             <Route path="/admin/dashboard/pendings" element={<PendingWork></PendingWork>} />
             <Route path="/admin/dashboard/premiumreq" element={<PremiumReq></PremiumReq>} />
           </Route>
+        </Routes>
+        <Routes>
+          <Route path="/ins/dashboard" element={<InsHome></InsHome>}>
+          <Route index element={<InsOP />} />
+          <Route path="/ins/dashboard/task" element={<AddTask />} />
+
+
+
+
+
+          </Route>
+
+
         </Routes>
 
         {/* Admin Work */}
