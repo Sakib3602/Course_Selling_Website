@@ -9,16 +9,27 @@ import {
   CheckCircle2,
   ArrowRight,
 } from "lucide-react";
-import useAxiosPublic from "@/url/useAxiosPublic";
-import { useQuery } from "@tanstack/react-query";
+
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { AuthContext } from "@/components/Authentication_Work/AuthProvider/AuthProvider";
 import { Slide, toast, ToastContainer } from "react-toastify";
+import useAxiosPrivate from "@/url/useAxiosPrivate";
+
 
 interface MeetingData {
   topic: string;
   date: string;
   time: string;
   agenda: string;
+  link : string;
+  email : string | null | undefined;
+}
+interface MeetingD {
+  topic: string;
+  date: string;
+  time: string;
+  agenda: string;
+ 
 }
 
 const PremiumDas: React.FC = () => {
@@ -28,16 +39,16 @@ const PremiumDas: React.FC = () => {
   }
   const { person } = auth;
 
-  const axiosPub = useAxiosPublic();
-  const { data } = useQuery({
+  const axiosPrivate = useAxiosPrivate();
+  const { data , refetch} = useQuery({
     queryKey: ["premium"],
     queryFn: async () => {
-      const response = await axiosPub.get(`/premium/${person?.email}`);
+      const response = await axiosPrivate.get(`/premium/${person?.email}`);
       return response.data;
     },
   });
 
-  const [formData, setFormData] = useState<MeetingData>({
+  const [formData, setFormData] = useState<MeetingD>({
     topic: "",
     date: "",
     time: "",
@@ -70,8 +81,60 @@ const PremiumDas: React.FC = () => {
     }
     e.preventDefault();
     console.log("Premium Meeting Requested:", formData);
+    const met = { ...formData, link: "", email : person?.email };
+    console.log(met)
+    Mutationfh.mutate(met);
   };
-console.log(data);
+
+  const Mutationfh = useMutation({
+    mutationFn: async (d : MeetingData) => {
+        const res = await axiosPrivate.post("/setMeeting", d)
+        return res.data;
+    },
+    onSuccess: ()=>{
+        toast.success("Premium meeting requested successfully!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Slide,
+      });
+
+    }
+  })
+
+
+  const memberUpdate = ()=>{
+    mutationUp.mutate();
+  }
+
+
+  const mutationUp = useMutation({
+    mutationFn: async () => {
+      const response = await axiosPrivate.patch(`/premium/${person?.email}`);
+      return response.data;
+    },
+    onSuccess: () => {
+        refetch()
+      toast.success("Premium membership activated successfully!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Slide,
+      });
+    },
+  });
+ 
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4 py-8 sm:px-6 lg:px-8 font-sans">
       {/* 1. Membership Banner (Compact & Responsive) */}
@@ -90,7 +153,7 @@ console.log(data);
       />
       <div className="w-full max-w-md md:max-w-lg lg:max-w-xl mb-6">
         {
-            data?.Premium === false || !("Premium" in data) && <div className="bg-gradient-to-r from-amber-50 to-white border border-amber-200 rounded-xl p-4 sm:p-5 shadow-sm relative overflow-hidden">
+            (data?.Premium === false || (data && !("Premium" in data))) && <div className="bg-gradient-to-r from-amber-50 to-white border border-amber-200 rounded-xl p-4 sm:p-5 shadow-sm relative overflow-hidden">
           {/* Decorative background glow */}
           <div className="absolute top-0 right-0 w-24 h-24 bg-yellow-400/10 rounded-full blur-2xl -mr-10 -mt-10 pointer-events-none"></div>
 
@@ -127,7 +190,7 @@ console.log(data);
             </div>
 
             {/* CTA Button */}
-            <button className="group whitespace-nowrap bg-amber-900 hover:bg-amber-800 text-amber-50 text-sm font-semibold py-2.5 px-5 rounded-lg transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2">
+            <button onClick={()=> memberUpdate()} className="group whitespace-nowrap bg-amber-900 hover:bg-amber-800 text-amber-50 text-sm font-semibold py-2.5 px-5 rounded-lg transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2">
               Get Membership
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
