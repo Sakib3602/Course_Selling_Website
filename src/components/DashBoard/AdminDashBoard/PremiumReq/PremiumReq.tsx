@@ -1,54 +1,154 @@
-import React, { useState } from "react";
-import { Calendar, Clock, Mail, Check, Trash2 } from "lucide-react";
+
+import { Calendar, Clock, Mail, Check} from "lucide-react";
 import useAxiosPrivate from "@/url/useAxiosPrivate";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import moment from "moment";
+
+interface MeetingRequest {
+  id: string;
+  _id: string;
+  email: string;
+  meetingReqTime: string;
+  topic: string;
+  agenda: string;
+  date: string;
+  time: string;
+  ReplyTime: string | null;
+}
 
 const PremiumReq = () => {
-  const axiosPrivate = useAxiosPrivate()
-  const {data, refetch , isLoading} = useQuery({
-    queryKey: ['premium-requests'],
+  const axiosPrivate = useAxiosPrivate();
+  const { data, refetch, isLoading } = useQuery<MeetingRequest[]>({
+    queryKey: ["premium-requests"],
     queryFn: async () => {
-      const response = await axiosPrivate.get('/setMeetings');
+      const response = await axiosPrivate.get("/setMeetings");
       return response.data;
     },
-  })
-  console.log(data)
-  const [requests, setRequests] = useState([
-    {
-      id: 1,
-      name: "John Doe",
-      topic: "Project Alpha",
-      agenda: "Discuss Q1 Goals",
-      reqTime: "2023-10-27 09:00 AM",
-      fixDate: "2023-10-30",
-      fixTime: "14:00",
-      email: "john.doe@example.com",
-      status: "pending",
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      topic: "Budget Review",
-      agenda: "Approve Q4 Budget",
-      reqTime: "2023-10-27 10:30 AM",
-      fixDate: "2023-11-01",
-      fixTime: "11:00",
-      email: "jane.smith@example.com",
-      status: "pending",
-    },
-  ]);
+  });
+  
 
-  const handleAccept = (id) => {
-    setRequests(
-      requests.map((req) =>
-        req.id === id ? { ...req, status: "accepted" } : req
-      )
+  const fil = data?.filter((x)=> x?.ReplyTime === null)
+
+  const handleAccept = (id: string) => {
+    console.log("Accepting request with id:", id);
+
+    const updatePayload = {
+      ReplyTime: moment().format('MMMM Do YYYY, h:mm:ss a')
+    };
+
+    mutationfk.mutate({ id, ReplyTime: updatePayload.ReplyTime });
+  };
+
+  const mutationfk = useMutation({
+    mutationFn: async ({ id, ReplyTime }: { id: string; ReplyTime: string }) => {
+      const resp = await axiosPrivate.put(`/setMeetings/${id}`, { ReplyTime });
+      return resp.data;
+    },
+    onSuccess: () => {
+        refetch()
+      alert("hoise");
+    }
+  });
+
+  
+
+  if (isLoading) {
+    return (
+      <div className="max-w-7xl mx-auto space-y-8 animate-pulse">
+        {/* Header Skeleton */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+          <div>
+            {/* Title Placeholder */}
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-gray-200 rounded-md"></div>
+              <div className="h-8 w-64 bg-gray-200 rounded-md"></div>
+            </div>
+            {/* Subtitle Placeholder */}
+            <div className="mt-2 h-4 w-48 bg-gray-200 rounded"></div>
+          </div>
+
+          {/* Stats Cards Placeholder */}
+          <div className="mt-4 md:mt-0 flex gap-4">
+            <div className="h-[72px] w-28 bg-gray-200 rounded-lg"></div>
+            <div className="h-[72px] w-28 bg-gray-200 rounded-lg"></div>
+          </div>
+        </div>
+
+        {/* Table Skeleton */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-gray-50 border-b border-gray-200">
+                  {["Requester", "Details", "Schedule", "Status", "Action"].map(
+                    (_, i) => (
+                      <th key={i} className="px-6 py-4">
+                        <div className="h-4 w-20 bg-gray-200 rounded"></div>
+                      </th>
+                    )
+                  )}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {/* Generates 5 skeleton rows */}
+                {[...Array(5)].map((_, index) => (
+                  <tr key={index}>
+                    {/* Requester Column */}
+                    <td className="px-6 py-4 align-top">
+                      <div className="flex items-center gap-3">
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <div className="w-3 h-3 bg-gray-200 rounded-full"></div>
+                            <div className="h-3 w-32 bg-gray-200 rounded"></div>
+                          </div>
+                          <div className="h-2 w-24 bg-gray-200 rounded ml-5"></div>
+                        </div>
+                      </div>
+                    </td>
+
+                    {/* Details Column */}
+                    <td className="px-6 py-4 align-top w-1/3">
+                      <div className="space-y-2">
+                        <div className="h-4 w-3/4 bg-gray-200 rounded"></div>
+                        <div className="h-3 w-full bg-gray-200 rounded"></div>
+                      </div>
+                    </td>
+
+                    {/* Schedule Column */}
+                    <td className="px-6 py-4 align-top">
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <div className="w-4 h-4 bg-gray-200 rounded"></div>
+                          <div className="h-3 w-24 bg-gray-200 rounded"></div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-4 h-4 bg-gray-200 rounded"></div>
+                          <div className="h-3 w-16 bg-gray-200 rounded"></div>
+                        </div>
+                      </div>
+                    </td>
+
+                    {/* Status Column */}
+                    <td className="px-6 py-4 align-top">
+                      <div className="h-6 w-20 bg-gray-200 rounded-full"></div>
+                    </td>
+
+                    {/* Action Column */}
+                    <td className="px-6 py-4 align-top text-right">
+                      <div className="flex flex-col gap-2 items-end">
+                        <div className="h-9 w-32 bg-gray-200 rounded-lg"></div>
+                        <div className="h-3 w-16 bg-gray-200 rounded mt-1"></div>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     );
-  };
-
-  const handleDelete = (id) => {
-    setRequests(requests.filter((req) => req.id !== id));
-  };
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8 font-sans text-gray-800">
@@ -98,7 +198,7 @@ const PremiumReq = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {data?.length === 0 ? (
+                {fil?.length === 0 ? (
                   <tr>
                     <td className="px-6 py-12 text-center text-gray-400">
                       <div className="flex flex-col items-center justify-center gap-2">
@@ -108,16 +208,14 @@ const PremiumReq = () => {
                     </td>
                   </tr>
                 ) : (
-                  data?.map((req) => (
+                  fil?.map((req: MeetingRequest) => (
                     <tr
                       key={req.id}
                       className="hover:bg-gray-50/50 transition-colors group"
                     >
                       <td className="px-6 py-4 align-top">
                         <div className="flex items-center gap-3">
-                          
                           <div>
-                            
                             <div className="text-sm text-gray-500 flex items-center gap-1">
                               <Mail className="w-3 h-3" />
                               {req.email}
@@ -159,14 +257,14 @@ const PremiumReq = () => {
                               : "bg-yellow-100 text-yellow-800"
                           }`}
                         >
-                            {req.ReplyTime !== null ? "accepted" : "pending"}
+                          {req.ReplyTime !== null ? "accepted" : "pending"}
                         </span>
                       </td>
                       <td className="px-6 py-4 align-top text-right">
                         <div className="flex flex-col gap-2 items-end">
                           {req.ReplyTime === null ? (
                             <button
-                              onClick={() => handleAccept(req.id)}
+                              onClick={() => handleAccept(req._id)}
                               className="w-full sm:w-auto bg-black hover:bg-gray-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all shadow-sm hover:shadow active:scale-95 flex items-center justify-center gap-2"
                             >
                               <Check className="w-4 h-4" />
@@ -181,13 +279,7 @@ const PremiumReq = () => {
                               Accepted
                             </button>
                           )}
-                          <button
-                            onClick={() => handleDelete(req.id)}
-                            className="text-xs text-red-500 hover:text-red-700 hover:underline flex items-center gap-1 ml-auto"
-                          >
-                            <Trash2 className="w-3 h-3" />
-                            Remove
-                          </button>
+                          
                         </div>
                       </td>
                     </tr>

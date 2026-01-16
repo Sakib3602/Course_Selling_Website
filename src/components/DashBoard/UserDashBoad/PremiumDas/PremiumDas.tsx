@@ -79,7 +79,7 @@ const PremiumDas: React.FC = () => {
   };
 
   const handleSubmit = (e: React.FormEvent) => {
-    if (data?.Premium !== true) {
+    if (data?.Premium === false) {
       toast.error("You need to be a premium member to request a meeting.", {
         position: "top-right",
         autoClose: 3000,
