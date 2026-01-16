@@ -30,6 +30,7 @@ import UpdateCourse from "./components/DashBoard/AdminDashBoard/ManageCourses/Up
 import AllProduct from "./components/Basic_Com/ALLPRODUCT/AllProduct.tsx";
 import PendingWork from "./components/DashBoard/AdminDashBoard/PendingWork/PendingWork.tsx";
 import PremiumDas from "./components/DashBoard/UserDashBoad/PremiumDas/PremiumDas.tsx";
+import PremiumReq from "./components/DashBoard/AdminDashBoard/PremiumReq/PremiumReq.tsx";
 
 const queryClient = new QueryClient();
 createRoot(document.getElementById("root")!).render(
@@ -72,6 +73,7 @@ createRoot(document.getElementById("root")!).render(
             <Route path="/admin/dashboard/CourseAll" element={<ManageCourses></ManageCourses>} />
             <Route path="/admin/dashboard/updateCourse" element={<UpdateCourse></UpdateCourse>} />
             <Route path="/admin/dashboard/pendings" element={<PendingWork></PendingWork>} />
+            <Route path="/admin/dashboard/premiumreq" element={<PremiumReq></PremiumReq>} />
           </Route>
         </Routes>
 

@@ -31,6 +31,12 @@ export default function ProfileAdmin() {
       path: "/admin/dashboard/pendings",
     },
     {
+      id: "Premium",
+      label: "Premium Requests",
+      icon: "💎",
+      path: "/admin/dashboard/premiumreq",
+    },
+    {
       id: "instructors",
       label: "Instructors",
       icon: "👥",
