@@ -9,7 +9,8 @@ import {
   Bell,
   Menu,
   X,
-  Book
+  Book,
+  FileText
  
   
 } from "lucide-react";
@@ -52,6 +53,7 @@ const InsHome: React.FC = () => {
               { name: "Dashboard", icon: LayoutDashboard, path: "/dashboard", active: true },
               { name: "My Students", icon: Users, path: "/students", active: false },
               { name: "Add Task", icon: Book, path:"/ins/dashboard/task", active: false },
+              { name: "Submitted Tasks", icon: FileText, path:"/ins/dashboard/submitted", active: false },
               { name: "Add Courses", icon: BookOpen, path: "/add-course", active: false },
               { name: "Schedule Call", icon: Calendar, path: "/schedule-call", active: false },
               { name: "Help Request", icon: MessageSquare, path: "/help", active: false },

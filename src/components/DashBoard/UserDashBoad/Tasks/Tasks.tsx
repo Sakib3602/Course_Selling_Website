@@ -60,7 +60,7 @@ const Tasks: React.FC = () => {
   const myCourseIds = new Set<string>();
 
   if (Array.isArray(enrolledData)) {
-    enrolledData.forEach((course: any) => {
+    enrolledData.forEach((course) => {
       if (course.id) {
         myCourseIds.add(String(course.id));
       }
