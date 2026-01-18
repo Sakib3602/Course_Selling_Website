@@ -35,9 +35,12 @@ const InsHome: React.FC = () => {
         <div className="h-full flex flex-col">
           {/* Logo Area */}
           <div className="flex items-center justify-between h-16 px-6 bg-slate-950">
+            <Link to={"/"}>
             <span className="text-xl font-bold tracking-wider text-white">
               Edu<span className="text-indigo-400">Pro</span>
             </span>
+            
+            </Link>
             <button onClick={toggleSidebar} className="lg:hidden text-gray-400 hover:text-white">
               <X className="w-6 h-6" />
             </button>
