@@ -36,6 +36,7 @@ import InsP from "./components/DashBoard/InstractorDashboard/InsP/InsP.tsx";
 import InsOP from "./components/DashBoard/InstractorDashboard/InsOP/InsOP.tsx";
 import AddTask from "./components/DashBoard/InstractorDashboard/AddTask/AddTask.tsx";
 import SubmittedTask from "./components/DashBoard/InstractorDashboard/SubmittedTask/SubmittedTask.tsx";
+import TaskResult from "./components/DashBoard/UserDashBoad/TaskResult/TaskResult.tsx";
 
 const queryClient = new QueryClient();
 createRoot(document.getElementById("root")!).render(
@@ -59,6 +60,7 @@ createRoot(document.getElementById("root")!).render(
             <Route path="/dashboard/announcements" element={<Announcements></Announcements>} />
             <Route path="/dashboard/tasks" element={<Tasks></Tasks>} />
               <Route path="/dashboard/helpdesk" element={<Support></Support>} />
+              <Route path="/dashboard/task-review" element={<TaskResult></TaskResult>} />
 
             {/* <Route path="/dashboard/profile" element={<Profile />} /> */}
           </Route>

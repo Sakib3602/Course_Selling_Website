@@ -26,6 +26,7 @@ const navItems: NavItem[] = [
   { id: "premium", path: "/dashboard/premium", icon: <BookOpen className="w-5 h-5" />, label: "MemberShip Facility" },
   { id: "announcements", path: "/dashboard/announcements", icon: <Bell className="w-5 h-5" />, label: "Announcements" },
   { id: "tasks", path: "/dashboard/tasks", icon: <Logs className="w-5 h-5" />, label: "Tasks" },
+  { id: "Task Review", path: "/dashboard/task-review", icon: <Logs className="w-5 h-5" />, label: "Tasks Review" },
   { id: "helpdesk", path: "/dashboard/helpdesk", icon: <HelpCircle className="w-5 h-5" />, label: "Support" },
 ]
 
