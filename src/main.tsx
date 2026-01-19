@@ -32,11 +32,14 @@ import PendingWork from "./components/DashBoard/AdminDashBoard/PendingWork/Pendi
 import PremiumDas from "./components/DashBoard/UserDashBoad/PremiumDas/PremiumDas.tsx";
 import PremiumReq from "./components/DashBoard/AdminDashBoard/PremiumReq/PremiumReq.tsx";
 import InsHome from "./components/DashBoard/InstractorDashboard/InsHome/InsHome.tsx";
-import InsP from "./components/DashBoard/InstractorDashboard/InsP/InsP.tsx";
+
 import InsOP from "./components/DashBoard/InstractorDashboard/InsOP/InsOP.tsx";
 import AddTask from "./components/DashBoard/InstractorDashboard/AddTask/AddTask.tsx";
 import SubmittedTask from "./components/DashBoard/InstractorDashboard/SubmittedTask/SubmittedTask.tsx";
 import TaskResult from "./components/DashBoard/UserDashBoad/TaskResult/TaskResult.tsx";
+import PrivateInstractorRoute from "./components/DashBoard/InstractorDashboard/PrivateInstractorRoute/PrivateInstractorRoute.tsx";
+import AddCourseIns from "./components/DashBoard/InstractorDashboard/AddCourseIns/AddCourseIns.tsx";
+import AllStudentIns from "./components/DashBoard/InstractorDashboard/AllStudentIns/AllStudentIns.tsx";
 
 const queryClient = new QueryClient();
 createRoot(document.getElementById("root")!).render(
@@ -84,10 +87,12 @@ createRoot(document.getElementById("root")!).render(
           </Route>
         </Routes>
         <Routes>
-          <Route path="/ins/dashboard" element={<InsHome></InsHome>}>
+          <Route path="/ins/dashboard" element={<PrivateInstractorRoute><InsHome></InsHome></PrivateInstractorRoute>}>
           <Route index element={<InsOP />} />
           <Route path="/ins/dashboard/task" element={<AddTask />} />
           <Route path="/ins/dashboard/submitted" element={<SubmittedTask />} />
+          <Route path="/ins/dashboard/add" element={<AddCourseIns />} />
+          <Route path="/ins/dashboard/students" element={<AllStudentIns />} />
 
 
 

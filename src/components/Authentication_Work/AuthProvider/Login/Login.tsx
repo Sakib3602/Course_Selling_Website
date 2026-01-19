@@ -78,23 +78,13 @@ export function Login() {
 
       console.log(res.data)  
 
-      toast.success("Log in successful!", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        transition: Slide,
-      });
+      
       setTimeout(()=>{
         navigate("/")
       },1000)
     } catch (error) {
      
-      toast.error("Login failed. Please try again.", {
+      toast.success("Log in successful!", {
         position: "top-right",
         autoClose: 3000,
         hideProgressBar: false,

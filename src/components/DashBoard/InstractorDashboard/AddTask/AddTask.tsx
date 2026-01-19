@@ -14,23 +14,40 @@ import { Slide, toast, ToastContainer } from "react-toastify";
 const AddTask: React.FC = () => {
   const axiosPublic = useAxiosPublic();
 
-  const { data } = useQuery({
+  // Types
+  interface Course {
+    _id: string;
+    title: string;
+  }
+
+  interface NewTaskForm {
+    courseId: string;
+    title: string;
+    link: string;
+  }
+
+  interface NewTask extends NewTaskForm {
+    postedAt: string;
+    mail: string[];
+  }
+
+  const { data } = useQuery<Course[]>({
     queryKey: ["instructorTasks"],
     queryFn: async () => {
       const res = await axiosPublic.get("/insCourse");
-      return res.data;
+      return res.data as Course[];
     },
   });
   console.log(data);
 
   const myCourses =
-    data?.map((x) => ({
+    data?.map((x: Course) => ({
       id: x._id,
       name: x.title,
     })) ?? [];
 
   // 2. State for form fields
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<NewTaskForm>({
     courseId: "",
     title: "",
     link: "",
@@ -64,7 +81,7 @@ const AddTask: React.FC = () => {
     });
 
     // Reset form (optional)
-    const allDta = {
+    const allDta: NewTask = {
       ...formData,
       postedAt: moment().format("MMMM Do YYYY, h:mm:ss a"),
       mail: [],
@@ -75,7 +92,7 @@ const AddTask: React.FC = () => {
     setFormData({ courseId: "", title: "", link: "" });
   };
   const mutateTask = useMutation({
-    mutationFn: async (newTask) => {
+    mutationFn: async (newTask: NewTask) => {
       const response = await axiosPublic.post("/tasks", newTask);
       return response.data;
     },

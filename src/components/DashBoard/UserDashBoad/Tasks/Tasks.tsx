@@ -166,7 +166,7 @@ const Tasks: React.FC = () => {
                   "Posted Date",
                   "Resource",
                   "Action",
-                ].map((header, index) => (
+                ].map((_, index) => (
                   <th key={index} className="px-6 py-4">
                     <div
                       className={`h-4 bg-gray-200 rounded w-20 ${index === 4 ? "ml-auto" : ""}`}

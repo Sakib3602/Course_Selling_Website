@@ -7,7 +7,7 @@ import Footer from "../Footer/Footer";
 import { Slide, toast } from "react-toastify";
 import { AuthContext } from "@/components/Authentication_Work/AuthProvider/AuthProvider";
 import moment from "moment";
-import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
 import useAxiosPublic from "@/url/useAxiosPublic";
 import { Link } from "react-router";

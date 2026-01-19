@@ -9,12 +9,12 @@ import {
 } from "lucide-react";
 
 // // 1. Define the Interface
-// interface GradedTask {
-//   taskId: string;
-//   taskTitle: string;
-//   submittedAt: string;
-//   mark: string | number | null;
-// }
+interface GradedTask {
+  taskId: string;
+  taskTitle: string;
+  submittedAt: string;
+  mark: string | number | null;
+}
 
 const TaskResult = () => {
   const axiosPub = useAxiosPublic();
@@ -142,7 +142,7 @@ const TaskResult = () => {
 
           {/* --- DATA LIST --- */}
           <div className="space-y-4 md:space-y-0 divide-y divide-gray-100">
-            {data.map((task) => (
+            {data.map((task : GradedTask) => (
               <div
                 key={task.taskId}
                 className="

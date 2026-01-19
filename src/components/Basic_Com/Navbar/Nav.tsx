@@ -62,7 +62,7 @@ export default function Nav() {
     navItems.push({ name: "Admin Dashboard", href: "/admin/dashboard" });
   }
   if (data?.role === "instructor") {
-    navItems.push({ name: "Instructor Dashboard", href: "/instructor/dashboard" });
+    navItems.push({ name: "Instructor Dashboard", href: "/ins/dashboard" });
   }
   if (data?.role !== "admin" && data?.role !== "instructor") {
     navItems.push({ name: "Dashboard", href: "/dashboard" });
