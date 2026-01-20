@@ -4,6 +4,7 @@ import { Link, Navigate, Outlet } from "react-router"
 import { useQuery } from "@tanstack/react-query"
 import useAxiosPublic from "@/url/useAxiosPublic"
 import { AuthContext } from "@/components/Authentication_Work/AuthProvider/AuthProvider"
+import { Slide, toast, ToastContainer } from "react-toastify"
 
 export default function ProfileAdmin() {
   const [sidebarOpen, setSidebarOpen] = useState(true)
@@ -91,7 +92,8 @@ export default function ProfileAdmin() {
   if(!auth){
     throw new Error("AuthContext is undefined. Make sure you are using AuthProvider.")
   }
-  const {person } = auth
+  
+  const {person , out} = auth
   const axiosPub = useAxiosPublic()
   const {data} = useQuery({
     queryKey: ['useremail', person?.email],
@@ -105,10 +107,38 @@ export default function ProfileAdmin() {
     return <Navigate to="/" />;
   }
 
+  const handleOut = ()=>{
+    console.log("logging out")
+    out()
+    toast.success("logout successfully!", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+        transition: Slide,
+      })
+  }
+
   
 
   return (
     <div className="flex min-h-screen bg-white poppins">
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Slide}
+      />
       {/* Sidebar */}
       <aside
         className={`fixed lg:relative z-40 bg-black text-white transition-all duration-300 ease-in-out ${
@@ -156,7 +186,7 @@ export default function ProfileAdmin() {
 
         {/* Sidebar Footer */}
         <div className="border-t border-gray-800 px-4 py-6">
-          <button className="w-full flex items-center gap-4 px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-900 rounded-lg transition">
+          <button onClick={handleOut} className="w-full flex items-center gap-4 px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-900 rounded-lg transition">
             <LogOut size={20} className="flex-shrink-0" />
             {sidebarOpen && <span>Logout</span>}
           </button>
@@ -255,7 +285,7 @@ export default function ProfileAdmin() {
         </nav>
 
         <div className="border-t border-gray-800 px-4 py-6">
-          <button className="w-full flex items-center gap-4 px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-900 rounded-lg transition">
+          <button onClick={handleOut} className="w-full flex items-center gap-4 px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-900 rounded-lg transition">
             <LogOut size={20} className="flex-shrink-0" />
             <span>Logout</span>
           </button>

@@ -40,6 +40,7 @@ import TaskResult from "./components/DashBoard/UserDashBoad/TaskResult/TaskResul
 import PrivateInstractorRoute from "./components/DashBoard/InstractorDashboard/PrivateInstractorRoute/PrivateInstractorRoute.tsx";
 import AddCourseIns from "./components/DashBoard/InstractorDashboard/AddCourseIns/AddCourseIns.tsx";
 import AllStudentIns from "./components/DashBoard/InstractorDashboard/AllStudentIns/AllStudentIns.tsx";
+import AnnIns from "./components/DashBoard/InstractorDashboard/Ann/AnnIns.tsx";
 
 const queryClient = new QueryClient();
 createRoot(document.getElementById("root")!).render(
@@ -93,6 +94,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/ins/dashboard/submitted" element={<SubmittedTask />} />
           <Route path="/ins/dashboard/add" element={<AddCourseIns />} />
           <Route path="/ins/dashboard/students" element={<AllStudentIns />} />
+          <Route path="/ins/dashboard/ann" element={<AnnIns />} />
 
 
 

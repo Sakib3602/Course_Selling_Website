@@ -9,12 +9,14 @@ import {
   X,
   Book,
   FileText,
-  Loader2
+  Loader2,
+  Megaphone
 } from "lucide-react";
 import { Outlet, Link, Navigate, useLocation } from "react-router";
 import { AuthContext } from "@/components/Authentication_Work/AuthProvider/AuthProvider";
 import useAxiosPublic from "@/url/useAxiosPublic";
 import { useQuery } from "@tanstack/react-query";
+import { Slide, toast } from "react-toastify";
 
 
 
@@ -25,7 +27,7 @@ const InsHome: React.FC = () => {
   if(!auth){
     throw new Error("AuthContext is undefined. Make sure you are using AuthProvider.")
   }
-  const {person } = auth
+  const {person , out} = auth
   const axiosPub = useAxiosPublic()
   const {data, isLoading} = useQuery({
     queryKey: ['useremail', person?.email],
@@ -35,6 +37,20 @@ const InsHome: React.FC = () => {
     },
     enabled: !!person?.email
   })
+  const handleOut = ()=>{
+    console.log("logging out")
+    out()
+    toast.success("logout successfully!", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+        transition: Slide,
+      })
+  }
 
   if(isLoading){
     return (
@@ -91,6 +107,7 @@ const InsHome: React.FC = () => {
               { name: "Add Task", icon: Book, path:"/ins/dashboard/task" },
               { name: "Submitted Tasks", icon: FileText, path:"/ins/dashboard/submitted" },
               { name: "Add Courses", icon: BookOpen, path: "/ins/dashboard/add" },
+              { name: "Announcements", icon: Megaphone, path: "/ins/dashboard/ann" },
             ].map((item, index) => {
               const isActive = location.pathname === item.path;
               return (
@@ -111,7 +128,7 @@ const InsHome: React.FC = () => {
           </nav>
 
           <div className="p-4 border-t border-slate-800">
-            <button className="flex items-center gap-3 w-full px-4 py-3 text-sm font-medium text-red-400 hover:bg-red-500/10 hover:text-red-300 rounded-lg transition-colors">
+            <button onClick={handleOut} className="flex items-center gap-3 w-full px-4 py-3 text-sm font-medium text-red-400 hover:bg-red-500/10 hover:text-red-300 rounded-lg transition-colors">
               <LogOut className="w-5 h-5" />
               Logout
             </button>

@@ -23,7 +23,8 @@ interface AuthContextType {
   GoogleS: () => Promise<UserCredential>;
 }
 
-export const AuthContext = createContext<AuthContextType | null >(null);
+// eslint-disable-next-line react-refresh/only-export-components
+export const AuthContext = createContext<AuthContextType | null >(null); // m
 
 interface AuthProviderProps {
   children: ReactNode;

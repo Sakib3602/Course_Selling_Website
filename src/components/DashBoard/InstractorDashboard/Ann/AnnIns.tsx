@@ -13,7 +13,7 @@ interface Announcement {
   date: string;
 }
 
-const Announcements = () => {
+const AnnIns = () => {
   const axiosPriv = useAxiosPublic();
 
   // Fetch Data
@@ -25,7 +25,7 @@ const Announcements = () => {
     }
   });
 
-  const filDaa = data?.filter((item: Announcement) => item.target === "user");
+  const filDaa = data?.filter((item: Announcement) => item.target === "instructor");
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8 font-poppins">
@@ -120,4 +120,4 @@ const Announcements = () => {
   );
 };
 
-export default Announcements;
+export default AnnIns;

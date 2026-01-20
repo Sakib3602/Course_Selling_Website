@@ -28,7 +28,7 @@ const SupportReq = () => {
   }
   const { person } = auth;
 
-  const { data, isLoading , refetch} = useQuery<SupportItem[]>({
+  const { data, isLoading, refetch } = useQuery<SupportItem[]>({
     queryKey: ["support-requests"],
     queryFn: async () => {
       const res = await axiosPrivate.get("/supportAll", {
@@ -39,7 +39,6 @@ const SupportReq = () => {
   });
 
   const items = data ?? [];
-  console.log(items[0]);
 
   const handleAdd = () => {
     // TODO: open add modal or navigate to create page
@@ -63,25 +62,22 @@ const SupportReq = () => {
 
     // TODO: Add your Axios POST request here to send the reply
     console.log(`Sending reply to ID: ${id}`, replyText);
-    const Reply = {
+    const replyPayload = {
       replyText: replyText,
-      // replyTime : moment().format("LLLL"),
-    }
-    mutateReply.mutate(Reply)
+    };
+    mutateReply.mutate(replyPayload);
 
     // After success:
     // handleCloseModal();
   };
 
   const mutateReply = useMutation({
-    mutationFn : async (data: {  replyText: string }) => {
-      const res = await axiosPrivate.patch(`/support-reply/${selectedRequestId}`, {replyText : data});
+    mutationFn: async (data: { replyText: string }) => {
+      const res = await axiosPrivate.patch(`/support-reply/${selectedRequestId}`, data);
       return res.data;
     },
-    onSuccess : ()=>{
-     
-    
-       toast.success("Course Added Successfully!", {
+    onSuccess: () => {
+      toast.success("Reply sent successfully!", {
         position: "top-right",
         autoClose: 3000,
         hideProgressBar: false,
@@ -92,12 +88,22 @@ const SupportReq = () => {
         theme: "light",
         transition: Slide,
       });
-      
-       handleCloseModal()
 
-      refetch()
+      handleCloseModal();
+      refetch();
     },
-  })
+  });
+  // const del = (id : string)=>{
+
+  // }
+
+  // const mutationDel = useMutation({
+  //   mutationFn : async (id: string) => {
+  //     const res = await axiosPrivate.delete(`/delSup/${id}`);
+  //     return res.data;
+  //   }
+    
+  // })
 
   if (isLoading) {
     return (

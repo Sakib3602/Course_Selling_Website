@@ -1,26 +1,26 @@
 import useAxiosPrivate from "@/url/useAxiosPrivate";
 import { useQuery } from "@tanstack/react-query";
-// 1. Type for the individual items inside the 'courses' array
+
 export interface Course {
   name: string;
-  id: string;          // Course ID
+  id: string;
   price: number;
   img: string;
-  status: string;      // e.g., "Pending", "completed"
-  downloadLink?: string; // Optional, sometimes populated as "pending"
+  status: string;
+  downloadLink?: string;
 }
 
-// 2. Main Order Type
 export interface Order {
-  _id: string;         // The main Order ID (from MongoDB)
-  courses: Course[];   // Array of courses
-  currency: string;    // e.g., "BDT", "USD"
+  _id: string;
+  courses: Course[];
+  currency: string;
   email: string;
-  link: string;        // The general order link (e.g., "pending" or Zoom link)
+  link: string;
   orderDate: string;
-  paymentStatus: string; // e.g., "Pending", "Paid"
+  paymentStatus: string;
   totalAmount: number;
 }
+
 const AllStudents = () => {
   const axiosSec = useAxiosPrivate();
   const { data, isLoading } = useQuery({
@@ -30,45 +30,80 @@ const AllStudents = () => {
       return res.data;
     },
   });
-  console.log("All Students Data:", data);
-
-  const uniqueEmails : string[] = [];
-
-  data?.forEach((item : { personalEmail: string }) => {
-    if (!uniqueEmails.includes(item.personalEmail)) {
-      uniqueEmails.push(item.personalEmail);
-    }
-  });
-
-  console.log("Unique Emails:", uniqueEmails);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-pulse flex flex-col items-center">
+          <div className="h-12 w-12 bg-gray-200 rounded-full mb-4"></div>
+          <div className="h-4 w-32 bg-gray-200 rounded"></div>
+        </div>
+      </div>
+    );
   }
 
-
+  const uniqueStudents = data?.filter((person: Order, index: number, self: Order[]) =>
+    index === self.findIndex((t) => (
+      t.email === person.email
+    ))
+  ) || [];
 
   return (
-    <div>
-      <div>
-        <h2 className="text-2xl font-semibold mb-4 px-10">All Students</h2>
-      </div>
-      <div className="flex flex-wrap gap-4 p-4 justify-center">
-        {data.map((x : Order) => (
-          // THE CARD
-          <div
-            key={x?._id}
-            className="w-64 bg-white rounded-lg shadow-md p-6 flex flex-col items-center border border-gray-200"
-          >
-            <img
-              src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmRLRMXynnc7D6-xfdpeaoEUeon2FaU0XtPg&s'
-              alt="Profile"
-              className="w-24 h-24 rounded-full object-cover mb-4 bg-gray-200"
-            />
-            <span className="text-gray-700 font-medium">{x.email}</span>
-            {/* <span className="text-gray-700 font-medium">{x?.name}</span> */}
+    <div className="bg-gray-50 min-h-screen py-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-10">
+          <div>
+            <h2 className="text-3xl font-bold text-gray-800 tracking-tight">
+              All Students
+            </h2>
+            <p className="text-gray-500 mt-1">Directory of enrolled members</p>
           </div>
-        ))}
+          <div className="mt-4 sm:mt-0 bg-blue-50 text-blue-700 px-4 py-2 rounded-full font-semibold text-sm">
+            Total: {uniqueStudents.length}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {uniqueStudents.map((x: Order) => (
+            <div
+              key={x._id}
+              className="group bg-white rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-6 border border-gray-100 flex flex-col items-center"
+            >
+              <div className="relative mb-4">
+                <div className="absolute inset-0 bg-gradient-to-tr from-blue-500 to-purple-500 rounded-full blur opacity-25 group-hover:opacity-50 transition-opacity duration-300"></div>
+                <div className="relative w-24 h-24 p-1 rounded-full bg-white border border-gray-100">
+                  <img
+                    src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmRLRMXynnc7D6-xfdpeaoEUeon2FaU0XtPg&s'
+                    alt="Profile"
+                    className="w-full h-full rounded-full object-cover"
+                  />
+                </div>
+              </div>
+              
+              <div className="text-center w-full">
+                <h3 className="text-gray-800 font-bold text-lg truncate px-2" title={x.email}>
+                  {x.email.split('@')[0]}
+                </h3>
+                <p className="text-gray-500 text-sm truncate px-2 mt-1" title={x.email}>
+                  {x.email}
+                </p>
+              </div>
+
+              <div className="mt-6 w-full pt-4 border-t border-gray-50 flex justify-center">
+                <span className="text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded">
+                  Active Student
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {uniqueStudents.length === 0 && (
+           <div className="text-center text-gray-500 mt-20">
+             No students found.
+           </div>
+        )}
       </div>
     </div>
   );
