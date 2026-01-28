@@ -65,7 +65,7 @@ export default function SideDash({ isOpen, onClose }: SidebarProps) {
       >
         {/* Sidebar Header */}
         <div className="p-6 border-b border-gray-200">
-          <h2 className="poppins font-extrabold text-2xl text-black">EduPro</h2>
+          <h2 className="poppins font-extrabold text-2xl text-black">Bengal Rice</h2>
         </div>
 
         {/* Navigation Items */}

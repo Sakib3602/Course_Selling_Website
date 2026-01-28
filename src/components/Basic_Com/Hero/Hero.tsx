@@ -129,7 +129,7 @@ export default function Hero() {
                 <div className="flex justify-between items-start mb-6">
                   <div>
                     <h3 className="text-xl lg:text-2xl font-bold text-slate-900 mb-2">Executive Leadership</h3>
-                    <div className="flex items-center gap-1 text-amber-500">
+                    <div className="flex items-center gap-1 blue">
                       {[...Array(5)].map((_, i) => (
                         <Star key={i} className="w-3.5 h-3.5 lg:w-4 lg:h-4 fill-current" />
                       ))}

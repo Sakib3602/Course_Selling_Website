@@ -83,14 +83,14 @@ export default function Nav() {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
-            {/* EduPro Logo Section */}
+            {/* Bengal Rice Logo Section */}
             <div className="flex-shrink-0 group cursor-pointer">
               <Link to={"/"} className="flex items-center gap-2.5">
                
                 
-                {/* 2. EduPro Name */}
+                {/* 2. Bengal Rice Name */}
                 <span className="text-2xl font-bold tracking-tight text-gray-900 group-hover:text-[#4D2E7D] transition-colors">
-                  EduPro.
+                  Bengal Rice.
                 </span>
 
                 {/* 3. Shield Icon (Now on the RIGHT side) */}
