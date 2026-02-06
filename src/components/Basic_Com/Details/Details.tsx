@@ -310,7 +310,6 @@ const Details = () => {
     }
     setIsOpen(true);
 
-    console.log(c, "=============");
 
     
     

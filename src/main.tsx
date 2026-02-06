@@ -41,6 +41,10 @@ import PrivateInstractorRoute from "./components/DashBoard/InstractorDashboard/P
 import AddCourseIns from "./components/DashBoard/InstractorDashboard/AddCourseIns/AddCourseIns.tsx";
 import AllStudentIns from "./components/DashBoard/InstractorDashboard/AllStudentIns/AllStudentIns.tsx";
 import AnnIns from "./components/DashBoard/InstractorDashboard/Ann/AnnIns.tsx";
+import PaymentSuccess from "./components/Basic_Com/PaymentSucess/PaymentSuccess.tsx";
+import PaymentFail from "./components/Basic_Com/PaymentFail/PaymentFail.tsx";
+import PaymentCancel from "./components/Basic_Com/PaymentCancel.tsx/PaymentCancel.tsx";
+import NotFound from "./components/Basic_Com/NotFound/NotFound.tsx";
 
 const queryClient = new QueryClient();
 createRoot(document.getElementById("root")!).render(
@@ -48,66 +52,121 @@ createRoot(document.getElementById("root")!).render(
     <BrowserRouter>
       <AuthProvider>
         <Routes>
+          {/* Main Routes */}
           <Route path="/" element={<App />} />
           <Route path="/d/:id" element={<Details />} />
           <Route path="/register" element={<RegistrationForm />} />
           <Route path="/login" element={<Login></Login>} />
           <Route path="/carts" element={<Carts></Carts>} />
           <Route path="/allproducts" element={<AllProduct />} />
-        </Routes>
-        {/* User Work */}
-        <Routes>
-          <Route path="/dashboard" element={<PrivateUserRoute><UserHomeDash /></PrivateUserRoute>}>
+          <Route path="/success" element={<PaymentSuccess />} />
+          <Route path="/fail" element={<PaymentFail />} />
+          <Route path="/cancel" element={<PaymentCancel />} />
+
+          {/* User Dashboard */}
+          <Route
+            path="/dashboard"
+            element={
+              <PrivateUserRoute>
+                <UserHomeDash />
+              </PrivateUserRoute>
+            }
+          >
             <Route index element={<Profile />} />
             <Route path="/dashboard/courses" element={<EnrolledCourses />} />
             <Route path="/dashboard/premium" element={<PremiumDas />} />
-            <Route path="/dashboard/announcements" element={<Announcements></Announcements>} />
+            <Route
+              path="/dashboard/announcements"
+              element={<Announcements></Announcements>}
+            />
             <Route path="/dashboard/tasks" element={<Tasks></Tasks>} />
-              <Route path="/dashboard/helpdesk" element={<Support></Support>} />
-              <Route path="/dashboard/task-review" element={<TaskResult></TaskResult>} />
-
-            {/* <Route path="/dashboard/profile" element={<Profile />} /> */}
+            <Route path="/dashboard/helpdesk" element={<Support></Support>} />
+            <Route
+              path="/dashboard/task-review"
+              element={<TaskResult></TaskResult>}
+            />
           </Route>
-        </Routes>
-        {/* User Work */}
-        {/* Admin Work */}
-        <Routes>
-          <Route path="/admin/dashboard" element={<PrivateAdminroute><ProfileAdmin></ProfileAdmin></PrivateAdminroute>}>
+
+          {/* Admin Dashboard */}
+          <Route
+            path="/admin/dashboard"
+            element={
+              <PrivateAdminroute>
+                <ProfileAdmin></ProfileAdmin>
+              </PrivateAdminroute>
+            }
+          >
             <Route index element={<ProfileA></ProfileA>} />
-            <Route path="/admin/dashboard/supportreq" element={<SupportReq></SupportReq>} />
-            <Route path="/admin/dashboard/ins" element={<Instractors></Instractors>} />
-            <Route path="/admin/dashboard/anc" element={<Announcement></Announcement>} />
-            <Route path="/admin/dashboard/addcourse" element={<AddCourse></AddCourse>} />
-            <Route path="/admin/dashboard/allusers" element={<AllUsers></AllUsers>} />
-            <Route path="/admin/dashboard/pusers" element={<PrimiumUsers></PrimiumUsers>} />
-            <Route path="/admin/dashboard/students" element={<AllStudents></AllStudents>} />
-            <Route path="/admin/dashboard/CourseAll" element={<ManageCourses></ManageCourses>} />
-            <Route path="/admin/dashboard/updateCourse" element={<UpdateCourse></UpdateCourse>} />
-            <Route path="/admin/dashboard/pendings" element={<PendingWork></PendingWork>} />
-            <Route path="/admin/dashboard/premiumreq" element={<PremiumReq></PremiumReq>} />
+            <Route
+              path="/admin/dashboard/supportreq"
+              element={<SupportReq></SupportReq>}
+            />
+            <Route
+              path="/admin/dashboard/ins"
+              element={<Instractors></Instractors>}
+            />
+            <Route
+              path="/admin/dashboard/anc"
+              element={<Announcement></Announcement>}
+            />
+            <Route
+              path="/admin/dashboard/addcourse"
+              element={<AddCourse></AddCourse>}
+            />
+            <Route
+              path="/admin/dashboard/allusers"
+              element={<AllUsers></AllUsers>}
+            />
+            <Route
+              path="/admin/dashboard/pusers"
+              element={<PrimiumUsers></PrimiumUsers>}
+            />
+            <Route
+              path="/admin/dashboard/students"
+              element={<AllStudents></AllStudents>}
+            />
+            <Route
+              path="/admin/dashboard/CourseAll"
+              element={<ManageCourses></ManageCourses>}
+            />
+            <Route
+              path="/admin/dashboard/updateCourse"
+              element={<UpdateCourse></UpdateCourse>}
+            />
+            <Route
+              path="/admin/dashboard/pendings"
+              element={<PendingWork></PendingWork>}
+            />
+            <Route
+              path="/admin/dashboard/premiumreq"
+              element={<PremiumReq></PremiumReq>}
+            />
           </Route>
-        </Routes>
-        <Routes>
-          <Route path="/ins/dashboard" element={<PrivateInstractorRoute><InsHome></InsHome></PrivateInstractorRoute>}>
-          <Route index element={<InsOP />} />
-          <Route path="/ins/dashboard/task" element={<AddTask />} />
-          <Route path="/ins/dashboard/submitted" element={<SubmittedTask />} />
-          <Route path="/ins/dashboard/add" element={<AddCourseIns />} />
-          <Route path="/ins/dashboard/students" element={<AllStudentIns />} />
-          <Route path="/ins/dashboard/ann" element={<AnnIns />} />
 
-
-
-
-
+          {/* Instructor Dashboard */}
+          <Route
+            path="/ins/dashboard"
+            element={
+              <PrivateInstractorRoute>
+                <InsHome></InsHome>
+              </PrivateInstractorRoute>
+            }
+          >
+            <Route index element={<InsOP />} />
+            <Route path="/ins/dashboard/task" element={<AddTask />} />
+            <Route
+              path="/ins/dashboard/submitted"
+              element={<SubmittedTask />}
+            />
+            <Route path="/ins/dashboard/add" element={<AddCourseIns />} />
+            <Route path="/ins/dashboard/students" element={<AllStudentIns />} />
+            <Route path="/ins/dashboard/ann" element={<AnnIns />} />
           </Route>
 
-
+          {/* Catch-all route - must be last */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
-
-        {/* Admin Work */}
       </AuthProvider>
     </BrowserRouter>
-    ,
   </QueryClientProvider>
 );

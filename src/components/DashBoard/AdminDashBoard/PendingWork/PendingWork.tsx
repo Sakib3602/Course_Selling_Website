@@ -6,6 +6,7 @@ import useAxiosPublic from "@/url/useAxiosPublic";
 import { toast,ToastContainer, Slide } from "react-toastify";
 import { Link2, Save, X, Loader2 } from "lucide-react";
 
+
 export default function PendingWork() {
   const axiosPub = useAxiosPublic();
   
@@ -24,6 +25,10 @@ export default function PendingWork() {
       return res.data;
     },
   });
+
+
+
+  const paidData = courses.filter((item : any) => item?.paymentStatus === "paid");
 
   
 
@@ -98,7 +103,7 @@ export default function PendingWork() {
             </thead>
             
             <tbody className="divide-y divide-gray-200">
-              {courses.map((item: any) => (
+              {paidData.map((item: any) => (
                 <tr key={item.id} className="hover:bg-gray-50 transition">
                   
                   {/* 1. Course Info */}
