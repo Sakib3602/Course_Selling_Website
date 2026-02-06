@@ -29,6 +29,17 @@ const Support = () => {
     throw new Error("Auth context is not available");
   }
   const { person } = auth;
+  const { data: enrolledCourses } = useQuery({
+    queryKey: ["enrolledCoursesss", person?.email],
+    queryFn: async () => {
+      if (!person?.email) return [];
+      const res = await axiosPub.get(`/enrolled/${person?.email}`);
+      return res.data;
+    },
+    enabled: !!person?.email,
+  });
+
+  
   const {
     register,
     handleSubmit,
@@ -43,7 +54,21 @@ const Support = () => {
       date: moment().format("LLLL"),
       status: "Pending",
     };
-    console.log(supportData);
+    if(enrolledCourses.length === 0){
+      toast.error("You must be enrolled in a course to submit a support request!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Slide,
+      });
+      return;
+
+    }
     mutationUp.mutate(supportData);
   };
 
@@ -91,15 +116,15 @@ const Support = () => {
       return res.data;
     },
   });
-  const sortedData = data && data.length > 0 
-  ? [...data].sort((a: SupportData, b: SupportData) => {
-      const dateA = moment(a.date, "LLLL");
-      const dateB = moment(b.date, "LLLL");
-      return dateB.valueOf() - dateA.valueOf();
-    })
-  : [];
-console.log(sortedData);
-
+  const sortedData =
+    data && data.length > 0
+      ? [...data].sort((a: SupportData, b: SupportData) => {
+          const dateA = moment(a.date, "LLLL");
+          const dateB = moment(b.date, "LLLL");
+          return dateB.valueOf() - dateA.valueOf();
+        })
+      : [];
+  console.log(sortedData);
 
   return (
     <div className="w-full min-h-screen flex flex-col lg:flex-row gap-6 lg:p-4">
@@ -231,7 +256,7 @@ console.log(sortedData);
             <>
               {sortedData && sortedData.length > 0 ? (
                 <>
-                  {sortedData.slice(0,3).map((item : SupportData) => (
+                  {sortedData.slice(0, 3).map((item: SupportData) => (
                     <div
                       key={item.date}
                       className="bg-white border border-slate-200 rounded-2xl shadow-sm p-5 w-full max-w-xl mx-auto transition hover:shadow-md mt-2"
@@ -247,33 +272,33 @@ console.log(sortedData);
                         <div className="flex flex-wrap items-center gap-2">
                           {/* Pending Badge */}
 
-                          {
-                            item.status === "Pending" ? <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-yellow-50 text-yellow-800 text-xs font-medium border border-yellow-100 relative group">
-                            <Info className="h-3.5 w-3.5" />
-                            <span>Pending</span>
-                            <span className="ml-1 bg-yellow-200 text-yellow-900 px-2 py-0.5 rounded-full text-[10px] font-semibold">
-                              1
-                            </span>
-                            {/* Tooltip */}
-                            <div className="absolute hidden group-hover:block bottom-full mb-2 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gray-900 text-white text-[10px] px-2 py-1 rounded-md shadow">
-                              This problem is still pending
+                          {item.status === "Pending" ? (
+                            <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-yellow-50 text-yellow-800 text-xs font-medium border border-yellow-100 relative group">
+                              <Info className="h-3.5 w-3.5" />
+                              <span>Pending</span>
+                              <span className="ml-1 bg-yellow-200 text-yellow-900 px-2 py-0.5 rounded-full text-[10px] font-semibold">
+                                1
+                              </span>
+                              {/* Tooltip */}
+                              <div className="absolute hidden group-hover:block bottom-full mb-2 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gray-900 text-white text-[10px] px-2 py-1 rounded-md shadow">
+                                This problem is still pending
+                              </div>
                             </div>
-                          </div> : <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-medium border border-emerald-100 relative group">
-                            <CheckCircle className="h-3.5 w-3.5" />
-                            <span>Problem Solved</span>
-                            <span className="ml-1 bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded-full text-[10px] font-semibold">
-                              1
-                            </span>
-                            {/* Tooltip */}
-                            <div className="absolute hidden group-hover:block bottom-full mb-2 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gray-900 text-white text-[10px] px-2 py-1 rounded-md shadow">
-                              Problem marked as solved
+                          ) : (
+                            <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-medium border border-emerald-100 relative group">
+                              <CheckCircle className="h-3.5 w-3.5" />
+                              <span>Problem Solved</span>
+                              <span className="ml-1 bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded-full text-[10px] font-semibold">
+                                1
+                              </span>
+                              {/* Tooltip */}
+                              <div className="absolute hidden group-hover:block bottom-full mb-2 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gray-900 text-white text-[10px] px-2 py-1 rounded-md shadow">
+                                Problem marked as solved
+                              </div>
                             </div>
-                          </div>
-                          }
-                          
+                          )}
 
                           {/* Solved Badge */}
-                          
                         </div>
                       </div>
 
@@ -293,7 +318,11 @@ console.log(sortedData);
                             <div className="font-medium text-slate-800">
                               Answered
                             </div>
-                            <div>{item?.replyDate ? item?.replyDate : "Not answered yet"}</div>
+                            <div>
+                              {item?.replyDate
+                                ? item?.replyDate
+                                : "Not answered yet"}
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -304,8 +333,9 @@ console.log(sortedData);
                           Answer:
                         </h3>
                         <p className="text-sm text-slate-600 leading-relaxed">
-                          {item?.reply?.replyText ? item?.reply?.replyText : "Our support team is reviewing your request and will get back to you shortly."}
-                          
+                          {item?.reply?.replyText
+                            ? item?.reply?.replyText
+                            : "Our support team is reviewing your request and will get back to you shortly."}
                         </p>
                       </div>
                     </div>
