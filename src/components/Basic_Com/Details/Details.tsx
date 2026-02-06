@@ -10,6 +10,7 @@ import { Slide, toast } from "react-toastify";
 import { AuthContext } from "@/components/Authentication_Work/AuthProvider/AuthProvider";
 import moment from "moment";
 import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 interface Course {
   _id: string;
   id: number;
@@ -33,14 +34,14 @@ type OrderCourse = {
   name: string;
   id: string;
   img: string;
-  status: "pending" | "completed";
+  status: "pending" | "completed" | "waitting";
   price: number;
 };
 type Order = {
   courses: OrderCourse[];
   totalAmount: number;
   currency: "BDT" | "USD";
-  paymentStatus: "Pending" | "Paid" | "Failed";
+  paymentStatus: "Pending" | "Paid" | "Failed" | "waitting";
   email: string | null;
   orderDate: string;
   link: string;
@@ -60,7 +61,70 @@ const Details = () => {
   //
   //
   const [con, setCon] = useState("BD");
+  const [totalmoney,setTotalMoney] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
+  const [allData, setAllData] = useState<Order | null>(null);
+  const [formData, setFormData] = useState({
+    customer_name: '',
+    customer_phone: '',
+    customer_address: '',
+    customer_city: '',
+    customer_post_code: '',
+    amount: totalmoney, 
+    currency: con
+  });
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+      
+    });
+  };
+  const handleSubmitt = async(e) => {
+    e.preventDefault();
+
+    console.log("Submitting total amount:", totalmoney);
+    
+    try {
+      const dataToSend = {
+        ...formData,
+        ...allData,
+        totalAmount: totalmoney,
+        amount: totalmoney,
+        currency: con
+      };
+      console.log("Shurjopay-র জন্য রেডি করা ডাটা:", dataToSend);
+
+      const res = await axios.post('http://localhost:3000/api/payment/pay', dataToSend)
+      console.log("Shurjopay response:", res.data);
+
+      // Check if payment URL exists in response
+      if (res.data && res.data.checkout_url) {
+        // Redirect to payment gateway
+        window.location.href = res.data.checkout_url;
+      } else if (res.data && res.data.url) {
+        // Alternative URL field
+        window.location.href = res.data.url;
+      } else {
+        toast.error("Payment URL not found. Please try again.", {
+          position: "top-right",
+          autoClose: 3000,
+          transition: Slide,
+        });
+      }
+      
+      setIsOpen(false);
+    } catch (error) {
+      console.error("Payment error:", error);
+      toast.error("Payment failed. Please try again.", {
+        position: "top-right",
+        autoClose: 3000,
+        transition: Slide,
+      });
+      setIsOpen(false);
+    }
+  };
 
   // Optimized country detection
   const fetchCountry = async () => {
@@ -244,6 +308,7 @@ const Details = () => {
       toast.error("Please Login First!");
       return;
     }
+    setIsOpen(true);
 
     console.log(c, "=============");
 
@@ -261,35 +326,38 @@ const Details = () => {
       ],
       totalAmount: con == "BD" ? conPremium ? Number( course.priceBDT )* 0.8 : Number( course.priceBDT ): conPremium ? Number(course.priceUSD) * 0.8 : Number(course.priceUSD),
       currency: con === "BDT" ? "BDT" : "USD",
-      paymentStatus: "Pending",
+      paymentStatus: "waitting",
       email: person.email,
       orderDate: moment().format("LL"),
       link: "pending",
     };
 
-    mutationOrder.mutate(orderInfo);
+    setTotalMoney(orderInfo.totalAmount);
+    setAllData(orderInfo);
+
+    // mutationOrder.mutate(orderInfo);
   };
   // Order work end here
 
-  const mutationOrder = useMutation({
-    mutationFn: async (orderData: Order) => {
-      const response = await axiosPub.post(`/finalorders`, orderData);
-      return response.data;
-    },
-    onSuccess: () => {
-      toast.success("Order Placed Successfully!", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        transition: Slide,
-      });
-    },
-  });
+  // const mutationOrder = useMutation({
+  //   mutationFn: async (orderData: Order) => {
+  //     const response = await axiosPub.post(`/finalorders`, orderData);
+  //     return response.data;
+  //   },
+  //   onSuccess: () => {
+  //     toast.success("Order Placed Successfully!", {
+  //       position: "top-right",
+  //       autoClose: 3000,
+  //       hideProgressBar: false,
+  //       closeOnClick: true,
+  //       pauseOnHover: true,
+  //       draggable: true,
+  //       progress: undefined,
+  //       theme: "light",
+  //       transition: Slide,
+  //     });
+  //   },
+  // });
   const { data : premiumData } = useQuery({
     queryKey: ["premium"],
     queryFn: async () => {
@@ -548,6 +616,100 @@ const Details = () => {
       <Button onClick={() => order(course)} className="w-full text-lg h-12">
         Buy Now
       </Button>
+      {isOpen && (
+       <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
+          
+          <div className="bg-white rounded-lg shadow-2xl w-full max-w-md p-6 relative animate-fade-in-down">
+            
+            {/* ক্লোজ বাটন (X) */}
+            <button 
+              onClick={() => setIsOpen(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-red-500 text-2xl"
+            >
+              &times;
+            </button>
+
+            <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Payment Details</h2>
+
+            <form onSubmit={handleSubmitt} className="space-y-4">
+              
+              {/* নাম */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Full Name <span className="text-red-500">*</span></label>
+                <input
+                  type="text"
+                  name="customer_name"
+                  required
+                  placeholder="Your Name"
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+
+              {/* ফোন ও পোস্ট কোড (পাশাপাশি) */}
+              <div className="flex gap-4">
+                <div className="w-2/3">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Phone <span className="text-red-500">*</span></label>
+                  <input
+                    type="tel"
+                    name="customer_phone"
+                    required
+                    placeholder="xxxxxxxxxx"
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                </div>
+                <div className="w-1/3">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Post Code <span className="text-red-500">*</span></label>
+                  <input
+                    type="text"
+                    name="customer_post_code"
+                    required
+                    placeholder="1200"
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                </div>
+              </div>
+
+              {/* ঠিকানা */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Address <span className="text-red-500">*</span></label>
+                <input
+                  type="text"
+                  name="customer_address"
+                  required
+                  placeholder="Your address"
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+
+              {/* শহর */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">City <span className="text-red-500">*</span></label>
+                <input
+                  type="text"
+                  name="customer_city"
+                  required
+                  placeholder="Your City"
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+
+              {/* সাবমিট বাটন */}
+              <button 
+                type="submit"
+                className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg mt-4 transition duration-300"
+              >
+                Proceed to Pay
+              </button>
+
+            </form>
+          </div>
+        </div>
+      )}
       <Button
         onClick={() => prod(course)}
         variant="outline"

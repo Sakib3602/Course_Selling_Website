@@ -78,12 +78,6 @@ export function Login() {
 
       console.log(res.data)  
 
-      
-      setTimeout(()=>{
-        navigate("/")
-      },1000)
-    } catch (error) {
-     
       toast.success("Log in successful!", {
         position: "top-right",
         autoClose: 3000,
@@ -95,45 +89,25 @@ export function Login() {
         theme: "light",
         transition: Slide,
       });
+      
+      setTimeout(()=>{
+        navigate("/")
+      },1000)
+    } catch (error) {
+      toast.error("Login failed. Please check your credentials.", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+        transition: Slide,
+      });
       console.error(error)
     }
   }
 
-
-  const GO = async()=>{
-    const result = await GoogleS()
-    const user = result.user;
-
-      const name = user.displayName;
-      const email = user.email;
-
-      const u: I = {
-        name: name || "Unknown",
-        email: email || "",
-        role: "user",
-      };
-
-      await mutateAsync(u);
-      toast.success("Welcome To Our World!", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        transition: Slide,
-      });
-      navigate("/")
-
-
-      setTimeout(()=>{
-        
-        
-      },1500)
-    
-  }
 
   const axiosPub = useAxiosPublic()
   const { mutateAsync } = useMutation({
@@ -155,10 +129,64 @@ export function Login() {
       });
       
       setTimeout(() => {
-        navigate("/login");
-      }, 2000);
+        navigate("/");
+      }, 1500);
+    },
+    onError: (error: any) => {
+      // Check if user already exists - if so, just navigate to home
+      if (error?.response?.status === 400 || error?.response?.data?.message?.includes("already exists")) {
+        toast.success("Welcome Back!", {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "light",
+          transition: Slide,
+        });
+        setTimeout(() => {
+          navigate("/");
+        }, 1500);
+        return;
+      }
+
+      // For other errors, show error message
+      const errorMsg = error?.response?.data?.message || "Failed to save user data. Please try again.";
+      toast.error(errorMsg, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+        transition: Slide,
+      });
+      console.error("User registration error:", error?.response?.data || error);
     },
   });
+
+  const GO = async () => {
+    try {
+      const result = await GoogleS()
+      const user = result.user;
+
+      const name = user.displayName;
+      const email = user.email;
+
+      const u: I = {
+        name: name || "Unknown",
+        email: email || "",
+        role: "user",
+      };
+
+      await mutateAsync(u);
+    } catch (error) {
+     
+      console.error("Google login error:", error);
+    }
+  };
 
   return (
     <div>
@@ -177,7 +205,7 @@ export function Login() {
       />
       <Nav></Nav>
 
-      <div className="flex min-h-screen bg-background mt-16">
+      <div className="flex min-h-screen bg-background ">
 
         <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-8">
           <div className="w-full max-w-md">

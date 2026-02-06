@@ -8,7 +8,7 @@ import { Slide, toast, ToastContainer } from "react-toastify";
 import { AuthContext } from "@/components/Authentication_Work/AuthProvider/AuthProvider";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosPublic from "@/url/useAxiosPublic";
-
+import imglogo from "../././.././../assets/Untitled-3.png"
 export default function Nav() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -88,10 +88,12 @@ export default function Nav() {
               <Link to={"/"} className="flex items-center gap-2.5">
                
                 
-                {/* 2. Bengal Rice Name */}
-                <span className="text-2xl font-bold tracking-tight text-gray-900 group-hover:text-[#4D2E7D] transition-colors">
-                  Bengal Rice.
-                </span>
+                {/* 2. Bengal Rice Logo */}
+                <img 
+                  src={imglogo} 
+                  alt="Bengal Rice Logo" 
+                  className="h-[220px] w-auto"
+                />
 
                 {/* 3. Shield Icon (Now on the RIGHT side) */}
                 

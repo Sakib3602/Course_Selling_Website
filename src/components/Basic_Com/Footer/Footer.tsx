@@ -3,6 +3,7 @@
 import { Facebook, Mail, MapPin, Phone, Instagram, X, ArrowUp,  ArrowRight } from "lucide-react"
 import { Link } from "react-router" // Ensure this matches your router package
 import b from "../../../../public/footer_bg.png" // Keep your image import
+import logo from "../../../assets/11.png"
 
 export default function Footer() {
   const scrollToTop = () => {
@@ -38,14 +39,14 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row justify-between items-center gap-8 mb-16 pb-12 border-b border-white/5">
           {/* Bengal Rice Logo */}
           <div className="flex items-center gap-4 group">
-            <div className="relative flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-yellow-700 shadow-lg shadow-amber-900/20 group-hover:scale-105 transition-transform duration-300">
-              <span className="text-2xl font-extrabold text-black font-serif">B</span>
+            <div className="relative flex h-14 w-14 items-center justify-center  border-2">
+              <img src={logo} alt="Bengal Rice Logo" className="h-10 w-10" />
               {/* Shine effect */}
               <div className="absolute inset-0 bg-white/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </div>
             <div>
-              <h3 className="text-2xl font-bold text-white tracking-tight">Bengal Rice</h3>
-              <p className="text-[10px] font-bold text-amber-500 tracking-[0.3em] uppercase">Education</p>
+              <h3 className="text-2xl font-bold text-white tracking-tight">Bengal <span className="text-orange-300">Rice</span></h3>
+              <p className="text-[10px] font-bold text-amber-500 tracking-[0.3em] uppercase">Education & Development</p>
             </div>
           </div>
 
