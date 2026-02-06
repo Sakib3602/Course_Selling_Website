@@ -60,6 +60,7 @@ const PremiumDas: React.FC = () => {
     },
   });
 
+
   const [formData, setFormData] = useState<MeetingD>({
     topic: "",
     date: "",
@@ -78,7 +79,9 @@ const PremiumDas: React.FC = () => {
   };
 
   const handleSubmit = (e: React.FormEvent) => {
-    if (data?.Premium === false) {
+    e.preventDefault();
+    
+    if (!data?.Premium) {
       toast.error("You need to be a premium member to request a meeting.", {
         position: "top-right",
         autoClose: 3000,
@@ -92,7 +95,6 @@ const PremiumDas: React.FC = () => {
       });
       return;
     }
-    e.preventDefault();
 
     const met = {
       ...formData,
